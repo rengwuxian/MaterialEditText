@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <color name="primary">#009688</color>
+  <color name="primary_dark">#00796b</color>
+  <color name="black_text_primary">#df000000</color>
+  <color name="black_text_secondary">#8a000000</color>
+  <color name="black_text_hint">#44000000</color>
+  <color name="white_text_primary">#dfffffff</color>
+  <color name="white_text_secondary">#8affffff</color>
+  <color name="white_text_hint">#44ffffff</color>
+  <color name="black_divider">#1e000000</color>
+  <color name="white_text_disabled">#99ffffff</color>
+  <color name="accent">#FF4C00</color>
+  <color name="red_error">#E7796E</color>
+</resources>

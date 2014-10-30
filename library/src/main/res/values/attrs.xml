@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <declare-styleable name="MaterialEditText">
+    <!-- the highlight color of the underline. And if the showHighlightLabel is true, this will be also the floating label's text color when focused. -->
+    <attr name="mainColor" format="color"/>
+    <!-- whether the float label should be shown. default is false -->
+    <attr name="floatLabel" format="boolean"/>
+    <!-- whether to show the main color as the float label's color when focused. default is true. -->
+    <attr name="highlightLabel" format="boolean"/>
+    <!-- whether in a dark theme. Used to decide the default textColor, hintTextColor and mainColor. default is false -->
+    <attr name="darkTheme" format="boolean"/>
+    <!-- the color for when something is wrong.(e.g. exceeding max characters) -->
+    <attr name="errorColor" format="color"/>
+    <!-- characters count limit. 0 means no limit. -->
+    <attr name="maxCharacters" format="integer"/>
+    <!-- whether to show the bottom ellipsis in singleLine mode -->
+    <attr name="singleLineEllipsis" format="boolean"/>
+  </declare-styleable>
+</resources>

@@ -1,0 +1,62 @@
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:orientation="vertical"
+  tools:context=".MainActivity">
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/colorPrimary"
+    android:orientation="vertical">
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="72dp"
+      android:layout_marginRight="16dp"
+      android:hint="@string/title"
+      android:textSize="34sp"
+      android:textCursorDrawable="@null"
+      android:singleLine="true"
+      app:maxCharacters="4"
+      app:singleLineEllipsis="true"
+      app:floatLabel="true"
+      app:darkTheme="true"
+      app:mainColor="?attr/colorAccent"/>
+
+    <View
+      android:layout_width="match_parent"
+      android:layout_height="8dp"/>
+    <com.rengwuxian.materialedittext.MaterialEditText
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="72dp"
+      android:layout_marginRight="16dp"
+      android:hint="@string/discription"
+      android:textCursorDrawable="@null"
+      android:singleLine="true"
+      app:singleLineEllipsis="true"
+      app:floatLabel="true"
+      app:darkTheme="true"
+      app:mainColor="?attr/colorAccent"/>
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="72dp"
+      android:layout_marginRight="16dp"
+      android:layout_marginBottom="24dp"
+      android:hint="@string/discription"
+      android:textCursorDrawable="@null"
+      app:floatLabel="true"
+      android:background="@null"
+      app:darkTheme="true"
+      app:mainColor="?attr/colorAccent"/>
+
+  </LinearLayout>
+
+</LinearLayout>
