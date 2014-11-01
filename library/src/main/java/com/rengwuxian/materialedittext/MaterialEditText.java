@@ -21,29 +21,21 @@ import com.nineoldandroids.animation.ObjectAnimator;
 /**
  * EditText in Material Design
  * <p/>
- * author：rengwuxian date：2014/8/29 0029
+ * author:rengwuxian
  * <p/>
+ *
+ *
  */
 public class MaterialEditText extends EditText {
 	/**
-	 * padding to the top of the top text (main text or floating label).
+	 * the spacing between the main text and the inner top padding.
 	 */
-	private final int innerPaddingTop;
+	private int extraPaddingTop;
 
 	/**
-	 * padding to the bottom of the main text.
+	 * the spacing between the main text and the inner bottom padding.
 	 */
-	private final int innerPaddingBottom;
-
-	/**
-	 * padding to the left of the main text.
-	 */
-	private final int innerPaddingLeft;
-
-	/**
-	 * padding to the right of the main text
-	 */
-	private final int innerPaddingRight;
+	private int extraPaddingBottom;
 
 	/**
 	 * the floating label's text size.
@@ -66,14 +58,24 @@ public class MaterialEditText extends EditText {
 	private final boolean highlightFloatingLabel;
 
 	/**
-	 * whether in a dark theme. Used to decide the default textColor, hintTextColor and mainColor. default is false.
+	 * the base color of the line and the texts. default is black.
 	 */
-	private final boolean darkTheme;
+	private int baseColor;
+
+	/**
+	 * inner top padding
+	 */
+	private int innerPaddingTop;
+
+	/**
+	 * inner bottom padding
+	 */
+	private int innerPaddingBottom;
 
 	/**
 	 * the underline's highlight color, and the highlight color of the floating label if app:highlightFloatingLabel is set true in the xml. default is black(when app:darkTheme is false) or white(when app:darkTheme is true)
 	 */
-	private final int mainColor;
+	private final int primaryColor;
 
 	/**
 	 * the color for when something is wrong.(e.g. exceeding max characters)
@@ -81,9 +83,8 @@ public class MaterialEditText extends EditText {
 	private final int errorColor;
 
 	/**
-	 * characters count limit. 0 means no limit. default is 0. NOTE: the character counter will increase the View's height, unless in the full width single line mode(using android:singleLine= true).
+	 * characters count limit. 0 means no limit. default is 0. NOTE: the character counter will increase the View's height.
 	 */
-	// todo full with 是否要实现？ 上面的注释最终怎么写？
 	private final int maxCharacters;
 
 	/**
@@ -94,7 +95,7 @@ public class MaterialEditText extends EditText {
 	/**
 	 * bottom ellipsis's height
 	 */
-	private final int bottomEllipsisHeight;
+	private final int bottomEllipsisSize;
 
 	/**
 	 * animation fraction of the floating label (0 as totally hidden).
@@ -113,7 +114,7 @@ public class MaterialEditText extends EditText {
 
 	private ArgbEvaluator focusEvaluator = new ArgbEvaluator();
 	Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-	ObjectAnimator showLabelAnimator;
+	ObjectAnimator labelAnimator;
 	ObjectAnimator labelFocusAnimator;
 	OnFocusChangeListener interFocusChangeListener;
 	OnFocusChangeListener outerFocusChangeListener;
@@ -133,32 +134,28 @@ public class MaterialEditText extends EditText {
 		setFocusableInTouchMode(true);
 		setClickable(true);
 
-		floatingLabelTextSize = getResources().getDimensionPixelSize(R.dimen.floating_label_size);
+		floatingLabelTextSize = getResources().getDimensionPixelSize(R.dimen.floating_label_text_size);
 		innerComponentsSpacing = getResources().getDimensionPixelSize(R.dimen.inner_components_spacing);
-		innerPaddingTop = getResources().getDimensionPixelSize(R.dimen.inner_padding_top);
-		innerPaddingBottom = getResources().getDimensionPixelSize(R.dimen.inner_padding_bottom);
-		innerPaddingLeft = getResources().getDimensionPixelSize(R.dimen.inner_padding_left);
-		innerPaddingRight = getResources().getDimensionPixelSize(R.dimen.inner_padding_right);
-		bottomEllipsisHeight = getResources().getDimensionPixelSize(R.dimen.bottom_ellipsis_height);
+		bottomEllipsisSize = getResources().getDimensionPixelSize(R.dimen.bottom_ellipsis_height);
 
 		TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.MaterialEditText);
-		darkTheme = typedArray.getBoolean(R.styleable.MaterialEditText_darkTheme, false);
-		setTextColor(getResources().getColor(darkTheme ? R.color.white_text_primary : R.color.black_text_primary));
-		setHintTextColor(getResources().getColor(darkTheme ? R.color.white_text_hint : R.color.black_text_hint));
-		mainColor = typedArray.getColor(R.styleable.MaterialEditText_mainColor, darkTheme ? Color.WHITE : Color.BLACK);
+		baseColor = typedArray.getColor(R.styleable.MaterialEditText_baseColor, Color.BLACK);
+		setTextColor(baseColor & 0x00ffffff | 0xdf000000);
+		setHintTextColor(baseColor & 0x00ffffff | 0x44000000);
+		primaryColor = typedArray.getColor(R.styleable.MaterialEditText_primaryColor, baseColor);
 		floatingLabelEnabled = typedArray.getBoolean(R.styleable.MaterialEditText_floatLabel, false);
-		highlightFloatingLabel = typedArray.getBoolean(R.styleable.MaterialEditText_highlightLabel, true);
+		highlightFloatingLabel = typedArray.getBoolean(R.styleable.MaterialEditText_highlightFloatingLabel, true);
 		errorColor = typedArray.getColor(R.styleable.MaterialEditText_errorColor, getResources().getColor(R.color.red_error));
 		maxCharacters = typedArray.getInt(R.styleable.MaterialEditText_maxCharacters, 0);
 		bottomEllipsis = typedArray.getBoolean(R.styleable.MaterialEditText_singleLineEllipsis, false);
 		typedArray.recycle();
 
-		initPadding();
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
 			setBackground(null);
 		} else {
 			setBackgroundDrawable(null);
 		}
+		initPadding();
 		initFloatingLabel();
 	}
 
@@ -185,13 +182,31 @@ public class MaterialEditText extends EditText {
 	}
 
 	private void initPadding() {
-		int extraPaddingTop = floatingLabelTextSize + innerComponentsSpacing;
-		int extraPaddingBottom = maxCharacters > 0 ? floatingLabelTextSize + innerComponentsSpacing : bottomEllipsis ? innerComponentsSpacing + bottomEllipsisHeight : 0;
-		if (floatingLabelEnabled) {
-			setPadding(innerPaddingLeft, extraPaddingTop + innerPaddingTop, innerPaddingRight, innerPaddingBottom + extraPaddingBottom);
-		} else {
-			setPadding(innerPaddingLeft, innerPaddingTop, innerPaddingRight, innerPaddingBottom + extraPaddingBottom);
-		}
+		extraPaddingTop = floatingLabelTextSize + innerComponentsSpacing;
+		extraPaddingBottom = maxCharacters > 0 ? innerComponentsSpacing + floatingLabelTextSize : bottomEllipsis ? innerComponentsSpacing * 2 + bottomEllipsisSize : 0;
+		extraPaddingBottom += getPixel(8);
+		setPadding(getPaddingLeft(), getPaddingTop(), getPaddingRight(), getPaddingBottom());
+	}
+
+	@Override
+	public void setPadding(int left, int top, int right, int bottom) {
+		innerPaddingTop = top;
+		innerPaddingBottom = bottom;
+		super.setPadding(left, top + extraPaddingTop, right, top + extraPaddingBottom);
+	}
+
+	/**
+	 * get inner top padding, not the real paddingTop
+	 */
+	public int getInnerPaddingTop() {
+		return innerPaddingTop;
+	}
+
+	/**
+	 * get inner bottom padding, not the real paddingBottom
+	 */
+	public int getInnerPaddingBottom() {
+		return innerPaddingBottom;
 	}
 
 	private void initFloatingLabel() {
@@ -211,14 +226,14 @@ public class MaterialEditText extends EditText {
 					if (s.length() == 0) {
 						if (floatingLabelShown) {
 							floatingLabelShown = false;
-							getShowLabelAnimator().reverse();
+							getLabelAnimator().reverse();
 						}
 					} else if (!floatingLabelShown) {
 						floatingLabelShown = true;
-						if (getShowLabelAnimator().isStarted()) {
-							getShowLabelAnimator().reverse();
+						if (getLabelAnimator().isStarted()) {
+							getLabelAnimator().reverse();
 						} else {
-							getShowLabelAnimator().start();
+							getLabelAnimator().start();
 						}
 					}
 				}
@@ -256,11 +271,11 @@ public class MaterialEditText extends EditText {
 		}
 	}
 
-	private ObjectAnimator getShowLabelAnimator() {
-		if (showLabelAnimator == null) {
-			showLabelAnimator = ObjectAnimator.ofFloat(this, "floatingLabelFraction", 0f, 1f);
+	private ObjectAnimator getLabelAnimator() {
+		if (labelAnimator == null) {
+			labelAnimator = ObjectAnimator.ofFloat(this, "floatingLabelFraction", 0f, 1f);
 		}
-		return showLabelAnimator;
+		return labelAnimator;
 	}
 
 	private ObjectAnimator getLabelFocusAnimator() {
@@ -278,36 +293,36 @@ public class MaterialEditText extends EditText {
 		// draw the background
 		float lineStartY = getHeight() - getPaddingBottom() + getPixel(8);
 		if (hasFocus()) {
-			boolean exceedingMaxCharacters = false;
-			if (maxCharacters > 0 && getText() != null && maxCharacters < getText().length()) {
-				exceedingMaxCharacters = true;
+			if (isExceedingMaxCharacters()) {
 				paint.setColor(errorColor);
 			} else {
-				paint.setColor(mainColor);
+				paint.setColor(primaryColor);
 			}
 			canvas.drawRect(getScrollX(), lineStartY, getWidth() + getScrollX(), lineStartY + getPixel(2), paint);
 
 			// draw the characters counter
 			if (maxCharacters > 0) {
-				if (!exceedingMaxCharacters) {
+				if (!isExceedingMaxCharacters()) {
 					paint.setColor(getCurrentHintTextColor());
 				}
+				Paint.FontMetrics fontMetrics = paint.getFontMetrics();
+				float relativeHeight = - fontMetrics.ascent - fontMetrics.descent;
 				String text = getText().length() + " / " + maxCharacters;
-				canvas.drawText(text, getWidth() + getScrollX() - paint.measureText(text), lineStartY + innerComponentsSpacing + floatingLabelTextSize, paint);
+				canvas.drawText(text, getWidth() + getScrollX() - paint.measureText(text), lineStartY + innerComponentsSpacing + relativeHeight, paint);
 			}
 		} else {
-			paint.setColor(darkTheme ? Color.WHITE : Color.BLACK);
+			paint.setColor(baseColor);
 			canvas.drawRect(getScrollX(), lineStartY, getWidth() + getScrollX(), lineStartY + getPixel(1), paint);
 		}
 
 		// draw the floating label
 		if (floatingLabelEnabled && !TextUtils.isEmpty(getHint())) {
 			// calculate the text color
-			paint.setColor((Integer) focusEvaluator.evaluate(focusFraction, getHintTextColors().getColorForState(EMPTY_STATE_SET, darkTheme ? Color.WHITE : Color.BLACK), mainColor));
+			paint.setColor((Integer) focusEvaluator.evaluate(focusFraction, getCurrentHintTextColor(), primaryColor));
 
 			// calculate the vertical position
 			int start = innerPaddingTop + floatingLabelTextSize + innerComponentsSpacing;
-			int distance = innerComponentsSpacing + getPixel(2);
+			int distance = innerComponentsSpacing;
 			int position = (int) (start - distance * floatingLabelFraction);
 
 			// calculate the alpha
@@ -315,25 +330,29 @@ public class MaterialEditText extends EditText {
 			paint.setAlpha(alpha);
 
 			// draw the floating label
-			canvas.drawText(getHint().toString(), innerPaddingLeft + getScrollX(), position, paint);
+			canvas.drawText(getHint().toString(), getPaddingLeft() + getScrollX(), position, paint);
 		}
 
 		// draw the bottom ellipsis
 		if (hasFocus() && bottomEllipsis && getScrollX() != 0) {
-			paint.setColor(mainColor);
+			paint.setColor(primaryColor);
 			float startY = lineStartY + innerComponentsSpacing;
-			canvas.drawCircle(getPixel(2) + getScrollX(), startY + getPixel(2), getPixel(2), paint);
-			canvas.drawCircle(getPixel(2 + 8) + getScrollX(), startY + getPixel(2), getPixel(2), paint);
-			canvas.drawCircle(getPixel(2 + 16) + getScrollX(), startY + getPixel(2), getPixel(2), paint);
+			canvas.drawCircle(bottomEllipsisSize / 2 + getScrollX(), startY + bottomEllipsisSize / 2, bottomEllipsisSize / 2, paint);
+			canvas.drawCircle(bottomEllipsisSize * 5 / 2 + getScrollX(), startY + bottomEllipsisSize / 2, bottomEllipsisSize / 2, paint);
+			canvas.drawCircle(bottomEllipsisSize * 9 / 2 + getScrollX(), startY + bottomEllipsisSize / 2, bottomEllipsisSize / 2, paint);
 		}
 
 		// draw the original things
 		super.onDraw(canvas);
 	}
 
+	public boolean isExceedingMaxCharacters() {
+		return maxCharacters > 0 && getText() != null && maxCharacters < getText().length();
+	}
+
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		if (bottomEllipsis && getScrollX() > 0 && event.getAction() == MotionEvent.ACTION_DOWN && event.getX() < getPixel(4 * 5) && event.getY() > getHeight() - innerPaddingBottom * 2 + getPixel(4)) {
+		if (bottomEllipsis && getScrollX() > 0 && event.getAction() == MotionEvent.ACTION_DOWN && event.getX() < getPixel(4 * 5) && event.getY() > getHeight() - extraPaddingBottom - innerPaddingBottom  && event.getY() < getHeight() - innerPaddingBottom) {
 			setSelection(0);
 			return false;
 		}

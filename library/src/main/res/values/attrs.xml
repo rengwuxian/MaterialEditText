@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <declare-styleable name="MaterialEditText">
-    <!-- the highlight color of the underline. And if the showHighlightLabel is true, this will be also the floating label's text color when focused. -->
-    <attr name="mainColor" format="color"/>
-    <!-- whether the float label should be shown. default is false -->
+    <!-- the base color of the line and the texts. -->
+    <attr name="baseColor" format="color"/>
+    <!-- the highlight color of the line, and the floating label if the highlightFloatingLabel is true. -->
+    <attr name="primaryColor" format="color"/>
+    <!-- whether the floating label should be shown. default is false -->
     <attr name="floatLabel" format="boolean"/>
-    <!-- whether to show the main color as the float label's color when focused. default is true. -->
-    <attr name="highlightLabel" format="boolean"/>
-    <!-- whether in a dark theme. Used to decide the default textColor, hintTextColor and mainColor. default is false -->
-    <attr name="darkTheme" format="boolean"/>
+    <!-- whether to show the main color as the floating label's color when focused. default is true. -->
+    <attr name="highlightFloatingLabel" format="boolean"/>
     <!-- the color for when something is wrong.(e.g. exceeding max characters) -->
     <attr name="errorColor" format="color"/>
     <!-- characters count limit. 0 means no limit. -->

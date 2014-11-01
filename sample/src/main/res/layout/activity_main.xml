@@ -13,50 +13,52 @@
     android:background="?attr/colorPrimary"
     android:orientation="vertical">
 
-    <com.rengwuxian.materialedittext.MaterialEditText
+    <FrameLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginLeft="72dp"
-      android:layout_marginRight="16dp"
-      android:hint="@string/title"
-      android:textSize="34sp"
-      android:textCursorDrawable="@null"
-      android:singleLine="true"
-      app:maxCharacters="4"
-      app:singleLineEllipsis="true"
-      app:floatLabel="true"
-      app:darkTheme="true"
-      app:mainColor="?attr/colorAccent"/>
+      android:background="#457657">
 
-    <View
-      android:layout_width="match_parent"
-      android:layout_height="8dp"/>
-    <com.rengwuxian.materialedittext.MaterialEditText
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_marginLeft="72dp"
-      android:layout_marginRight="16dp"
-      android:hint="@string/discription"
-      android:textCursorDrawable="@null"
-      android:singleLine="true"
-      app:singleLineEllipsis="true"
-      app:floatLabel="true"
-      app:darkTheme="true"
-      app:mainColor="?attr/colorAccent"/>
+      <com.rengwuxian.materialedittext.MaterialEditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="72dp"
+        android:layout_marginRight="16dp"
+        android:hint="@string/title"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp"
+        android:singleLine="true"
+        android:textCursorDrawable="@null"
+        android:textSize="34sp"
+        app:baseColor="@android:color/white"
+        app:floatLabel="true"
+        app:maxCharacters="4"
+        app:primaryColor="?attr/colorAccent"
+        app:singleLineEllipsis="true"/>
 
-    <com.rengwuxian.materialedittext.MaterialEditText
+    </FrameLayout>
+
+
+    <FrameLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginLeft="72dp"
-      android:layout_marginRight="16dp"
-      android:layout_marginBottom="24dp"
-      android:hint="@string/discription"
-      android:textCursorDrawable="@null"
-      app:floatLabel="true"
-      android:background="@null"
-      app:darkTheme="true"
-      app:mainColor="?attr/colorAccent"/>
+      android:background="#873498">
 
+      <com.rengwuxian.materialedittext.MaterialEditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="72dp"
+        android:layout_marginRight="16dp"
+        android:hint="@string/discription"
+        android:singleLine="true"
+        android:textColor="#ff0000"
+        android:textColorHint="#00ff00"
+        android:textCursorDrawable="@null"
+        app:baseColor="@android:color/holo_green_dark"
+        app:floatLabel="true"
+        app:primaryColor="?attr/colorAccent"
+        app:singleLineEllipsis="true"/>
+
+    </FrameLayout>
   </LinearLayout>
 
 </LinearLayout>

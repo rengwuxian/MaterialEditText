@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <dimen name="inner_padding_top">16dp</dimen>
-  <dimen name="inner_padding_bottom">16dp</dimen>
+  <dimen name="default_padding_top">8dp</dimen>
+  <dimen name="default_padding_bottom">8dp</dimen>
   <dimen name="inner_padding_left">0dp</dimen>
   <dimen name="inner_padding_right">0dp</dimen>
-  <dimen name="floating_label_size">12dp</dimen>
-  <dimen name="floating_label_height">16dp</dimen>
+  <dimen name="floating_label_text_size">12dp</dimen>
   <dimen name="inner_components_spacing">8dp</dimen>
   <dimen name="bottom_ellipsis_height">4dp</dimen>
 </resources>
