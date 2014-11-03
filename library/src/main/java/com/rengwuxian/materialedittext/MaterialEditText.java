@@ -25,6 +25,10 @@ import com.nineoldandroids.animation.ObjectAnimator;
  * <p/>
  */
 public class MaterialEditText extends EditText {
+	public static final int FLOATING_LABEL_NONE = 0;
+	public static final int FLOATING_LABEL_NORMAL = 1;
+	public static final int FLOATING_LABEL_HIGHLIGHT = 2;
+
 	/**
 	 * the spacing between the main text and the inner top padding.
 	 */
@@ -141,20 +145,7 @@ public class MaterialEditText extends EditText {
 		setTextColor(baseColor & 0x00ffffff | 0xdf000000);
 
 		primaryColor = typedArray.getColor(R.styleable.MaterialEditText_primaryColor, baseColor);
-		switch (typedArray.getInt(R.styleable.MaterialEditText_floatingLabel, 0)) {
-			case 1:
-				floatingLabelEnabled = true;
-				highlightFloatingLabel = false;
-				break;
-			case 2:
-				floatingLabelEnabled = true;
-				highlightFloatingLabel = true;
-				break;
-			default:
-				floatingLabelEnabled = false;
-				highlightFloatingLabel = false;
-				break;
-		}
+		setFloatingLabelInternal(typedArray.getInt(R.styleable.MaterialEditText_floatingLabel, 0));
 		errorColor = typedArray.getColor(R.styleable.MaterialEditText_errorColor, Color.parseColor("#e7492E"));
 		maxCharacters = typedArray.getInt(R.styleable.MaterialEditText_maxCharacters, 0);
 		singleLineEllipsis = typedArray.getBoolean(R.styleable.MaterialEditText_singleLineEllipsis, false);
@@ -300,21 +291,25 @@ public class MaterialEditText extends EditText {
 		postInvalidate();
 	}
 
-	public void setFloatingLabelEnabled() {
-		setFloatingLabelEnabled(true);
+	private void setFloatingLabelInternal(int mode) {
+		switch (mode) {
+			case FLOATING_LABEL_NORMAL:
+				floatingLabelEnabled = true;
+				highlightFloatingLabel = false;
+				break;
+			case FLOATING_LABEL_HIGHLIGHT:
+				floatingLabelEnabled = true;
+				highlightFloatingLabel = true;
+				break;
+			default:
+				floatingLabelEnabled = false;
+				highlightFloatingLabel = false;
+				break;
+		}
 	}
 
-	public void setFloatingLabelEnabled(boolean enabled) {
-		floatingLabelEnabled = enabled;
-		postInvalidate();
-	}
-
-	public void setHighlightFloatingLabel() {
-		setHighlightFloatingLabel(true);
-	}
-
-	public void setHighlightFloatingLabel(boolean enabled) {
-		highlightFloatingLabel = enabled;
+	public void setFloatingLabel(int mode) {
+		setFloatingLabel(mode);
 		postInvalidate();
 	}
 
