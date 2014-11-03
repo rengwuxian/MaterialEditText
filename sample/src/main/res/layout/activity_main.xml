@@ -29,7 +29,9 @@
         android:textSize="34sp"
         app:baseColor="@android:color/white"
         app:floatingLabel="highlight"
-        app:primaryColor="?colorAccent"/>
+        app:maxCharacters="20"
+        app:primaryColor="?colorAccent"
+        app:singleLineEllipsis="true"/>
 
       <com.rengwuxian.materialedittext.MaterialEditText
         android:layout_width="match_parent"
