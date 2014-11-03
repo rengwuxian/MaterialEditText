@@ -50,12 +50,12 @@ public class MaterialEditText extends EditText {
 	/**
 	 * whether the floating label should be shown. default is false.
 	 */
-	private final boolean floatingLabelEnabled;
+	private boolean floatingLabelEnabled;
 
 	/**
 	 * whether to highlight the floating label's text color when focused (with the main color). default is true.
 	 */
-	private final boolean highlightFloatingLabel;
+	private boolean highlightFloatingLabel;
 
 	/**
 	 * the base color of the line and the texts. default is black.
@@ -75,22 +75,22 @@ public class MaterialEditText extends EditText {
 	/**
 	 * the underline's highlight color, and the highlight color of the floating label if app:highlightFloatingLabel is set true in the xml. default is black(when app:darkTheme is false) or white(when app:darkTheme is true)
 	 */
-	private final int primaryColor;
+	private int primaryColor;
 
 	/**
 	 * the color for when something is wrong.(e.g. exceeding max characters)
 	 */
-	private final int errorColor;
+	private int errorColor;
 
 	/**
 	 * characters count limit. 0 means no limit. default is 0. NOTE: the character counter will increase the View's height.
 	 */
-	private final int maxCharacters;
+	private int maxCharacters;
 
 	/**
 	 * whether to show the bottom ellipsis in singleLine mode. default is false. NOTE: the bottom ellipsis will increase the View's height.
 	 */
-	private final boolean bottomEllipsis;
+	private boolean singleLineEllipsis;
 
 	/**
 	 * bottom ellipsis's height
@@ -141,13 +141,25 @@ public class MaterialEditText extends EditText {
 		TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.MaterialEditText);
 		baseColor = typedArray.getColor(R.styleable.MaterialEditText_baseColor, Color.BLACK);
 		setTextColor(baseColor & 0x00ffffff | 0xdf000000);
-		setHintTextColor(baseColor & 0x00ffffff | 0x44000000);
+
 		primaryColor = typedArray.getColor(R.styleable.MaterialEditText_primaryColor, baseColor);
-		floatingLabelEnabled = typedArray.getBoolean(R.styleable.MaterialEditText_floatLabel, false);
-		highlightFloatingLabel = typedArray.getBoolean(R.styleable.MaterialEditText_highlightFloatingLabel, true);
-		errorColor = typedArray.getColor(R.styleable.MaterialEditText_errorColor, getResources().getColor(R.color.red_error));
+		switch (typedArray.getInt(R.styleable.MaterialEditText_floatingLabel, 0)) {
+			case 1:
+				floatingLabelEnabled = true;
+				highlightFloatingLabel = false;
+				break;
+			case 2:
+				floatingLabelEnabled = true;
+				highlightFloatingLabel = true;
+				break;
+			default:
+				floatingLabelEnabled = false;
+				highlightFloatingLabel = false;
+				break;
+		}
+		errorColor = typedArray.getColor(R.styleable.MaterialEditText_errorColor, Color.parseColor("#e7492E"));
 		maxCharacters = typedArray.getInt(R.styleable.MaterialEditText_maxCharacters, 0);
-		bottomEllipsis = typedArray.getBoolean(R.styleable.MaterialEditText_singleLineEllipsis, false);
+		singleLineEllipsis = typedArray.getBoolean(R.styleable.MaterialEditText_singleLineEllipsis, false);
 		typedArray.recycle();
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -155,8 +167,25 @@ public class MaterialEditText extends EditText {
 		} else {
 			setBackgroundDrawable(null);
 		}
+		if (singleLineEllipsis) {
+			setSingleLine();
+		}
 		initPadding();
+		initText();
 		initFloatingLabel();
+	}
+
+	private void initText() {
+		if (!TextUtils.isEmpty(getText())) {
+			CharSequence text = getText();
+			setText(null);
+			setHintTextColor(baseColor & 0x00ffffff | 0x44000000);
+			setText(text);
+			floatingLabelFraction = 1;
+			floatingLabelShown = true;
+		} else {
+			setHintTextColor(baseColor & 0x00ffffff | 0x44000000);
+		}
 	}
 
 	private float getFloatingLabelFraction() {
@@ -182,9 +211,9 @@ public class MaterialEditText extends EditText {
 	}
 
 	private void initPadding() {
-		extraPaddingTop = floatingLabelTextSize + innerComponentsSpacing;
-		extraPaddingBottom = maxCharacters > 0 ? innerComponentsSpacing + floatingLabelTextSize : bottomEllipsis ? innerComponentsSpacing * 2 + bottomEllipsisSize : 0;
-		extraPaddingBottom += getPixel(8);
+		extraPaddingTop = floatingLabelEnabled ? floatingLabelTextSize + innerComponentsSpacing : innerComponentsSpacing;
+		extraPaddingBottom = maxCharacters > 0 ? floatingLabelTextSize : singleLineEllipsis ? innerComponentsSpacing + bottomEllipsisSize : 0;
+		extraPaddingBottom += innerComponentsSpacing * 2;
 		setPadding(getPaddingLeft(), getPaddingTop(), getPaddingRight(), getPaddingBottom());
 	}
 
@@ -192,7 +221,7 @@ public class MaterialEditText extends EditText {
 	public void setPadding(int left, int top, int right, int bottom) {
 		innerPaddingTop = top;
 		innerPaddingBottom = bottom;
-		super.setPadding(left, top + extraPaddingTop, right, top + extraPaddingBottom);
+		super.setPadding(left, top + extraPaddingTop, right, bottom + extraPaddingBottom);
 	}
 
 	/**
@@ -244,9 +273,9 @@ public class MaterialEditText extends EditText {
 					@Override
 					public void onFocusChange(View v, boolean hasFocus) {
 						if (hasFocus) {
-							if (getLabelFocusAnimator().isStarted())
+							if (getLabelFocusAnimator().isStarted()) {
 								getLabelFocusAnimator().reverse();
-							else {
+							} else {
 								getLabelFocusAnimator().start();
 							}
 						} else {
@@ -260,6 +289,57 @@ public class MaterialEditText extends EditText {
 				super.setOnFocusChangeListener(interFocusChangeListener);
 			}
 		}
+	}
+
+	public void setBaseColor(int color) {
+		baseColor = color;
+		postInvalidate();
+	}
+
+	public void setPrimaryColor(int color) {
+		primaryColor = color;
+		postInvalidate();
+	}
+
+	public void setFloatingLabelEnabled() {
+		setFloatingLabelEnabled(true);
+	}
+
+	public void setFloatingLabelEnabled(boolean enabled) {
+		floatingLabelEnabled = enabled;
+		postInvalidate();
+	}
+
+	public void setHighlightFloatingLabel() {
+		setHighlightFloatingLabel(true);
+	}
+
+	public void setHighlightFloatingLabel(boolean enabled) {
+		highlightFloatingLabel = enabled;
+		postInvalidate();
+	}
+
+	public void setSingleLineEllipsis() {
+		setSingleLineEllipsis(true);
+	}
+
+	public void setSingleLineEllipsis(boolean enabled) {
+		singleLineEllipsis = enabled;
+		postInvalidate();
+	}
+
+	public int getMaxCharacters() {
+		return maxCharacters;
+	}
+
+	public void setMaxCharacters(int max) {
+		maxCharacters = max;
+		postInvalidate();
+	}
+
+	public void setErrorColor(int color) {
+		errorColor = color;
+		postInvalidate();
 	}
 
 	@Override
@@ -291,7 +371,7 @@ public class MaterialEditText extends EditText {
 		paint.setTextSize(floatingLabelTextSize);
 
 		// draw the background
-		float lineStartY = getHeight() - getPaddingBottom() + getPixel(8);
+		float lineStartY = getHeight() - getPaddingBottom() + innerComponentsSpacing;
 		if (hasFocus()) {
 			if (isExceedingMaxCharacters()) {
 				paint.setColor(errorColor);
@@ -334,7 +414,7 @@ public class MaterialEditText extends EditText {
 		}
 
 		// draw the bottom ellipsis
-		if (hasFocus() && bottomEllipsis && getScrollX() != 0) {
+		if (hasFocus() && singleLineEllipsis && getScrollX() != 0) {
 			paint.setColor(primaryColor);
 			float startY = lineStartY + innerComponentsSpacing;
 			canvas.drawCircle(bottomEllipsisSize / 2 + getScrollX(), startY + bottomEllipsisSize / 2, bottomEllipsisSize / 2, paint);
@@ -352,7 +432,7 @@ public class MaterialEditText extends EditText {
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		if (bottomEllipsis && getScrollX() > 0 && event.getAction() == MotionEvent.ACTION_DOWN && event.getX() < getPixel(4 * 5) && event.getY() > getHeight() - extraPaddingBottom - innerPaddingBottom  && event.getY() < getHeight() - innerPaddingBottom) {
+		if (singleLineEllipsis && getScrollX() > 0 && event.getAction() == MotionEvent.ACTION_DOWN && event.getX() < getPixel(4 * 5) && event.getY() > getHeight() - extraPaddingBottom - innerPaddingBottom  && event.getY() < getHeight() - innerPaddingBottom) {
 			setSelection(0);
 			return false;
 		}

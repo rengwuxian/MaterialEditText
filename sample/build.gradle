@@ -1,15 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion "21.0.2"
+    compileSdkVersion Integer.parseInt(project.ANDROID_BUILD_SDK_VERSION)
+    buildToolsVersion project.ANDROID_BUILD_TOOLS_VERSION
 
     defaultConfig {
         applicationId "com.rengwuxian.materialedittext.sample"
         minSdkVersion 7
-        targetSdkVersion 21
-        versionCode 1
-        versionName "1.0"
+        targetSdkVersion Integer.parseInt(project.ANDROID_BUILD_SDK_VERSION)
     }
     buildTypes {
         release {
@@ -22,5 +20,6 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:21.0.0'
-    compile 'com.rengwuxian.materialedittext:library:0.1.0-SNAPSHOT'
+//    compile 'com.rengwuxian.materialedittext:library:0.1.0-SNAPSHOT'
+    compile project(':library')
 }

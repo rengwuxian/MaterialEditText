@@ -1,64 +1,247 @@
-<LinearLayout
+<ScrollView
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:orientation="vertical"
+  android:scrollbarStyle="outsideOverlay"
   tools:context=".MainActivity">
 
   <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/colorPrimary"
     android:orientation="vertical">
 
-    <FrameLayout
+    <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="#457657">
+      android:background="?colorPrimary"
+      android:orientation="vertical">
 
       <com.rengwuxian.materialedittext.MaterialEditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="72dp"
         android:layout_marginRight="16dp"
-        android:hint="@string/title"
-        android:paddingBottom="8dp"
-        android:paddingTop="8dp"
-        android:singleLine="true"
-        android:textCursorDrawable="@null"
         android:textSize="34sp"
         app:baseColor="@android:color/white"
-        app:floatLabel="true"
-        app:maxCharacters="4"
-        app:primaryColor="?attr/colorAccent"
-        app:singleLineEllipsis="true"/>
-
-    </FrameLayout>
-
-
-    <FrameLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:background="#873498">
+        app:primaryColor="?colorAccent"
+        app:floatingLabel="highlight"
+        android:hint="Library Name"
+        android:text="MaterialEditText"/>
 
       <com.rengwuxian.materialedittext.MaterialEditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="72dp"
         android:layout_marginRight="16dp"
-        android:hint="@string/discription"
-        android:singleLine="true"
-        android:textColor="#ff0000"
-        android:textColorHint="#00ff00"
-        android:textCursorDrawable="@null"
-        app:baseColor="@android:color/holo_green_dark"
-        app:floatLabel="true"
-        app:primaryColor="?attr/colorAccent"
+        app:baseColor="@android:color/white"
+        app:primaryColor="?colorAccent"
+        app:floatingLabel="highlight"
+        app:maxCharacters="20"
+        android:hint="Description"
+        android:text="EditText in Material Design"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:paddingBottom="@dimen/activity_vertical_margin"
+      android:paddingLeft="@dimen/activity_horizontal_margin"
+      android:paddingRight="@dimen/activity_horizontal_margin"
+      android:paddingTop="@dimen/activity_vertical_margin">
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Basic:"
+        android:textColor="#333333"
+        android:textSize="14sp"/>
+
+      <com.rengwuxian.materialedittext.MaterialEditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Basic"/>
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Custom Base Color:"
+        android:textColor="#333333"
+        android:textSize="14sp"/>
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="app:baseColor=&quot;#982360&quot;"
+        android:textColor="#888888"
+        android:textSize="14sp"/>
+
+      <com.rengwuxian.materialedittext.MaterialEditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Custom Base Color"
+        app:baseColor="#982360"/>
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Custom Primary Color:"
+        android:textColor="#333333"
+        android:textSize="14sp"/>
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="app:primaryColor=&quot;#0056d3&quot;"
+        android:textColor="#888888"
+        android:textSize="14sp"/>
+
+      <com.rengwuxian.materialedittext.MaterialEditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Custom Primary Color"
+        app:primaryColor="#0056d3"/>
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Floating Label:"
+        android:textColor="#333333"
+        android:textSize="14sp"/>
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="app:floatingLabel=&quot;normal&quot;"
+        android:textColor="#888888"
+        android:textSize="14sp"/>
+
+      <com.rengwuxian.materialedittext.MaterialEditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Floating Label"
+        app:floatingLabel="normal"/>
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Highlight Floating Label:"
+        android:textColor="#333333"
+        android:textSize="14sp"/>
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="app:floatingLabel=&quot;highlight&quot;\napp:primaryColor=&quot;#0056d3&quot;"
+        android:textColor="#888888"
+        android:textSize="14sp"/>
+
+      <com.rengwuxian.materialedittext.MaterialEditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Highlight Floating Label"
+        app:floatingLabel="highlight"
+        app:primaryColor="#0056d3"/>
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Single Line Ellipsis:"
+        android:textColor="#333333"
+        android:textSize="14sp"/>
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="app:singleLineEllipsis=&quot;true&quot;\n#singLineEllipsis will force android:singleLine to true#"
+        android:textColor="#888888"
+        android:textSize="14sp"/>
+
+      <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/singleLineEllipsisEt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Single Line Ellipsis"
+        android:text="Touch The Ellipsis And See What Happens. Touch The Ellipsis And See What Happens."
         app:singleLineEllipsis="true"/>
 
-    </FrameLayout>
-  </LinearLayout>
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Max Characters:"
+        android:textColor="#333333"
+        android:textSize="14sp"/>
 
-</LinearLayout>
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="app:maxCharacters=&quot;10&quot;"
+        android:textColor="#888888"
+        android:textSize="14sp"/>
+
+      <com.rengwuxian.materialedittext.MaterialEditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Max Characters"
+        app:maxCharacters="10"/>
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Max Characters With Custom Error Color:"
+        android:textColor="#333333"
+        android:textSize="14sp"/>
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="app:maxCharacters=&quot;10&quot;\napp:errorColor=&quot;#ddaa00&quot;"
+        android:textColor="#888888"
+        android:textSize="14sp"/>
+
+      <com.rengwuxian.materialedittext.MaterialEditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Max Characters With Custom Error Color"
+        app:errorColor="#ddaa00"
+        app:maxCharacters="10"/>
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Complex:"
+        android:textColor="#333333"
+        android:textSize="14sp"/>
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="app:baseColor=&quot;#982360&quot;\napp:primaryColor=&quot;#0056d3&quot;\napp:floatingLabel=&quot;highlight&quot;\napp:maxCharacters=&quot;10&quot;\napp:errorColor=&quot;#ddaa00&quot;\napp:singleLineEllipsis=&quot;true&quot;"
+        android:textColor="#888888"
+        android:textSize="14sp"/>
+
+      <com.rengwuxian.materialedittext.MaterialEditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Complex"
+        app:baseColor="#982360"
+        app:errorColor="#ddaa00"
+        app:floatingLabel="highlight"
+        app:maxCharacters="10"
+        app:primaryColor="#0056d3"
+        app:singleLineEllipsis="true"/>
+
+    </LinearLayout>
+  </LinearLayout>
+</ScrollView>
