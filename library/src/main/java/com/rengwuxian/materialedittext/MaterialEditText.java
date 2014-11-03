@@ -23,8 +23,6 @@ import com.nineoldandroids.animation.ObjectAnimator;
  * <p/>
  * author:rengwuxian
  * <p/>
- *
- *
  */
 public class MaterialEditText extends EditText {
 	/**
@@ -289,6 +287,7 @@ public class MaterialEditText extends EditText {
 				super.setOnFocusChangeListener(interFocusChangeListener);
 			}
 		}
+
 	}
 
 	public void setBaseColor(int color) {
@@ -386,7 +385,7 @@ public class MaterialEditText extends EditText {
 					paint.setColor(getCurrentHintTextColor());
 				}
 				Paint.FontMetrics fontMetrics = paint.getFontMetrics();
-				float relativeHeight = - fontMetrics.ascent - fontMetrics.descent;
+				float relativeHeight = -fontMetrics.ascent - fontMetrics.descent;
 				String text = getText().length() + " / " + maxCharacters;
 				canvas.drawText(text, getWidth() + getScrollX() - paint.measureText(text), lineStartY + innerComponentsSpacing + relativeHeight, paint);
 			}
@@ -432,7 +431,7 @@ public class MaterialEditText extends EditText {
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		if (singleLineEllipsis && getScrollX() > 0 && event.getAction() == MotionEvent.ACTION_DOWN && event.getX() < getPixel(4 * 5) && event.getY() > getHeight() - extraPaddingBottom - innerPaddingBottom  && event.getY() < getHeight() - innerPaddingBottom) {
+		if (singleLineEllipsis && getScrollX() > 0 && event.getAction() == MotionEvent.ACTION_DOWN && event.getX() < getPixel(4 * 5) && event.getY() > getHeight() - extraPaddingBottom - innerPaddingBottom && event.getY() < getHeight() - innerPaddingBottom) {
 			setSelection(0);
 			return false;
 		}

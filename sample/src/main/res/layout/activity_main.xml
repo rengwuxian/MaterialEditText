@@ -23,24 +23,26 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="72dp"
         android:layout_marginRight="16dp"
+        android:hint="Library Name"
+        android:text="MaterialEditText"
+        android:textCursorDrawable="@drawable/text_cursor_cyan"
         android:textSize="34sp"
         app:baseColor="@android:color/white"
-        app:primaryColor="?colorAccent"
         app:floatingLabel="highlight"
-        android:hint="Library Name"
-        android:text="MaterialEditText"/>
+        app:primaryColor="?colorAccent"/>
 
       <com.rengwuxian.materialedittext.MaterialEditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="72dp"
         android:layout_marginRight="16dp"
+        android:hint="Description"
+        android:text="EditText in Material Design"
+        android:textCursorDrawable="@drawable/text_cursor_cyan"
         app:baseColor="@android:color/white"
-        app:primaryColor="?colorAccent"
         app:floatingLabel="highlight"
         app:maxCharacters="20"
-        android:hint="Description"
-        android:text="EditText in Material Design"/>
+        app:primaryColor="?colorAccent"/>
 
     </LinearLayout>
 
@@ -76,7 +78,7 @@
       <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="app:baseColor=&quot;#982360&quot;"
+        android:text="app:baseColor=&quot;#0056d3&quot;"
         android:textColor="#888888"
         android:textSize="14sp"/>
 
@@ -84,7 +86,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Custom Base Color"
-        app:baseColor="#982360"/>
+        app:baseColor="#0056d3"/>
 
       <TextView
         android:layout_width="match_parent"
@@ -97,7 +99,7 @@
       <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="app:primaryColor=&quot;#0056d3&quot;"
+        android:text="app:baseColor=&quot;#0056d3&quot;\napp:primaryColor=&quot;#982360&quot;"
         android:textColor="#888888"
         android:textSize="14sp"/>
 
@@ -105,7 +107,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Custom Primary Color"
-        app:primaryColor="#0056d3"/>
+        app:baseColor="#0056d3"
+        app:primaryColor="#982360"/>
 
       <TextView
         android:layout_width="match_parent"
@@ -148,7 +151,7 @@
         android:layout_height="wrap_content"
         android:hint="Highlight Floating Label"
         app:floatingLabel="highlight"
-        app:primaryColor="#0056d3"/>
+        app:primaryColor="#982360"/>
 
       <TextView
         android:layout_width="match_parent"
