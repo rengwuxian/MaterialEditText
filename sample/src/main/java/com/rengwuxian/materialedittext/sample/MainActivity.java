@@ -14,6 +14,7 @@ public class MainActivity extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setDisplayShowTitleEnabled(false);
 		EditText singleLineEllipsisEt = (EditText) findViewById(R.id.singleLineEllipsisEt);
 		singleLineEllipsisEt.setSelection(singleLineEllipsisEt.getText().length());
 	}
