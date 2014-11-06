@@ -14,18 +14,18 @@ import android.text.method.TransformationMethod;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.EditText;
+import android.widget.AutoCompleteTextView;
 
 import com.nineoldandroids.animation.ArgbEvaluator;
 import com.nineoldandroids.animation.ObjectAnimator;
 
 /**
- * EditText in Material Design
+ * AutoCompleteTextView in Material Design
  * <p/>
  * author:rengwuxian
  * <p/>
  */
-public class MaterialEditText extends EditText {
+public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
 	public static final int FLOATING_LABEL_NONE = 0;
 	public static final int FLOATING_LABEL_NORMAL = 1;
 	public static final int FLOATING_LABEL_HIGHLIGHT = 2;
@@ -122,15 +122,15 @@ public class MaterialEditText extends EditText {
 	OnFocusChangeListener interFocusChangeListener;
 	OnFocusChangeListener outerFocusChangeListener;
 
-	public MaterialEditText(Context context) {
+	public MaterialAutoCompleteTextView(Context context) {
 		this(context, null);
 	}
 
-	public MaterialEditText(Context context, AttributeSet attrs) {
+	public MaterialAutoCompleteTextView(Context context, AttributeSet attrs) {
 		this(context, attrs, 0);
 	}
 
-	public MaterialEditText(Context context, AttributeSet attrs, int style) {
+	public MaterialAutoCompleteTextView(Context context, AttributeSet attrs, int style) {
 		super(context, attrs, style);
 
 		setFocusable(true);
