@@ -209,8 +209,19 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
 		setPadding(getPaddingLeft(), getPaddingTop(), getPaddingRight(), getPaddingBottom());
 	}
 
+	/**
+	 * use {@link #setPaddings(int, int, int, int)} instead, or the paddingTop and the paddingBottom may be set incorrectly.
+	 */
+	@Deprecated
 	@Override
-	public void setPadding(int left, int top, int right, int bottom) {
+	public final void setPadding(int left, int top, int right, int bottom) {
+		super.setPadding(left, top, right, bottom);
+	}
+
+	/**
+	 * Use this method instead of {@link #setPadding(int, int, int, int)} to automatically set the paddingTop and the paddingBottom correctly.
+	 */
+	public void setPaddings(int left, int top, int right, int bottom) {
 		innerPaddingTop = top;
 		innerPaddingBottom = bottom;
 		super.setPadding(left, top + extraPaddingTop, right, bottom + extraPaddingBottom);
