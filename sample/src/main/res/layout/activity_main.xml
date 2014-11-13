@@ -64,10 +64,26 @@
         android:textColor="#333333"
         android:textSize="14sp"/>
 
-      <com.rengwuxian.materialedittext.MaterialEditText
+      <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Basic"/>
+        android:gravity="center_vertical">
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+          android:id="@+id/basicEt"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:hint="Basic"/>
+
+        <Button
+          android:id="@+id/enableBt"
+          android:layout_width="100dp"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="8dp"
+          android:text="DISABLE"/>
+
+      </LinearLayout>
 
       <TextView
         android:layout_width="match_parent"
