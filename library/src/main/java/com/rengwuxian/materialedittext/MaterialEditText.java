@@ -381,7 +381,7 @@ public class MaterialEditText extends EditText {
 		paint.setTextSize(floatingLabelTextSize);
 
 		// draw the background
-		float lineStartY = getHeight() - getPaddingBottom() + innerComponentsSpacing;
+		float lineStartY = getScrollY() + getHeight() - getPaddingBottom() + innerComponentsSpacing;
 		if (!isEnabled()) { // disabled
 			paint.setColor(baseColor & 0x00ffffff | 0x44000000);
 			float interval = getPixel(1);
