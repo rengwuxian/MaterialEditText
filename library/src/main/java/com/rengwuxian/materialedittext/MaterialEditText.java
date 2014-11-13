@@ -1,6 +1,7 @@
 package com.rengwuxian.materialedittext;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -143,7 +144,8 @@ public class MaterialEditText extends EditText {
 
 		TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.MaterialEditText);
 		baseColor = typedArray.getColor(R.styleable.MaterialEditText_baseColor, Color.BLACK);
-		setTextColor(baseColor & 0x00ffffff | 0xdf000000);
+		ColorStateList colorStateList = new ColorStateList(new int[][] {new int[] {android.R.attr.state_enabled}, EMPTY_STATE_SET}, new int[] {baseColor & 0x00ffffff | 0xdf000000, baseColor & 0x00ffffff | 0x44000000});
+		setTextColor(colorStateList);
 
 		primaryColor = typedArray.getColor(R.styleable.MaterialEditText_primaryColor, baseColor);
 		setFloatingLabelInternal(typedArray.getInt(R.styleable.MaterialEditText_floatingLabel, 0));
@@ -380,7 +382,13 @@ public class MaterialEditText extends EditText {
 
 		// draw the background
 		float lineStartY = getHeight() - getPaddingBottom() + innerComponentsSpacing;
-		if (hasFocus()) {
+		if (!isEnabled()) { // disabled
+			paint.setColor(baseColor & 0x00ffffff | 0x44000000);
+			float interval = getPixel(1);
+			for (float startX = 0; startX < getWidth(); startX += interval * 3) {
+				canvas.drawRect(getScrollX() + startX, lineStartY, getScrollX() + startX + interval, lineStartY + getPixel(1), paint);
+			}
+		} else if (hasFocus()) { // focused
 			if (isExceedingMaxCharacters()) {
 				paint.setColor(errorColor);
 			} else {
@@ -398,7 +406,7 @@ public class MaterialEditText extends EditText {
 				String text = getText().length() + " / " + maxCharacters;
 				canvas.drawText(text, getWidth() + getScrollX() - paint.measureText(text), lineStartY + innerComponentsSpacing + relativeHeight, paint);
 			}
-		} else {
+		} else { // normal
 			paint.setColor(baseColor);
 			canvas.drawRect(getScrollX(), lineStartY, getWidth() + getScrollX(), lineStartY + getPixel(1), paint);
 		}
