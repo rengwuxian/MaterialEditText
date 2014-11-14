@@ -219,6 +219,27 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:text="Exact Character Count:"
+        android:textColor="#333333"
+        android:textSize="14sp"/>
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="app:exactCharacters=&quot;10&quot;"
+        android:textColor="#888888"
+        android:textSize="14sp"/>
+
+      <com.rengwuxian.materialedittext.MaterialEditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Exact Characters"
+        app:exactCharacters="10"/>
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:text="Max Characters With Custom Error Color:"
         android:textColor="#333333"
         android:textSize="14sp"/>

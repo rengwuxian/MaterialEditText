@@ -91,6 +91,11 @@ public class MaterialEditText extends EditText {
 	 */
 	private int maxCharacters;
 
+    /**
+     * characters count should be exactly this value. 0 means no validation for this rule. default is 0. NOTE: the character counter will increase the View's height.
+     */
+    private int exactCharacters;
+
 	/**
 	 * whether to show the bottom ellipsis in singleLine mode. default is false. NOTE: the bottom ellipsis will increase the View's height.
 	 */
@@ -151,6 +156,7 @@ public class MaterialEditText extends EditText {
 		setFloatingLabelInternal(typedArray.getInt(R.styleable.MaterialEditText_floatingLabel, 0));
 		errorColor = typedArray.getColor(R.styleable.MaterialEditText_errorColor, Color.parseColor("#e7492E"));
 		maxCharacters = typedArray.getInt(R.styleable.MaterialEditText_maxCharacters, 0);
+		exactCharacters = typedArray.getInt(R.styleable.MaterialEditText_exactCharacters, 0);
 		singleLineEllipsis = typedArray.getBoolean(R.styleable.MaterialEditText_singleLineEllipsis, false);
 		typedArray.recycle();
 
@@ -206,7 +212,11 @@ public class MaterialEditText extends EditText {
 
 	private void initPadding() {
 		extraPaddingTop = floatingLabelEnabled ? floatingLabelTextSize + innerComponentsSpacing : innerComponentsSpacing;
-		extraPaddingBottom = maxCharacters > 0 ? floatingLabelTextSize : singleLineEllipsis ? innerComponentsSpacing + bottomEllipsisSize : 0;
+        if (maxCharacters > 0 || exactCharacters > 0)
+            extraPaddingBottom = floatingLabelTextSize;
+        else if (singleLineEllipsis)
+            extraPaddingBottom = innerComponentsSpacing + bottomEllipsisSize;
+        else extraPaddingBottom = 0;
 		extraPaddingBottom += innerComponentsSpacing * 2;
 		setPaddings(getPaddingLeft(), getPaddingTop(), getPaddingRight(), getPaddingBottom());
 	}
@@ -342,10 +352,19 @@ public class MaterialEditText extends EditText {
 		return maxCharacters;
 	}
 
+    public int getExactCharacters() {
+		return exactCharacters;
+	}
+
 	public void setMaxCharacters(int max) {
 		maxCharacters = max;
 		postInvalidate();
 	}
+
+    public void setExactCharacters(int exact) {
+        exactCharacters = exact;
+        postInvalidate();
+    }
 
 	public void setErrorColor(int color) {
 		errorColor = color;
@@ -389,7 +408,7 @@ public class MaterialEditText extends EditText {
 				canvas.drawRect(getScrollX() + startX, lineStartY, getScrollX() + startX + interval, lineStartY + getPixel(1), paint);
 			}
 		} else if (hasFocus()) { // focused
-			if (isExceedingMaxCharacters()) {
+			if (!isCharacterCountValid()) {
 				paint.setColor(errorColor);
 			} else {
 				paint.setColor(primaryColor);
@@ -397,12 +416,18 @@ public class MaterialEditText extends EditText {
 			canvas.drawRect(getScrollX(), lineStartY, getWidth() + getScrollX(), lineStartY + getPixel(2), paint);
 
 			// draw the characters counter
-			if (maxCharacters > 0) {
-				if (!isExceedingMaxCharacters()) {
+            Paint.FontMetrics fontMetrics = paint.getFontMetrics();
+            float relativeHeight = -fontMetrics.ascent - fontMetrics.descent;
+            if (exactCharacters > 0) { // exact count rule is first priority
+                if (!isCharacterCountValid()) {
+                    paint.setColor(getCurrentHintTextColor());
+                }
+                String text = getText().length() + " / " + exactCharacters;
+                canvas.drawText(text, getWidth() + getScrollX() - paint.measureText(text), lineStartY + innerComponentsSpacing + relativeHeight, paint);
+            } else if (maxCharacters > 0) {
+				if (!isCharacterCountValid()) {
 					paint.setColor(getCurrentHintTextColor());
 				}
-				Paint.FontMetrics fontMetrics = paint.getFontMetrics();
-				float relativeHeight = -fontMetrics.ascent - fontMetrics.descent;
 				String text = getText().length() + " / " + maxCharacters;
 				canvas.drawText(text, getWidth() + getScrollX() - paint.measureText(text), lineStartY + innerComponentsSpacing + relativeHeight, paint);
 			}
@@ -442,8 +467,12 @@ public class MaterialEditText extends EditText {
 		super.onDraw(canvas);
 	}
 
-	public boolean isExceedingMaxCharacters() {
-		return maxCharacters > 0 && getText() != null && maxCharacters < getText().length();
+	public boolean isCharacterCountValid() {
+        if (exactCharacters > 0) { // should check exact count
+            return getText() != null && exactCharacters == getText().length();
+        } else {
+            return maxCharacters > 0 && getText() != null && getText().length() <= maxCharacters;
+        }
 	}
 
 	@Override
