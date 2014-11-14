@@ -325,7 +325,7 @@ public class MaterialEditText extends EditText {
 	}
 
 	public void setFloatingLabel(int mode) {
-		setFloatingLabel(mode);
+		setFloatingLabelInternal(mode);
 		postInvalidate();
 	}
 
