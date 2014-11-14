@@ -143,7 +143,8 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
 
 		TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.MaterialEditText);
 		baseColor = typedArray.getColor(R.styleable.MaterialEditText_baseColor, Color.BLACK);
-		setTextColor(baseColor & 0x00ffffff | 0xdf000000);
+		ColorStateList colorStateList = new ColorStateList(new int[][] {new int[] {android.R.attr.state_enabled}, EMPTY_STATE_SET}, new int[] {baseColor & 0x00ffffff | 0xdf000000, baseColor & 0x00ffffff | 0x44000000});
+		setTextColor(colorStateList);
 
 		primaryColor = typedArray.getColor(R.styleable.MaterialEditText_primaryColor, baseColor);
 		setFloatingLabelInternal(typedArray.getInt(R.styleable.MaterialEditText_floatingLabel, 0));
@@ -206,7 +207,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
 		extraPaddingTop = floatingLabelEnabled ? floatingLabelTextSize + innerComponentsSpacing : innerComponentsSpacing;
 		extraPaddingBottom = maxCharacters > 0 ? floatingLabelTextSize : singleLineEllipsis ? innerComponentsSpacing + bottomEllipsisSize : 0;
 		extraPaddingBottom += innerComponentsSpacing * 2;
-		setPadding(getPaddingLeft(), getPaddingTop(), getPaddingRight(), getPaddingBottom());
+		setPaddings(getPaddingLeft(), getPaddingTop(), getPaddingRight(), getPaddingBottom());
 	}
 
 	/**
@@ -323,7 +324,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
 	}
 
 	public void setFloatingLabel(int mode) {
-		setFloatingLabel(mode);
+		setFloatingLabelInternal(mode);
 		postInvalidate();
 	}
 
