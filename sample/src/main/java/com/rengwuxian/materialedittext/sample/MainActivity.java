@@ -7,6 +7,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import com.rengwuxian.materialedittext.MaterialEditText;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -18,6 +21,7 @@ public class MainActivity extends ActionBarActivity {
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setDisplayShowTitleEnabled(false);
 		initEnableBt();
+        initCheckBt();
 		initSingleLineEllipsisEt();
 	}
 
@@ -32,6 +36,17 @@ public class MainActivity extends ActionBarActivity {
 			}
 		});
 	}
+
+    private void initCheckBt() {
+        final MaterialEditText rexEt = (MaterialEditText) findViewById(R.id.rexEt);
+        final Button checkBt = (Button) findViewById(R.id.checkBt);
+        checkBt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "It's " + (rexEt.isValidRegex() ? "valid" : "not valid"), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
 	private void initSingleLineEllipsisEt() {
 		EditText singleLineEllipsisEt = (EditText) findViewById(R.id.singleLineEllipsisEt);

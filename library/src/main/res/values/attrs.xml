@@ -17,5 +17,11 @@
     <attr name="maxCharacters" format="integer"/>
     <!-- whether to show the bottom ellipsis in singleLine mode -->
     <attr name="singleLineEllipsis" format="boolean"/>
+    <!--if the text has the be checked against a regular expression -->
+    <attr name="regexExpression" format="string"/>
+    <!-- error text to show the user if input is not valid -->
+    <attr name="regexErrorText" format="string" />
+    <!-- text to show the user if input is valid -->
+    <attr name="regexText" format="string" />
   </declare-styleable>
 </resources>

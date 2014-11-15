@@ -20,6 +20,9 @@ import android.widget.EditText;
 import com.nineoldandroids.animation.ArgbEvaluator;
 import com.nineoldandroids.animation.ObjectAnimator;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * EditText in Material Design
  * <p/>
@@ -116,6 +119,19 @@ public class MaterialEditText extends EditText {
 	 */
 	private float focusFraction;
 
+    /**
+     * users own regular expression to check the text against
+     */
+    private String regularExpression;
+    /**
+     * text to show if the input is not valid
+     */
+    private String regexErrorText;
+    /**
+     * text to show if the input is valid
+     */
+    private String regexText;
+
 	private ArgbEvaluator focusEvaluator = new ArgbEvaluator();
 	Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 	ObjectAnimator labelAnimator;
@@ -152,6 +168,9 @@ public class MaterialEditText extends EditText {
 		errorColor = typedArray.getColor(R.styleable.MaterialEditText_errorColor, Color.parseColor("#e7492E"));
 		maxCharacters = typedArray.getInt(R.styleable.MaterialEditText_maxCharacters, 0);
 		singleLineEllipsis = typedArray.getBoolean(R.styleable.MaterialEditText_singleLineEllipsis, false);
+        regularExpression = typedArray.getString(R.styleable.MaterialEditText_regexExpression);
+        regexErrorText = typedArray.getString(R.styleable.MaterialEditText_regexErrorText);
+        regexText = typedArray.getString(R.styleable.MaterialEditText_regexText);
 		typedArray.recycle();
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -206,7 +225,7 @@ public class MaterialEditText extends EditText {
 
 	private void initPadding() {
 		extraPaddingTop = floatingLabelEnabled ? floatingLabelTextSize + innerComponentsSpacing : innerComponentsSpacing;
-		extraPaddingBottom = maxCharacters > 0 ? floatingLabelTextSize : singleLineEllipsis ? innerComponentsSpacing + bottomEllipsisSize : 0;
+		extraPaddingBottom = maxCharacters > 0 || regularExpression != null ? floatingLabelTextSize : singleLineEllipsis ? innerComponentsSpacing + bottomEllipsisSize : 0;
 		extraPaddingBottom += innerComponentsSpacing * 2;
 		setPaddings(getPaddingLeft(), getPaddingTop(), getPaddingRight(), getPaddingBottom());
 	}
@@ -391,7 +410,9 @@ public class MaterialEditText extends EditText {
 		} else if (hasFocus()) { // focused
 			if (isExceedingMaxCharacters()) {
 				paint.setColor(errorColor);
-			} else {
+			} else if (!isValidRegex()) {
+                paint.setColor(errorColor);
+            } else {
 				paint.setColor(primaryColor);
 			}
 			canvas.drawRect(getScrollX(), lineStartY, getWidth() + getScrollX(), lineStartY + getPixel(2), paint);
@@ -405,7 +426,18 @@ public class MaterialEditText extends EditText {
 				float relativeHeight = -fontMetrics.ascent - fontMetrics.descent;
 				String text = getText().length() + " / " + maxCharacters;
 				canvas.drawText(text, getWidth() + getScrollX() - paint.measureText(text), lineStartY + innerComponentsSpacing + relativeHeight, paint);
-			}
+			} else if (regularExpression != null) {
+                String text = regexErrorText;
+                if (isValidRegex()) {
+                    paint.setColor(getCurrentHintTextColor());
+                    text = regexText;
+                }
+
+                Paint.FontMetrics fontMetrics = paint.getFontMetrics();
+                float relativeHeight = -fontMetrics.ascent - fontMetrics.descent;
+
+                canvas.drawText(text, getWidth() + getScrollX() - paint.measureText(text), lineStartY + innerComponentsSpacing + relativeHeight, paint);
+            }
 		} else { // normal
 			paint.setColor(baseColor);
 			canvas.drawRect(getScrollX(), lineStartY, getWidth() + getScrollX(), lineStartY + getPixel(1), paint);
@@ -445,6 +477,21 @@ public class MaterialEditText extends EditText {
 	public boolean isExceedingMaxCharacters() {
 		return maxCharacters > 0 && getText() != null && maxCharacters < getText().length();
 	}
+
+    public boolean isValidRegex() {
+        if (regularExpression != null) {
+            CharSequence inputStr = getText();
+            Pattern pattern = Pattern.compile(regularExpression, Pattern.CASE_INSENSITIVE);
+            Matcher matcher = pattern.matcher(inputStr);
+
+            if (matcher.matches()) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return false;
+    }
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {

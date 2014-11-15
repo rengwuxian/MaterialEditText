@@ -263,6 +263,38 @@
         app:primaryColor="#0056d3"
         app:singleLineEllipsis="true"/>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="app:rexExpression=&quot;^[\\w\\].-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$&quot;\napp:rexErrorText=&quot;Not an valid mail address&quot;\napp:rexText=&quot;Valid&quot;"
+        android:textColor="#888888"
+        android:textSize="14sp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/rexEt"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:hint="Check with regular expression"
+            app:regexExpression="^[\\w\\].-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$"
+            app:regexErrorText="Not an valid mail address"
+            app:regexText="Valid"/>
+
+        <Button
+            android:id="@+id/checkBt"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:text="CHECK"/>
+
+    </LinearLayout>
+
+
     </LinearLayout>
   </LinearLayout>
 </ScrollView>
