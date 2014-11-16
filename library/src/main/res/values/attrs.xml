@@ -1,21 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <declare-styleable name="MaterialEditText">
-    <!-- the base color of the line and the texts. default is black. -->
+    <!-- The base color of the line and the texts. Default is black. -->
     <attr name="baseColor" format="color"/>
-    <!-- the highlight color of the line, and the floating label if the highlightFloatingLabel is true. -->
+    <!-- The highlight color of the line, and the floating label if the highlightFloatingLabel is true. -->
     <attr name="primaryColor" format="color"/>
-    <!-- how the floating label should be shown. default is none -->
+    <!-- How the floating label should be shown. Default is none -->
     <attr name="floatingLabel">
       <enum name="none" value="0"/>
       <enum name="normal" value="1"/>
       <enum name="highlight" value="2"/>
     </attr>
-    <!-- the color for when something is wrong.(e.g. exceeding max characters) -->
+    <!-- The color for when something is wrong.(e.g. exceeding max characters) -->
     <attr name="errorColor" format="color"/>
-    <!-- characters count limit. 0 means no limit. -->
+    <!-- Characters count limit. 0 means no limit. -->
     <attr name="maxCharacters" format="integer"/>
-    <!-- whether to show the bottom ellipsis in singleLine mode -->
+    <!-- Whether to show the bottom ellipsis in singleLine mode -->
     <attr name="singleLineEllipsis" format="boolean"/>
+    <!-- If the MaterialEditText should extend its bottom in the Constructor, no matter if there is some helper text or error text or singleLineEllipsis or maxCharacters (usually used when you'd like to add them later but no now, and set this to true helps you avoid the height's changing). Default is false. -->
+    <attr name="extendBottom" format="boolean"/>
+    <!-- Helper text at the bottom -->
+    <attr name="helperText" format="string"/>
   </declare-styleable>
 </resources>

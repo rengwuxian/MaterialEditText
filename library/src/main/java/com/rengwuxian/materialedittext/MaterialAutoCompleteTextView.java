@@ -19,6 +19,9 @@ import android.content.res.ColorStateList;
 import com.nineoldandroids.animation.ArgbEvaluator;
 import com.nineoldandroids.animation.ObjectAnimator;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * AutoCompleteTextView in Material Design
  * <p/>
@@ -101,6 +104,21 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
 	private final int bottomEllipsisSize;
 
 	/**
+	 * If the MaterialEditText always extends its bottom space. If it's true, the MaterialEditText always extends some space at the bottom; and if it's false, the MaterialEditText only extends some space when needed (e.g. when an error text is being shown, and there's no extra space at the bottom).
+	 */
+	private boolean extendBottom;
+
+	/**
+	 * Helper text at the bottom
+	 */
+	private String helperText;
+
+	/**
+	 * error text for manually invoked {@link #setError(CharSequence)}
+	 */
+	private String tempErrorText;
+
+	/**
 	 * animation fraction of the floating label (0 as totally hidden).
 	 */
 	private float floatingLabelFraction;
@@ -151,6 +169,8 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
 		errorColor = typedArray.getColor(R.styleable.MaterialEditText_errorColor, Color.parseColor("#e7492E"));
 		maxCharacters = typedArray.getInt(R.styleable.MaterialEditText_maxCharacters, 0);
 		singleLineEllipsis = typedArray.getBoolean(R.styleable.MaterialEditText_singleLineEllipsis, false);
+		helperText = typedArray.getString(R.styleable.MaterialEditText_helperText);
+		extendBottom = typedArray.getBoolean(R.styleable.MaterialEditText_extendBottom, false) || helperText != null || maxCharacters > 0 || singleLineEllipsis;
 		typedArray.recycle();
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -166,6 +186,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
 		initPadding();
 		initText();
 		initFloatingLabel();
+		initErrorTextListener();
 	}
 
 	private void initText() {
@@ -179,6 +200,24 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
 		} else {
 			setHintTextColor(baseColor & 0x00ffffff | 0x44000000);
 		}
+	}
+
+	private void initErrorTextListener() {
+		addTextChangedListener(new TextWatcher() {
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+			}
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {
+				tempErrorText = null;
+				invalidate();
+			}
+		});
 	}
 
 	private float getFloatingLabelFraction() {
@@ -205,7 +244,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
 
 	private void initPadding() {
 		extraPaddingTop = floatingLabelEnabled ? floatingLabelTextSize + innerComponentsSpacing : innerComponentsSpacing;
-		extraPaddingBottom = maxCharacters > 0 ? floatingLabelTextSize : singleLineEllipsis ? innerComponentsSpacing + bottomEllipsisSize : 0;
+		extraPaddingBottom = extendBottom ? floatingLabelTextSize : 0;
 		extraPaddingBottom += innerComponentsSpacing * 2;
 		setPaddings(getPaddingLeft(), getPaddingTop(), getPaddingRight(), getPaddingBottom());
 	}
@@ -334,6 +373,9 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
 
 	public void setSingleLineEllipsis(boolean enabled) {
 		singleLineEllipsis = enabled;
+		if (enabled) {
+			extendBottom();
+		}
 		postInvalidate();
 	}
 
@@ -343,12 +385,74 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
 
 	public void setMaxCharacters(int max) {
 		maxCharacters = max;
+		if (max > 0) {
+			extendBottom();
+		}
 		postInvalidate();
 	}
 
 	public void setErrorColor(int color) {
 		errorColor = color;
 		postInvalidate();
+	}
+
+	public void setHelperText(CharSequence helperText) {
+		this.helperText = helperText == null ? null : helperText.toString();
+		extendBottom();
+		postInvalidate();
+	}
+
+	public String getHelperText() {
+		return helperText;
+	}
+
+	@Override
+	public void setError(CharSequence errorText) {
+		extendBottom();
+		tempErrorText = errorText == null ? null : errorText.toString();
+		postInvalidate();
+	}
+
+	/**
+	 * if {@link #extendBottom} is false, set it true and reset the paddings.
+	 */
+	private void extendBottom() {
+		if (!extendBottom) {
+			extendBottom = true;
+			initPadding();
+		}
+	}
+
+	/**
+	 * only used to draw the bottom line
+	 */
+	private boolean isInternalValid() {
+		return tempErrorText == null && isMaxCharactersValid();
+	}
+
+	/**
+	 * if the main text matches the regex
+	 */
+	public boolean isValid(String regex) {
+		if (regex == null) {
+			return false;
+		}
+		Pattern pattern = Pattern.compile(regex);
+		Matcher matcher = pattern.matcher(getText());
+		return matcher.matches();
+	}
+
+	/**
+	 * check if the main text matches the regex, and set the error text if not.
+	 * @return true if it matches the regex, false if not.
+	 */
+	public boolean validate(String regex, CharSequence errorText) {
+		boolean isValid = isValid(regex);
+		if (!isValid) {
+			setError(errorText);
+		}
+		postInvalidate();
+		return isValid;
 	}
 
 	@Override
@@ -379,29 +483,44 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
 		// set the textSize
 		paint.setTextSize(floatingLabelTextSize);
 
-		// draw the background
-		float lineStartY = getHeight() - getPaddingBottom() + innerComponentsSpacing;
-		if (hasFocus()) {
-			if (isExceedingMaxCharacters()) {
-				paint.setColor(errorColor);
-			} else {
-				paint.setColor(primaryColor);
-			}
-			canvas.drawRect(getScrollX(), lineStartY, getWidth() + getScrollX(), lineStartY + getPixel(2), paint);
+		float lineStartY = getScrollY() + getHeight() - getPaddingBottom() + innerComponentsSpacing;
 
-			// draw the characters counter
-			if (maxCharacters > 0) {
-				if (!isExceedingMaxCharacters()) {
-					paint.setColor(getCurrentHintTextColor());
-				}
-				Paint.FontMetrics fontMetrics = paint.getFontMetrics();
-				float relativeHeight = -fontMetrics.ascent - fontMetrics.descent;
-				String text = getText().length() + " / " + maxCharacters;
-				canvas.drawText(text, getWidth() + getScrollX() - paint.measureText(text), lineStartY + innerComponentsSpacing + relativeHeight, paint);
+		// draw the background
+		if (!isInternalValid()) { // not valid
+			paint.setColor(errorColor);
+			canvas.drawRect(getScrollX(), lineStartY, getWidth() + getScrollX(), lineStartY + getPixel(2), paint);
+		} else if (!isEnabled()) { // disabled
+			paint.setColor(baseColor & 0x00ffffff | 0x44000000);
+			float interval = getPixel(1);
+			for (float startX = 0; startX < getWidth(); startX += interval * 3) {
+				canvas.drawRect(getScrollX() + startX, lineStartY, getScrollX() + startX + interval, lineStartY + getPixel(1), paint);
 			}
-		} else {
+		} else if (hasFocus()) { // focused
+			paint.setColor(baseColor);
+			canvas.drawRect(getScrollX(), lineStartY, getWidth() + getScrollX(), lineStartY + getPixel(2), paint);
+		} else { // normal
 			paint.setColor(baseColor);
 			canvas.drawRect(getScrollX(), lineStartY, getWidth() + getScrollX(), lineStartY + getPixel(1), paint);
+		}
+
+		Paint.FontMetrics fontMetrics = paint.getFontMetrics();
+		float relativeHeight = -fontMetrics.ascent - fontMetrics.descent;
+
+		// draw the characters counter
+		if (maxCharacters > 0) {
+			paint.setColor(isMaxCharactersValid() ? getCurrentHintTextColor() : errorColor);
+			String text = getText().length() + " / " + maxCharacters;
+			canvas.drawText(text, getWidth() + getScrollX() - paint.measureText(text), lineStartY + innerComponentsSpacing + relativeHeight, paint);
+		}
+
+		// draw the bottom text
+		float bottomTextStartX = getScrollX() + (singleLineEllipsis ? (bottomEllipsisSize * 5 + getPixel(4)) : 0);
+		if (tempErrorText != null) { // regex error
+			paint.setColor(errorColor);
+			canvas.drawText(tempErrorText, bottomTextStartX, lineStartY + innerComponentsSpacing + relativeHeight, paint);
+		} else if (!TextUtils.isEmpty(helperText)) {
+			paint.setColor(getCurrentHintTextColor());
+			canvas.drawText(helperText, bottomTextStartX, lineStartY + innerComponentsSpacing + relativeHeight, paint);
 		}
 
 		// draw the floating label
@@ -435,8 +554,8 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
 		super.onDraw(canvas);
 	}
 
-	public boolean isExceedingMaxCharacters() {
-		return maxCharacters > 0 && getText() != null && maxCharacters < getText().length();
+	public boolean isMaxCharactersValid() {
+		return maxCharacters <= 0 || getText() == null || getText().length() <= maxCharacters;
 	}
 
 	@Override

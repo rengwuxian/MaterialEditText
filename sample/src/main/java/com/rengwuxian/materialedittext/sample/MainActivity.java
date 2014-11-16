@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.rengwuxian.materialedittext.MaterialEditText;
+
 
 public class MainActivity extends ActionBarActivity {
 
@@ -19,6 +21,8 @@ public class MainActivity extends ActionBarActivity {
 		getSupportActionBar().setDisplayShowTitleEnabled(false);
 		initEnableBt();
 		initSingleLineEllipsisEt();
+		initSetErrorEt();
+		initValidationEt();
 	}
 
 	private void initEnableBt() {
@@ -36,6 +40,31 @@ public class MainActivity extends ActionBarActivity {
 	private void initSingleLineEllipsisEt() {
 		EditText singleLineEllipsisEt = (EditText) findViewById(R.id.singleLineEllipsisEt);
 		singleLineEllipsisEt.setSelection(singleLineEllipsisEt.getText().length());
+	}
+
+	private void initSetErrorEt() {
+		final EditText errorTextEt = (EditText) findViewById(R.id.errorTextEt);
+		final Button setErrorBt = (Button) findViewById(R.id.setErrorBt);
+		setErrorBt.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				errorTextEt.setError("Error");
+			}
+		});
+	}
+
+	private void initValidationEt() {
+		final MaterialEditText validationEt = (MaterialEditText) findViewById(R.id.validationEt);
+		final Button validateBt = (Button) findViewById(R.id.validateBt);
+		validateBt.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// validate
+				validationEt.validate("\\d+", "Only Integer Valid!");
+
+				// or you can directly use validationEt.isValid(String regex) to do some other work.
+			}
+		});
 	}
 
 	@Override

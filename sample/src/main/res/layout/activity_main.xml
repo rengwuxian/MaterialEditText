@@ -241,6 +241,101 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:text="Helper Text:"
+        android:textColor="#333333"
+        android:textSize="14sp"/>
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="app:helperText=&quot;helper is here&quot;"
+        android:textColor="#888888"
+        android:textSize="14sp"/>
+
+      <com.rengwuxian.materialedittext.MaterialEditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Helper Text"
+        app:helperText="helper is here"/>
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Error Text:"
+        android:textColor="#333333"
+        android:textSize="14sp"/>
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="app:extendBottom=&quot;true&quot; (in xml)\nsetError(&quot;Error&quot;) (in java)"
+        android:textColor="#888888"
+        android:textSize="14sp"/>
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+          android:id="@+id/errorTextEt"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:hint="Error Text"
+          app:extendBottom="true"/>
+
+        <Button
+          android:id="@+id/setErrorBt"
+          android:layout_width="100dp"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="8dp"
+          android:text="SET ERROR"/>
+
+      </LinearLayout>
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Validation:"
+        android:textColor="#333333"
+        android:textSize="14sp"/>
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="app:helperText=&quot;Integer&quot; (in xml)\nvalidate(&quot;\\\\d+&quot;, &quot;Only Integer Valid!&quot;) (in java)"
+        android:textColor="#888888"
+        android:textSize="14sp"/>
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+          android:id="@+id/validationEt"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:hint="Validation"
+          app:helperText="Integer"/>
+
+        <Button
+          android:id="@+id/validateBt"
+          android:layout_width="100dp"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="8dp"
+          android:text="VALIDATE"/>
+
+      </LinearLayout>
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:text="Complex:"
         android:textColor="#333333"
         android:textSize="14sp"/>
@@ -261,7 +356,8 @@
         app:floatingLabel="highlight"
         app:maxCharacters="10"
         app:primaryColor="#0056d3"
-        app:singleLineEllipsis="true"/>
+        app:singleLineEllipsis="true"
+        app:helperText="Helper Text"/>
 
     </LinearLayout>
   </LinearLayout>

@@ -43,20 +43,24 @@ AppCompat v21 makes it easy to use Material Design EditText in our apps, but it'
   custom error color:
   
   ![CustomErrorColor](./images/custom_error.jpg)
+  
+7. Helper Text and Error Text
+
+  ![HelperTextAndErrorText](./images/helper_text_and_error_text.jpg)
 
 ## Sample
 
-[MaterialEditText-1.3.2-sample.apk](https://github.com/rengwuxian/MaterialEditText/releases/download/1.3.2/MaterialEditText-1.3.2-sample.apk)
+[MaterialEditText-1.4.0-sample.apk](https://github.com/rengwuxian/MaterialEditText/releases/download/1.4.0/MaterialEditText-1.4.0-sample.apk)
   
 ## Download
 
 Eclipse:
-[MaterialEditText-1.3.2.aar](https://github.com/rengwuxian/MaterialEditText/releases/download/1.3.2/MaterialEditText-1.3.2.aar)
+[MaterialEditText-1.4.0.aar](https://github.com/rengwuxian/MaterialEditText/releases/download/1.4.0/MaterialEditText-1.4.0.aar)
 
 gradle:
 
 ```groovy
-compile 'com.rengwuxian.materialedittext:library:1.3.2'
+compile 'com.rengwuxian.materialedittext:library:1.4.0'
 ```
 
 Maven:
@@ -64,7 +68,7 @@ Maven:
 <dependency>
   <groupId>com.rengwuxian.materialedittext</groupId>
   <artifactId>library</artifactId>
-  <version>1.3.2</version>
+  <version>1.4.0</version>
   <type>aar</type>
 </dependency>
 ```
