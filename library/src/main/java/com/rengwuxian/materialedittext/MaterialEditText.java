@@ -497,7 +497,7 @@ public class MaterialEditText extends EditText {
 				canvas.drawRect(getScrollX() + startX, lineStartY, getScrollX() + startX + interval, lineStartY + getPixel(1), paint);
 			}
 		} else if (hasFocus()) { // focused
-			paint.setColor(baseColor);
+			paint.setColor(primaryColor);
 			canvas.drawRect(getScrollX(), lineStartY, getWidth() + getScrollX(), lineStartY + getPixel(2), paint);
 		} else { // normal
 			paint.setColor(baseColor);

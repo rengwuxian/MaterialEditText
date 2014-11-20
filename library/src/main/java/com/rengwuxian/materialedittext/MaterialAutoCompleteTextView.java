@@ -496,7 +496,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
 				canvas.drawRect(getScrollX() + startX, lineStartY, getScrollX() + startX + interval, lineStartY + getPixel(1), paint);
 			}
 		} else if (hasFocus()) { // focused
-			paint.setColor(baseColor);
+			paint.setColor(primaryColor);
 			canvas.drawRect(getScrollX(), lineStartY, getWidth() + getScrollX(), lineStartY + getPixel(2), paint);
 		} else { // normal
 			paint.setColor(baseColor);
@@ -504,7 +504,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
 		}
 
 		Paint.FontMetrics fontMetrics = paint.getFontMetrics();
-		float relativeHeight = -fontMetrics.ascent - fontMetrics.descent;
+        float relativeHeight = -fontMetrics.ascent - fontMetrics.descent;
 
 		// draw the characters counter
 		if (maxCharacters > 0) {
