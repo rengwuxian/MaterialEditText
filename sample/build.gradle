@@ -11,7 +11,7 @@ android {
     }
     buildTypes {
         release {
-            runProguard false
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -20,6 +20,6 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:21.0.2'
-    compile 'com.rengwuxian.materialedittext:library:1.4.2'
+    compile 'com.rengwuxian.materialedittext:library:1.4.3'
 //    compile project(':library')
 }

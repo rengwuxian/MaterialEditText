@@ -244,10 +244,12 @@ public class MaterialEditText extends EditText {
 	}
 
 	private void initPadding() {
+        int paddingTop = getPaddingTop() - extraPaddingTop;
+        int paddingBottom = getPaddingBottom() - extraPaddingBottom;
 		extraPaddingTop = floatingLabelEnabled ? floatingLabelTextSize + innerComponentsSpacing : innerComponentsSpacing;
 		extraPaddingBottom = extendBottom ? floatingLabelTextSize : 0;
 		extraPaddingBottom += innerComponentsSpacing * 2;
-		setPaddings(getPaddingLeft(), getPaddingTop(), getPaddingRight(), getPaddingBottom());
+		setPaddings(getPaddingLeft(), paddingTop, getPaddingRight(), paddingBottom);
 	}
 
 	/**

@@ -243,10 +243,12 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
 	}
 
 	private void initPadding() {
-		extraPaddingTop = floatingLabelEnabled ? floatingLabelTextSize + innerComponentsSpacing : innerComponentsSpacing;
-		extraPaddingBottom = extendBottom ? floatingLabelTextSize : 0;
-		extraPaddingBottom += innerComponentsSpacing * 2;
-		setPaddings(getPaddingLeft(), getPaddingTop(), getPaddingRight(), getPaddingBottom());
+        int paddingTop = getPaddingTop() - extraPaddingTop;
+        int paddingBottom = getPaddingBottom() - extraPaddingBottom;
+        extraPaddingTop = floatingLabelEnabled ? floatingLabelTextSize + innerComponentsSpacing : innerComponentsSpacing;
+        extraPaddingBottom = extendBottom ? floatingLabelTextSize : 0;
+        extraPaddingBottom += innerComponentsSpacing * 2;
+        setPaddings(getPaddingLeft(), paddingTop, getPaddingRight(), paddingBottom);
 	}
 
 	/**
