@@ -416,7 +416,12 @@ public class MaterialEditText extends EditText {
 		postInvalidate();
 	}
 
-	/**
+    @Override
+    public CharSequence getError() {
+        return tempErrorText;
+    }
+
+    /**
 	 * if {@link #extendBottom} is false, set it true and reset the paddings.
 	 */
 	private void extendBottom() {
