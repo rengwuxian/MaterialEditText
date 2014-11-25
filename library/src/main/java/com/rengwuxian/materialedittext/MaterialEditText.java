@@ -6,8 +6,10 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -134,6 +136,11 @@ public class MaterialEditText extends EditText {
 	 */
 	private float focusFraction;
 
+    /**
+     * The font used for the accent texts (floating label, error/helper text, character counter, etc.)
+     */
+    private Typeface accentTypeface;
+
 	private ArgbEvaluator focusEvaluator = new ArgbEvaluator();
 	Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 	ObjectAnimator labelAnimator;
@@ -172,6 +179,11 @@ public class MaterialEditText extends EditText {
 		singleLineEllipsis = typedArray.getBoolean(R.styleable.MaterialEditText_singleLineEllipsis, false);
 		helperText = typedArray.getString(R.styleable.MaterialEditText_helperText);
 		extendBottom = typedArray.getBoolean(R.styleable.MaterialEditText_extendBottom, false) || helperText != null || maxCharacters > 0 || singleLineEllipsis;
+        String fontPath = typedArray.getString(R.styleable.MaterialEditText_accentTypeface);
+        if (fontPath != null) {
+            accentTypeface = getCustomTypeface(fontPath);
+            paint.setTypeface(accentTypeface);
+        }
 		typedArray.recycle();
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -221,6 +233,10 @@ public class MaterialEditText extends EditText {
 		});
 	}
 
+    private Typeface getCustomTypeface(@NonNull String fontPath) {
+        return Typeface.createFromAsset(getContext().getAssets(), fontPath);
+    }
+
 	public float getFloatingLabelFraction() {
 		return floatingLabelFraction;
 	}
@@ -239,7 +255,20 @@ public class MaterialEditText extends EditText {
 		invalidate();
 	}
 
-	private int getPixel(int dp) {
+    @Nullable
+    public Typeface getAccentTypeface() {
+        return accentTypeface;
+    }
+
+    /**
+     * Set typeface used for the accent texts (floating label, error/helper text, character counter, etc.)
+     */
+    public void setAccentTypeface(Typeface accentTypeface) {
+        this.accentTypeface = accentTypeface;
+        this.paint.setTypeface(accentTypeface);
+    }
+
+    private int getPixel(int dp) {
 		return Density.dp2px(getContext(), dp);
 	}
 
