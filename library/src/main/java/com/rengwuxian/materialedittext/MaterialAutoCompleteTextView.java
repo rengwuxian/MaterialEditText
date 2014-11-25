@@ -415,6 +415,11 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
 		postInvalidate();
 	}
 
+    @Override
+    public CharSequence getError() {
+        return tempErrorText;
+    }
+
 	/**
 	 * if {@link #extendBottom} is false, set it true and reset the paddings.
 	 */
