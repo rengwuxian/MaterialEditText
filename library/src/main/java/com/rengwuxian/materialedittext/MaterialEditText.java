@@ -134,8 +134,11 @@ public class MaterialEditText extends EditText {
 	 */
 	private float focusFraction;
 
-	private ArgbEvaluator focusEvaluator = new ArgbEvaluator();
-	Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private ArgbEvaluator focusEvaluator = new ArgbEvaluator();
+    Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    TextPaint textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+    StaticLayout textLayout;
+
 	ObjectAnimator labelAnimator;
 	ObjectAnimator labelFocusAnimator;
 	OnFocusChangeListener interFocusChangeListener;
@@ -215,8 +218,8 @@ public class MaterialEditText extends EditText {
 
 			@Override
 			public void afterTextChanged(Editable s) {
-				tempErrorText = null;
-				invalidate();
+                setError(null);
+                invalidate();
 			}
 		});
 	}
@@ -246,11 +249,20 @@ public class MaterialEditText extends EditText {
 	private void initPadding() {
         int paddingTop = getPaddingTop() - extraPaddingTop;
         int paddingBottom = getPaddingBottom() - extraPaddingBottom;
-		extraPaddingTop = floatingLabelEnabled ? floatingLabelTextSize + innerComponentsSpacing : innerComponentsSpacing;
-		extraPaddingBottom = extendBottom ? floatingLabelTextSize : 0;
-		extraPaddingBottom += innerComponentsSpacing * 2;
-		setPaddings(getPaddingLeft(), paddingTop, getPaddingRight(), paddingBottom);
-	}
+        extraPaddingTop = floatingLabelEnabled ? floatingLabelTextSize + innerComponentsSpacing : innerComponentsSpacing;
+
+        if (extendBottom) {
+            if (tempErrorText == null) {
+                extraPaddingBottom = extendBottom ? floatingLabelTextSize : 0;
+            } else {
+                extraPaddingBottom = errorLineCount * floatingLabelTextSize + innerComponentsSpacing;
+            }
+        } else {
+            extraPaddingBottom = 0;
+        }
+        extraPaddingBottom += innerComponentsSpacing * 2;
+        setPaddings(getPaddingLeft(), paddingTop, getPaddingRight(), paddingBottom);
+    }
 
 	/**
 	 * use {@link #setPaddings(int, int, int, int)} instead, or the paddingTop and the paddingBottom may be set incorrectly.
@@ -411,10 +423,18 @@ public class MaterialEditText extends EditText {
 
 	@Override
 	public void setError(CharSequence errorText) {
-		extendBottom();
-		tempErrorText = errorText == null ? null : errorText.toString();
-		postInvalidate();
-	}
+        tempErrorText = errorText == null ? null : errorText.toString();
+        if (tempErrorText != null) {
+            textPaint.setTextSize(floatingLabelTextSize);
+            textLayout = new StaticLayout(tempErrorText, textPaint, getWidth(), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, true);
+            errorLineCount = textLayout.getLineCount();
+            extendBottom();
+        } else {
+            errorLineCount = 0;
+            collapseBottom();
+        }
+        postInvalidate();
+    }
 
 	/**
 	 * if {@link #extendBottom} is false, set it true and reset the paddings.
@@ -425,6 +445,11 @@ public class MaterialEditText extends EditText {
 			initPadding();
 		}
 	}
+
+    private void collapseBottom() {
+        extendBottom = false;
+        initPadding();
+    }
 
 	/**
 	 * only used to draw the bottom line
@@ -519,9 +544,16 @@ public class MaterialEditText extends EditText {
 		// draw the bottom text
 		float bottomTextStartX = getScrollX() + (singleLineEllipsis ? (bottomEllipsisSize * 5 + getPixel(4)) : 0);
 		if (tempErrorText != null) { // regex error
-			paint.setColor(errorColor);
-			canvas.drawText(tempErrorText, bottomTextStartX, lineStartY + innerComponentsSpacing + relativeHeight, paint);
-		} else if (!TextUtils.isEmpty(helperText)) {
+            paint.setColor(errorColor);
+
+            textPaint.setTextSize(floatingLabelTextSize);
+            textPaint.setColor(errorColor);
+
+            canvas.save();
+            canvas.translate(bottomTextStartX, lineStartY + innerComponentsSpacing);
+            textLayout.draw(canvas);
+            canvas.restore();
+        } else if (!TextUtils.isEmpty(helperText)) {
 			paint.setColor(getCurrentHintTextColor());
 			canvas.drawText(helperText, bottomTextStartX, lineStartY + innerComponentsSpacing + relativeHeight, paint);
 		}
