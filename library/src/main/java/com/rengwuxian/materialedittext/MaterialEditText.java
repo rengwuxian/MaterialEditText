@@ -221,20 +221,20 @@ public class MaterialEditText extends EditText {
 		});
 	}
 
-	private float getFloatingLabelFraction() {
+	public float getFloatingLabelFraction() {
 		return floatingLabelFraction;
 	}
 
-	private void setFloatingLabelFraction(float floatingLabelFraction) {
+	public void setFloatingLabelFraction(float floatingLabelFraction) {
 		this.floatingLabelFraction = floatingLabelFraction;
 		invalidate();
 	}
 
-	private float getFocusFraction() {
+	public float getFocusFraction() {
 		return focusFraction;
 	}
 
-	private void setFocusFraction(float focusFraction) {
+	public void setFocusFraction(float focusFraction) {
 		this.focusFraction = focusFraction;
 		invalidate();
 	}
