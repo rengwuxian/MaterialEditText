@@ -275,6 +275,7 @@ public class MaterialEditText extends EditText {
     public void setAccentTypeface(Typeface accentTypeface) {
         this.accentTypeface = accentTypeface;
         this.paint.setTypeface(accentTypeface);
+        postInvalidate();
     }
 
     public CharSequence getFloatingLabelText() {

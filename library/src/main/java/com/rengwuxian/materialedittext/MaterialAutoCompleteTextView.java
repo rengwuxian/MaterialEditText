@@ -274,6 +274,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
     public void setAccentTypeface(Typeface accentTypeface) {
         this.accentTypeface = accentTypeface;
         this.paint.setTypeface(accentTypeface);
+        postInvalidate();
     }
 
     public CharSequence getFloatingLabelText() {
