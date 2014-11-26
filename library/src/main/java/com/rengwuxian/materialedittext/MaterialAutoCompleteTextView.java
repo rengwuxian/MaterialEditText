@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Build;
+import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Editable;
@@ -32,6 +33,9 @@ import java.util.regex.Pattern;
  * <p/>
  */
 public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
+
+  @IntDef({FLOATING_LABEL_NONE, FLOATING_LABEL_NORMAL, FLOATING_LABEL_HIGHLIGHT})
+  public @interface FloatingLabelType {}
   public static final int FLOATING_LABEL_NONE = 0;
   public static final int FLOATING_LABEL_NORMAL = 1;
   public static final int FLOATING_LABEL_HIGHLIGHT = 2;
@@ -421,7 +425,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
     }
   }
 
-  public void setFloatingLabel(int mode) {
+  public void setFloatingLabel(@FloatingLabelType int mode) {
     setFloatingLabelInternal(mode);
     postInvalidate();
   }
