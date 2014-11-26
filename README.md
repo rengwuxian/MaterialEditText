@@ -29,6 +29,10 @@ AppCompat v21 makes it easy to use Material Design EditText in our apps, but it'
   highlight:
   
   ![HighlightFloatingLabel](./images/highlight.jpg)
+
+  custom floating label text:
+
+  ![CustomFloatingLabelText](./images/custom_floating_label_text.png)
   
 5. Single Line Ellipsis
   
@@ -53,12 +57,6 @@ AppCompat v21 makes it easy to use Material Design EditText in our apps, but it'
   floating label, error/helper text, character counter, etc.
 
   ![CustomAccentTypeface](./images/custom_accent_typeface.png)
-
-9. Custom floating label text
-
-  defaults is the hint value, but can be customized:
-
-  ![DefaultHint](./images/custom_floating_label.png)
 
 ## Sample
 
