@@ -359,18 +359,18 @@
         app:singleLineEllipsis="true"
         app:helperText="Helper Text"/>
 
-        <com.rengwuxian.materialedittext.MaterialEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Custom accent typeface"
-            app:baseColor="#982360"
-            app:errorColor="#ddaa00"
-            app:floatingLabel="highlight"
-            app:maxCharacters="10"
-            app:primaryColor="#0056d3"
-            app:singleLineEllipsis="true"
-            app:helperText="Helper Text"
-            app:accentTypeface="fonts/Roboto-LightItalic.ttf"/>
+      <com.rengwuxian.materialedittext.MaterialEditText
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:hint="Custom accent typeface"
+          app:baseColor="#982360"
+          app:errorColor="#ddaa00"
+          app:floatingLabel="highlight"
+          app:maxCharacters="10"
+          app:primaryColor="#0056d3"
+          app:singleLineEllipsis="true"
+          app:helperText="Helper Text"
+          app:accentTypeface="fonts/Roboto-LightItalic.ttf"/>
 
       <com.rengwuxian.materialedittext.MaterialEditText
           android:layout_width="match_parent"
