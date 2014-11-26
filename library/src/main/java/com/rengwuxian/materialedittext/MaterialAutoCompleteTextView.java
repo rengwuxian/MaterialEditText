@@ -587,7 +587,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
 		}
 
 		// draw the floating label
-		if (floatingLabelEnabled && !TextUtils.isEmpty(getHint())) {
+		if (floatingLabelEnabled && !TextUtils.isEmpty(floatingLabelText)) {
 			// calculate the text color
 			paint.setColor((Integer) focusEvaluator.evaluate(focusFraction, getCurrentHintTextColor(), primaryColor));
 
@@ -601,7 +601,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
 			paint.setAlpha(alpha);
 
 			// draw the floating label
-			canvas.drawText(getHint().toString(), getPaddingLeft() + getScrollX(), position, paint);
+			canvas.drawText(floatingLabelText.toString(), getPaddingLeft() + getScrollX(), position, paint);
 		}
 
 		// draw the bottom ellipsis
