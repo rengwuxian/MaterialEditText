@@ -141,6 +141,11 @@ public class MaterialEditText extends EditText {
      */
     private Typeface accentTypeface;
 
+    /**
+     * Text for the floatLabel if different from the hint
+     */
+    private CharSequence floatingLabelText;
+
 	private ArgbEvaluator focusEvaluator = new ArgbEvaluator();
 	Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 	ObjectAnimator labelAnimator;
@@ -183,6 +188,10 @@ public class MaterialEditText extends EditText {
         if (fontPath != null) {
             accentTypeface = getCustomTypeface(fontPath);
             paint.setTypeface(accentTypeface);
+        }
+        floatingLabelText = typedArray.getString(R.styleable.MaterialEditText_floatingLabelText);
+        if (floatingLabelText == null) {
+            floatingLabelText = getHint();
         }
 		typedArray.recycle();
 
@@ -266,6 +275,22 @@ public class MaterialEditText extends EditText {
     public void setAccentTypeface(Typeface accentTypeface) {
         this.accentTypeface = accentTypeface;
         this.paint.setTypeface(accentTypeface);
+    }
+
+    public CharSequence getFloatingLabelText() {
+        return floatingLabelText;
+    }
+
+    /**
+     * Set the floating label text.
+     *
+     * Pass null to force fallback to use hint's value.
+     *
+     * @param floatingLabelText
+     */
+    public void setFloatingLabelText(@Nullable CharSequence floatingLabelText) {
+        this.floatingLabelText = floatingLabelText == null ? getHint() : floatingLabelText;
+        postInvalidate();
     }
 
     private int getPixel(int dp) {
@@ -561,7 +586,7 @@ public class MaterialEditText extends EditText {
 		}
 
 		// draw the floating label
-		if (floatingLabelEnabled && !TextUtils.isEmpty(getHint())) {
+		if (floatingLabelEnabled && !TextUtils.isEmpty(floatingLabelText)) {
 			// calculate the text color
 			paint.setColor((Integer) focusEvaluator.evaluate(focusFraction, getCurrentHintTextColor(), primaryColor));
 
@@ -575,7 +600,7 @@ public class MaterialEditText extends EditText {
 			paint.setAlpha(alpha);
 
 			// draw the floating label
-			canvas.drawText(getHint().toString(), getPaddingLeft() + getScrollX(), position, paint);
+			canvas.drawText(floatingLabelText.toString(), getPaddingLeft() + getScrollX(), position, paint);
 		}
 
 		// draw the bottom ellipsis

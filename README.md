@@ -54,6 +54,12 @@ AppCompat v21 makes it easy to use Material Design EditText in our apps, but it'
 
   ![CustomAccentTypeface](./images/custom_accent_typeface.png)
 
+9. Custom floating label text
+
+  defaults is the hint value, but can be customized:
+
+  ![DefaultHint](./images/custom_floating_label.png)
+
 ## Sample
 
 [MaterialEditText-1.4.3-sample.apk](https://github.com/rengwuxian/MaterialEditText/releases/download/1.4.3/MaterialEditText-1.4.3-sample.apk)
