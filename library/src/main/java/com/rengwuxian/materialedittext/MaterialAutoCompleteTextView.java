@@ -5,8 +5,10 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -133,6 +135,16 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
 	 */
 	private float focusFraction;
 
+    /**
+     * The font used for the accent texts (floating label, error/helper text, character counter, etc.)
+     */
+    private Typeface accentTypeface;
+
+    /**
+     * Text for the floatLabel if different from the hint
+     */
+    private CharSequence floatingLabelText;
+
 	private ArgbEvaluator focusEvaluator = new ArgbEvaluator();
 	Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 	ObjectAnimator labelAnimator;
@@ -171,6 +183,15 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
 		singleLineEllipsis = typedArray.getBoolean(R.styleable.MaterialEditText_singleLineEllipsis, false);
 		helperText = typedArray.getString(R.styleable.MaterialEditText_helperText);
 		extendBottom = typedArray.getBoolean(R.styleable.MaterialEditText_extendBottom, false) || helperText != null || maxCharacters > 0 || singleLineEllipsis;
+        String fontPath = typedArray.getString(R.styleable.MaterialEditText_accentTypeface);
+        if (fontPath != null) {
+            accentTypeface = getCustomTypeface(fontPath);
+            paint.setTypeface(accentTypeface);
+        }
+        floatingLabelText = typedArray.getString(R.styleable.MaterialEditText_floatingLabelText);
+        if (floatingLabelText == null) {
+            floatingLabelText = getHint();
+        }
 		typedArray.recycle();
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -220,6 +241,10 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
 		});
 	}
 
+    private Typeface getCustomTypeface(@NonNull String fontPath) {
+        return Typeface.createFromAsset(getContext().getAssets(), fontPath);
+    }
+
 	public float getFloatingLabelFraction() {
 		return floatingLabelFraction;
 	}
@@ -238,7 +263,37 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
 		invalidate();
 	}
 
-	private int getPixel(int dp) {
+    @Nullable
+    public Typeface getAccentTypeface() {
+        return accentTypeface;
+    }
+
+    /**
+     * Set typeface used for the accent texts (floating label, error/helper text, character counter, etc.)
+     */
+    public void setAccentTypeface(Typeface accentTypeface) {
+        this.accentTypeface = accentTypeface;
+        this.paint.setTypeface(accentTypeface);
+    }
+
+    public CharSequence getFloatingLabelText() {
+        return floatingLabelText;
+    }
+
+    /**
+     * Set the floating label text.
+     *
+     * Pass null to force fallback to use hint's value.
+     *
+     * @param floatingLabelText
+     */
+    public void setFloatingLabelText(@Nullable CharSequence floatingLabelText) {
+        this.floatingLabelText = floatingLabelText == null ? getHint() : floatingLabelText;
+        postInvalidate();
+    }
+
+
+    private int getPixel(int dp) {
 		return Density.dp2px(getContext(), dp);
 	}
 
