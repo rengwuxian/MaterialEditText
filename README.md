@@ -8,19 +8,19 @@ MaterialEditText
 AppCompat v21 makes it easy to use Material Design EditText in our apps, but it's so limited. If you've tried that, you know what I mean. So I wrote MaterialEditText, the EditText in Material Design, with more features that [Google Material Design Spec](http://www.google.com/design/spec/components/text-fields.html) has introduced.
 
 ## Features
-1. Basic.
+1. **Basic**
 
   ![Basic](./images/basic.jpg)
   
-2. Custom Base Color
+2. **Custom Base Color**
   
   ![BaseColor](./images/custom_base_color.jpg)
   
-3. Custom Primary Color
+3. **Custom Primary Color**
   
   ![PrimaryColor](./images/custom_primary_color.jpg)
   
-4. Floating Label
+4. **Floating Label**
   
   normal:
   
@@ -34,11 +34,11 @@ AppCompat v21 makes it easy to use Material Design EditText in our apps, but it'
 
   ![CustomFloatingLabelText](./images/custom_floating_label_text.png)
   
-5. Single Line Ellipsis
+5. **Single Line Ellipsis**
   
   ![SingLineEllipsis](./images/ellipsis.jpg)
   
-6. Max Characters
+6. **Max Characters**
   
   default error color:
   
@@ -48,11 +48,11 @@ AppCompat v21 makes it easy to use Material Design EditText in our apps, but it'
   
   ![CustomErrorColor](./images/custom_error.jpg)
   
-7. Helper Text and Error Text
+7. **Helper Text and Error Text**
 
   ![HelperTextAndErrorText](./images/helper_text_and_error_text.jpg)
 
-8. Custom accent typeface
+8. **Custom accent typeface**
 
   floating label, error/helper text, character counter, etc.
 
