@@ -21,5 +21,9 @@
     <attr name="extendBottom" format="boolean"/>
     <!-- Helper text at the bottom -->
     <attr name="helperText" format="string"/>
+    <!-- Font of the paint used to draw accent texts -->
+    <attr name="accentTypeface" format="string"/>
+    <!-- Custom float label text -->
+    <attr name="floatingLabelText" format="string"/>
   </declare-styleable>
 </resources>
