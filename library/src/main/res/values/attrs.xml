@@ -17,8 +17,8 @@
     <attr name="maxCharacters" format="integer"/>
     <!-- Whether to show the bottom ellipsis in singleLine mode -->
     <attr name="singleLineEllipsis" format="boolean"/>
-    <!-- If the MaterialEditText should extend its bottom in the Constructor, no matter if there is some helper text or error text or singleLineEllipsis or maxCharacters (usually used when you'd like to add them later but no now, and set this to true helps you avoid the height's changing). Default is false. -->
-    <attr name="extendBottom" format="boolean"/>
+    <!-- Reserved bottom text lines count, no matter if there is some helper/error text. -->
+    <attr name="minBottomTextLines" format="integer"/>
     <!-- Helper text at the bottom -->
     <attr name="helperText" format="string"/>
     <!-- Font of the paint used to draw accent texts -->

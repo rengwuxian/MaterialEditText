@@ -8,9 +8,13 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Build;
+import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Editable;
+import android.text.Layout;
+import android.text.StaticLayout;
+import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.TransformationMethod;
@@ -32,6 +36,9 @@ import java.util.regex.Pattern;
  * <p/>
  */
 public class MaterialEditText extends EditText {
+
+  @IntDef({FLOATING_LABEL_NONE, FLOATING_LABEL_NORMAL, FLOATING_LABEL_HIGHLIGHT})
+  public @interface FloatingLabelType {}
   public static final int FLOATING_LABEL_NONE = 0;
   public static final int FLOATING_LABEL_NORMAL = 1;
   public static final int FLOATING_LABEL_HIGHLIGHT = 2;
@@ -107,9 +114,19 @@ public class MaterialEditText extends EditText {
   private final int bottomEllipsisSize;
 
   /**
-   * If the MaterialEditText always extends its bottom space. If it's true, the MaterialEditText always extends some space at the bottom; and if it's false, the MaterialEditText only extends some space when needed (e.g. when an error text is being shown, and there's no extra space at the bottom).
+   * min bottom lines count.
    */
-  private boolean extendBottom;
+  private int minBottomLines;
+
+  /**
+   * reserved bottom text lines count, no matter if there is some helper/error text.
+   */
+  private int minBottomTextLines;
+
+  /**
+   * real-time bottom lines count. used for bottom extending/collapsing animation.
+   */
+  private float currentBottomLines;
 
   /**
    * Helper text at the bottom
@@ -146,11 +163,16 @@ public class MaterialEditText extends EditText {
    */
   private CharSequence floatingLabelText;
 
+  private boolean attachedToWindow = false;
   private ArgbEvaluator focusEvaluator = new ArgbEvaluator();
   Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+  TextPaint textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+  Paint.FontMetrics fontMetrics;
+  StaticLayout textLayout;
   ObjectAnimator labelAnimator;
   ObjectAnimator labelFocusAnimator;
-  OnFocusChangeListener interFocusChangeListener;
+  ObjectAnimator bottomLinesAnimator;
+  OnFocusChangeListener innerFocusChangeListener;
   OnFocusChangeListener outerFocusChangeListener;
 
   public MaterialEditText(Context context) {
@@ -183,11 +205,11 @@ public class MaterialEditText extends EditText {
     maxCharacters = typedArray.getInt(R.styleable.MaterialEditText_maxCharacters, 0);
     singleLineEllipsis = typedArray.getBoolean(R.styleable.MaterialEditText_singleLineEllipsis, false);
     helperText = typedArray.getString(R.styleable.MaterialEditText_helperText);
-    extendBottom = typedArray.getBoolean(R.styleable.MaterialEditText_extendBottom, false) || helperText != null || maxCharacters > 0 || singleLineEllipsis;
+    minBottomTextLines = typedArray.getInt(R.styleable.MaterialEditText_minBottomTextLines, 0);
     String fontPath = typedArray.getString(R.styleable.MaterialEditText_accentTypeface);
     if (fontPath != null) {
       accentTypeface = getCustomTypeface(fontPath);
-      paint.setTypeface(accentTypeface);
+      textPaint.setTypeface(accentTypeface);
     }
     floatingLabelText = typedArray.getString(R.styleable.MaterialEditText_floatingLabelText);
     if (floatingLabelText == null) {
@@ -205,6 +227,9 @@ public class MaterialEditText extends EditText {
       setSingleLine();
       setTransformationMethod(transformationMethod);
     }
+    textPaint.setTextSize(floatingLabelTextSize);
+    fontMetrics = textPaint.getFontMetrics();
+    initMinBottomLines();
     initPadding();
     initText();
     initFloatingLabel();
@@ -236,8 +261,7 @@ public class MaterialEditText extends EditText {
 
       @Override
       public void afterTextChanged(Editable s) {
-        tempErrorText = null;
-        invalidate();
+        setError(null);
       }
     });
   }
@@ -264,6 +288,15 @@ public class MaterialEditText extends EditText {
     invalidate();
   }
 
+  public float getCurrentBottomLines() {
+    return currentBottomLines;
+  }
+
+  public void setCurrentBottomLines(float currentBottomLines) {
+    this.currentBottomLines = currentBottomLines;
+    initPadding();
+  }
+
   @Nullable
   public Typeface getAccentTypeface() {
     return accentTypeface;
@@ -274,7 +307,7 @@ public class MaterialEditText extends EditText {
    */
   public void setAccentTypeface(Typeface accentTypeface) {
     this.accentTypeface = accentTypeface;
-    this.paint.setTypeface(accentTypeface);
+    this.textPaint.setTypeface(accentTypeface);
     postInvalidate();
   }
 
@@ -302,9 +335,36 @@ public class MaterialEditText extends EditText {
     int paddingTop = getPaddingTop() - extraPaddingTop;
     int paddingBottom = getPaddingBottom() - extraPaddingBottom;
     extraPaddingTop = floatingLabelEnabled ? floatingLabelTextSize + innerComponentsSpacing : innerComponentsSpacing;
-    extraPaddingBottom = extendBottom ? floatingLabelTextSize : 0;
-    extraPaddingBottom += innerComponentsSpacing * 2;
+    extraPaddingBottom = (int) ((fontMetrics.descent - fontMetrics.ascent) * currentBottomLines) + innerComponentsSpacing * 2;
     setPaddings(getPaddingLeft(), paddingTop, getPaddingRight(), paddingBottom);
+  }
+
+  @Override
+  protected void onAttachedToWindow() {
+    super.onAttachedToWindow();
+    attachedToWindow = true;
+  }
+
+  @Override
+  protected void onDetachedFromWindow() {
+    super.onDetachedFromWindow();
+    attachedToWindow = false;
+  }
+
+  @Override
+  public void onWindowFocusChanged(boolean hasWindowFocus) {
+    super.onWindowFocusChanged(hasWindowFocus);
+    if (hasWindowFocus) {
+      adjustBottomLines();
+    }
+  }
+
+  /**
+   * calculate {@link #minBottomLines}
+   */
+  private void initMinBottomLines() {
+    boolean extendBottom = maxCharacters > 0 || singleLineEllipsis || tempErrorText != null || helperText != null;
+    currentBottomLines = minBottomLines = minBottomTextLines > 0 ? minBottomTextLines : extendBottom ? 1 : 0;
   }
 
   /**
@@ -370,7 +430,7 @@ public class MaterialEditText extends EditText {
       });
       if (highlightFloatingLabel) {
         // observe the focus state to animate the floating label's text color appropriately
-        interFocusChangeListener = new OnFocusChangeListener() {
+        innerFocusChangeListener = new OnFocusChangeListener() {
           @Override
           public void onFocusChange(View v, boolean hasFocus) {
             if (hasFocus) {
@@ -387,7 +447,7 @@ public class MaterialEditText extends EditText {
             }
           }
         };
-        super.setOnFocusChangeListener(interFocusChangeListener);
+        super.setOnFocusChangeListener(innerFocusChangeListener);
       }
     }
 
@@ -420,7 +480,7 @@ public class MaterialEditText extends EditText {
     }
   }
 
-  public void setFloatingLabel(int mode) {
+  public void setFloatingLabel(@FloatingLabelType int mode) {
     setFloatingLabelInternal(mode);
     postInvalidate();
   }
@@ -432,7 +492,7 @@ public class MaterialEditText extends EditText {
   public void setSingleLineEllipsis(boolean enabled) {
     singleLineEllipsis = enabled;
     if (enabled) {
-      extendBottom();
+      initPadding();
     }
     postInvalidate();
   }
@@ -444,7 +504,7 @@ public class MaterialEditText extends EditText {
   public void setMaxCharacters(int max) {
     maxCharacters = max;
     if (max > 0) {
-      extendBottom();
+      initPadding();
     }
     postInvalidate();
   }
@@ -456,8 +516,8 @@ public class MaterialEditText extends EditText {
 
   public void setHelperText(CharSequence helperText) {
     this.helperText = helperText == null ? null : helperText.toString();
-    extendBottom();
     postInvalidate();
+    adjustBottomLines();
   }
 
   public String getHelperText() {
@@ -466,9 +526,9 @@ public class MaterialEditText extends EditText {
 
   @Override
   public void setError(CharSequence errorText) {
-    extendBottom();
     tempErrorText = errorText == null ? null : errorText.toString();
     postInvalidate();
+    adjustBottomLines();
   }
 
   @Override
@@ -476,13 +536,21 @@ public class MaterialEditText extends EditText {
     return tempErrorText;
   }
 
-  /**
-   * if {@link #extendBottom} is false, set it true and reset the paddings.
-   */
-  private void extendBottom() {
-    if (!extendBottom) {
-      extendBottom = true;
-      initPadding();
+  private void adjustBottomLines() {
+    int destBottomLines;
+    if (tempErrorText != null) {
+      textLayout = new StaticLayout(tempErrorText, textPaint, getWidth() - getBottomTextLeftOffset() - getBottomTextRightOffset(), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, true);
+      destBottomLines = Math.max(textLayout.getLineCount(), minBottomTextLines);
+    } else if (helperText != null) {
+      textLayout = new StaticLayout(helperText, textPaint, getWidth() - getBottomTextLeftOffset() - getBottomTextRightOffset(), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, true);
+      destBottomLines = Math.max(textLayout.getLineCount(), minBottomTextLines);
+    } else {
+      destBottomLines = minBottomLines;
+    }
+    if (attachedToWindow) {
+      getBottomLinesAnimator(destBottomLines).start();
+    } else {
+      currentBottomLines = minBottomLines;
     }
   }
 
@@ -521,7 +589,7 @@ public class MaterialEditText extends EditText {
 
   @Override
   public void setOnFocusChangeListener(OnFocusChangeListener listener) {
-    if (interFocusChangeListener == null) {
+    if (innerFocusChangeListener == null) {
       super.setOnFocusChangeListener(listener);
     } else {
       outerFocusChangeListener = listener;
@@ -542,11 +610,18 @@ public class MaterialEditText extends EditText {
     return labelFocusAnimator;
   }
 
+  private ObjectAnimator getBottomLinesAnimator(float destBottomLines) {
+    if (bottomLinesAnimator == null) {
+      bottomLinesAnimator = ObjectAnimator.ofFloat(this, "currentBottomLines", destBottomLines);
+    } else {
+      bottomLinesAnimator.end();
+      bottomLinesAnimator.setFloatValues(destBottomLines);
+    }
+    return bottomLinesAnimator;
+  }
+
   @Override
   protected void onDraw(@NonNull Canvas canvas) {
-    // set the textSize
-    paint.setTextSize(floatingLabelTextSize);
-
     float lineStartY = getScrollY() + getHeight() - getPaddingBottom() + innerComponentsSpacing;
 
     // draw the background
@@ -567,30 +642,38 @@ public class MaterialEditText extends EditText {
       canvas.drawRect(getScrollX(), lineStartY, getWidth() + getScrollX(), lineStartY + getPixel(1), paint);
     }
 
-    Paint.FontMetrics fontMetrics = paint.getFontMetrics();
     float relativeHeight = -fontMetrics.ascent - fontMetrics.descent;
+    float fontPaddingTop = floatingLabelTextSize + fontMetrics.ascent + fontMetrics.descent;
 
     // draw the characters counter
     if (maxCharacters > 0) {
-      paint.setColor(isMaxCharactersValid() ? getCurrentHintTextColor() : errorColor);
+      textPaint.setColor(isMaxCharactersValid() ? getCurrentHintTextColor() : errorColor);
       String text = getText().length() + " / " + maxCharacters;
-      canvas.drawText(text, getWidth() + getScrollX() - paint.measureText(text), lineStartY + innerComponentsSpacing + relativeHeight, paint);
+      canvas.drawText(text, getWidth() + getScrollX() - textPaint.measureText(text), lineStartY + innerComponentsSpacing + relativeHeight, textPaint);
     }
 
     // draw the bottom text
-    float bottomTextStartX = getScrollX() + (singleLineEllipsis ? (bottomEllipsisSize * 5 + getPixel(4)) : 0);
-    if (tempErrorText != null) { // regex error
-      paint.setColor(errorColor);
-      canvas.drawText(tempErrorText, bottomTextStartX, lineStartY + innerComponentsSpacing + relativeHeight, paint);
-    } else if (!TextUtils.isEmpty(helperText)) {
-      paint.setColor(getCurrentHintTextColor());
-      canvas.drawText(helperText, bottomTextStartX, lineStartY + innerComponentsSpacing + relativeHeight, paint);
+    if (textLayout != null) {
+      float bottomTextStartX = getScrollX() + getBottomTextLeftOffset();
+      if (tempErrorText != null) { // regex error
+        textPaint.setColor(errorColor);
+        canvas.save();
+        canvas.translate(bottomTextStartX, lineStartY + innerComponentsSpacing - fontPaddingTop);
+        textLayout.draw(canvas);
+        canvas.restore();
+      } else if (!TextUtils.isEmpty(helperText)) {
+        textPaint.setColor(getCurrentHintTextColor());
+        canvas.save();
+        canvas.translate(bottomTextStartX, lineStartY + innerComponentsSpacing - fontPaddingTop);
+        textLayout.draw(canvas);
+        canvas.restore();
+      }
     }
 
     // draw the floating label
     if (floatingLabelEnabled && !TextUtils.isEmpty(floatingLabelText)) {
       // calculate the text color
-      paint.setColor((Integer) focusEvaluator.evaluate(focusFraction, getCurrentHintTextColor(), primaryColor));
+      textPaint.setColor((Integer) focusEvaluator.evaluate(focusFraction, getCurrentHintTextColor(), primaryColor));
 
       // calculate the vertical position
       int start = innerPaddingTop + floatingLabelTextSize + innerComponentsSpacing;
@@ -599,10 +682,10 @@ public class MaterialEditText extends EditText {
 
       // calculate the alpha
       int alpha = (int) (floatingLabelFraction * 0xff * (0.74f * focusFraction + 0.26f));
-      paint.setAlpha(alpha);
+      textPaint.setAlpha(alpha);
 
       // draw the floating label
-      canvas.drawText(floatingLabelText.toString(), getPaddingLeft() + getScrollX(), position, paint);
+      canvas.drawText(floatingLabelText.toString(), getPaddingLeft() + getScrollX(), position, textPaint);
     }
 
     // draw the bottom ellipsis
@@ -616,6 +699,14 @@ public class MaterialEditText extends EditText {
 
     // draw the original things
     super.onDraw(canvas);
+  }
+
+  private int getBottomTextLeftOffset() {
+    return (singleLineEllipsis ? (bottomEllipsisSize * 5 + getPixel(4)) : 0);
+  }
+
+  private int getBottomTextRightOffset() {
+    return maxCharacters > 0 ? (int) textPaint.measureText("00/000") : 0;
   }
 
   public boolean isMaxCharactersValid() {

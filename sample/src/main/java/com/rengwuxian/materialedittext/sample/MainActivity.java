@@ -43,14 +43,50 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 	private void initSetErrorEt() {
-		final EditText errorTextEt = (EditText) findViewById(R.id.errorTextEt);
+		final EditText bottomTextEt = (EditText) findViewById(R.id.bottomTextEt);
 		final Button setErrorBt = (Button) findViewById(R.id.setErrorBt);
 		setErrorBt.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				errorTextEt.setError("Error");
+				bottomTextEt.setError("1-Line Error!");
 			}
 		});
+		final Button setError2Bt = (Button) findViewById(R.id.setError2Bt);
+    setError2Bt.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				bottomTextEt.setError("2-Line\nError!");
+			}
+		});
+		final Button setError3Bt = (Button) findViewById(R.id.setError3Bt);
+    setError3Bt.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				bottomTextEt.setError("So Many Errors! So Many Errors! So Many Errors! So Many Errors! So Many Errors! So Many Errors! So Many Errors! So Many Errors!");
+			}
+		});
+    final EditText bottomTextWithMinLinesEt = (EditText) findViewById(R.id.bottomTextWithMinLinesEt);
+    final Button setErrorWithMinLinesBt = (Button) findViewById(R.id.setErrorWithMinLinesBt);
+    setErrorWithMinLinesBt.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        bottomTextWithMinLinesEt.setError("1-Line Error!");
+      }
+    });
+    final Button setErrorWithMinLines2Bt = (Button) findViewById(R.id.setErrorWithMinLines2Bt);
+    setErrorWithMinLines2Bt.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        bottomTextWithMinLinesEt.setError("2-Line\nError!");
+      }
+    });
+    final Button setErrorWithMinLines3Bt = (Button) findViewById(R.id.setErrorWithMinLines3Bt);
+    setErrorWithMinLines3Bt.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        bottomTextWithMinLinesEt.setError("So Many Errors! So Many Errors! So Many Errors! So Many Errors! So Many Errors! So Many Errors! So Many Errors! So Many Errors!");
+      }
+    });
 	}
 
 	private void initValidationEt() {

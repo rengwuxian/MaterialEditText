@@ -262,35 +262,14 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_marginTop="16dp"
-				android:text="Helper Text:"
+				android:text="Helper/Error Text:"
 				android:textColor="#333333"
 				android:textSize="14sp" />
 
 			<TextView
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:text="app:helperText=&quot;helper is here&quot;"
-				android:textColor="#888888"
-				android:textSize="14sp" />
-
-			<com.rengwuxian.materialedittext.MaterialEditText
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:hint="Helper Text"
-				app:helperText="helper is here" />
-
-			<TextView
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="16dp"
-				android:text="Error Text:"
-				android:textColor="#333333"
-				android:textSize="14sp" />
-
-			<TextView
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:text="app:extendBottom=&quot;true&quot; (in xml)\nsetError(&quot;Error&quot;) (in java)"
+				android:text="app:helperText=&quot;helper is here&quot; (in xml)\nsetError(&quot;Error!&quot;) (in java)"
 				android:textColor="#888888"
 				android:textSize="14sp" />
 
@@ -300,19 +279,85 @@
 				android:gravity="center_vertical">
 
 				<com.rengwuxian.materialedittext.MaterialEditText
-					android:id="@+id/errorTextEt"
+					android:id="@+id/bottomTextEt"
 					android:layout_width="0dp"
 					android:layout_height="wrap_content"
 					android:layout_weight="1"
-					android:hint="Error Text"
-					app:extendBottom="true" />
+					android:hint="Helper/Error Text"
+					app:helperText="helper is here"/>
 
 				<Button
 					android:id="@+id/setErrorBt"
-					android:layout_width="100dp"
+					android:layout_width="48dp"
 					android:layout_height="wrap_content"
 					android:layout_marginLeft="8dp"
-					android:text="SET ERROR" />
+					android:text="1" />
+
+				<Button
+					android:id="@+id/setError2Bt"
+					android:layout_width="48dp"
+					android:layout_height="wrap_content"
+					android:layout_marginLeft="8dp"
+					android:text="2" />
+
+				<Button
+					android:id="@+id/setError3Bt"
+					android:layout_width="48dp"
+					android:layout_height="wrap_content"
+					android:layout_marginLeft="8dp"
+					android:text="3" />
+
+			</LinearLayout>
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="16dp"
+				android:text="Helper/Error Text with Min Lines Count:"
+				android:textColor="#333333"
+				android:textSize="14sp" />
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="app:helperText=&quot;helper is here&quot;\napp:minBottomTextLines=&quot;2&quot; (in xml)\nsetError(&quot;Error!&quot;) (in java)"
+				android:textColor="#888888"
+				android:textSize="14sp" />
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:gravity="center_vertical">
+
+				<com.rengwuxian.materialedittext.MaterialEditText
+					android:id="@+id/bottomTextWithMinLinesEt"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:hint="Helper/Error Text"
+					app:helperText="helper is here"
+					app:minBottomTextLines="2"/>
+
+				<Button
+					android:id="@+id/setErrorWithMinLinesBt"
+					android:layout_width="48dp"
+					android:layout_height="wrap_content"
+					android:layout_marginLeft="8dp"
+					android:text="1" />
+
+				<Button
+					android:id="@+id/setErrorWithMinLines2Bt"
+					android:layout_width="48dp"
+					android:layout_height="wrap_content"
+					android:layout_marginLeft="8dp"
+					android:text="2" />
+
+				<Button
+					android:id="@+id/setErrorWithMinLines3Bt"
+					android:layout_width="48dp"
+					android:layout_height="wrap_content"
+					android:layout_marginLeft="8dp"
+					android:text="3" />
 
 			</LinearLayout>
 
@@ -372,10 +417,10 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:hint="Custom Accent Typeface"
+				app:accentTypeface="fonts/Roboto-LightItalic.ttf"
 				app:floatingLabel="normal"
 				app:helperText="Helper Text"
-				app:maxCharacters="10"
-				app:accentTypeface="fonts/Roboto-LightItalic.ttf" />
+				app:maxCharacters="10" />
 
 			<TextView
 				android:layout_width="match_parent"
@@ -396,6 +441,7 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:hint="Complex"
+				app:accentTypeface="fonts/Roboto-LightItalic.ttf"
 				app:baseColor="#982360"
 				app:errorColor="#ddaa00"
 				app:floatingLabel="highlight"
@@ -403,8 +449,7 @@
 				app:helperText="Helper Text"
 				app:maxCharacters="10"
 				app:primaryColor="#0056d3"
-				app:singleLineEllipsis="true"
-				app:accentTypeface="fonts/Roboto-LightItalic.ttf" />
+				app:singleLineEllipsis="true" />
 
 		</LinearLayout>
 	</LinearLayout>
