@@ -25,7 +25,6 @@ import android.content.res.ColorStateList;
 
 import com.nineoldandroids.animation.ArgbEvaluator;
 import com.nineoldandroids.animation.ObjectAnimator;
-import com.nineoldandroids.animation.ValueAnimator;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
