@@ -15,13 +15,15 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:background="?colorPrimary"
-			android:orientation="vertical">
+			android:orientation="vertical"
+            android:paddingLeft="72dp"
+            android:paddingRight="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp">
 
 			<com.rengwuxian.materialedittext.MaterialEditText
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:layout_marginLeft="72dp"
-				android:layout_marginRight="16dp"
 				android:hint="Library Name"
 				android:text="MaterialEditText"
 				android:textCursorDrawable="@drawable/text_cursor_cyan"
@@ -35,8 +37,6 @@
 			<com.rengwuxian.materialedittext.MaterialEditText
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:layout_marginLeft="72dp"
-				android:layout_marginRight="16dp"
 				android:hint="Description"
 				android:text="EditText in Material Design"
 				android:textCursorDrawable="@drawable/text_cursor_cyan"
