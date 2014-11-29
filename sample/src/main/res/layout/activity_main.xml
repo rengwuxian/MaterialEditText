@@ -422,6 +422,29 @@
 				app:helperText="Helper Text"
 				app:maxCharacters="10" />
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Hide underline"
+                android:textColor="#333333"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="app:hideUnderline=&quot;true&quot;\napp:primaryColor=&quot;#0056d3\napp:floatingLabel=&quot;highlight&quot;"
+                android:textColor="#888888"
+                android:textSize="14sp" />
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Hidden underline"
+                app:hideUnderline="true"
+                app:primaryColor="#0056d3"
+                app:floatingLabel="highlight" />
+
 			<TextView
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"

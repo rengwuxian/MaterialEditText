@@ -25,5 +25,7 @@
     <attr name="accentTypeface" format="string"/>
     <!-- Custom float label text -->
     <attr name="floatingLabelText" format="string"/>
+    <!-- Hide underline -->
+    <attr name="hideUnderline" format="boolean"/>
   </declare-styleable>
 </resources>
