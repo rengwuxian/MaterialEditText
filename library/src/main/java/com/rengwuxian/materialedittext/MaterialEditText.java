@@ -163,6 +163,11 @@ public class MaterialEditText extends EditText {
    */
   private CharSequence floatingLabelText;
 
+  /**
+   * Whether or not to show the underline. Shown by default
+   */
+  private boolean hideUnderline;
+
   private boolean attachedToWindow = false;
   private ArgbEvaluator focusEvaluator = new ArgbEvaluator();
   Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -215,6 +220,7 @@ public class MaterialEditText extends EditText {
     if (floatingLabelText == null) {
       floatingLabelText = getHint();
     }
+    hideUnderline = typedArray.getBoolean(R.styleable.MaterialEditText_hideUnderline, false);
     typedArray.recycle();
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -311,6 +317,23 @@ public class MaterialEditText extends EditText {
     postInvalidate();
   }
 
+  public boolean getHideUnderline() {
+    return hideUnderline;
+  }
+
+  /**
+   * Set whether or not to hide the underline (shown by default).
+   * <p/>
+   * The positions of text below will be adjusted accordingly (error/helper text, character counter, ellipses, etc.)
+   * <p/>
+   * NOTE: You probably don't want to hide this if you have any subtext features of this enabled, as it can look weird to not have a dividing line between them.
+   */
+  public void setHideUnderline(boolean hideUnderline) {
+    this.hideUnderline = hideUnderline;
+    initPadding();
+    postInvalidate();
+  }
+
   public CharSequence getFloatingLabelText() {
     return floatingLabelText;
   }
@@ -335,7 +358,7 @@ public class MaterialEditText extends EditText {
     int paddingTop = getPaddingTop() - extraPaddingTop;
     int paddingBottom = getPaddingBottom() - extraPaddingBottom;
     extraPaddingTop = floatingLabelEnabled ? floatingLabelTextSize + innerComponentsSpacing : innerComponentsSpacing;
-    extraPaddingBottom = (int) ((fontMetrics.descent - fontMetrics.ascent) * currentBottomLines) + innerComponentsSpacing * 2;
+    extraPaddingBottom = (int) ((fontMetrics.descent - fontMetrics.ascent) * currentBottomLines) + (hideUnderline ? innerComponentsSpacing : innerComponentsSpacing * 2);
     setPaddings(getPaddingLeft(), paddingTop, getPaddingRight(), paddingBottom);
   }
 
@@ -622,24 +645,28 @@ public class MaterialEditText extends EditText {
 
   @Override
   protected void onDraw(@NonNull Canvas canvas) {
-    float lineStartY = getScrollY() + getHeight() - getPaddingBottom() + innerComponentsSpacing;
+    float lineStartY = getScrollY() + getHeight() - getPaddingBottom();
 
-    // draw the background
-    if (!isInternalValid()) { // not valid
-      paint.setColor(errorColor);
-      canvas.drawRect(getScrollX(), lineStartY, getWidth() + getScrollX(), lineStartY + getPixel(2), paint);
-    } else if (!isEnabled()) { // disabled
-      paint.setColor(baseColor & 0x00ffffff | 0x44000000);
-      float interval = getPixel(1);
-      for (float startX = 0; startX < getWidth(); startX += interval * 3) {
-        canvas.drawRect(getScrollX() + startX, lineStartY, getScrollX() + startX + interval, lineStartY + getPixel(1), paint);
+    if (!hideUnderline) {
+      lineStartY += innerComponentsSpacing;
+
+      // draw the background
+      if (!isInternalValid()) { // not valid
+        paint.setColor(errorColor);
+        canvas.drawRect(getScrollX(), lineStartY, getWidth() + getScrollX(), lineStartY + getPixel(2), paint);
+      } else if (!isEnabled()) { // disabled
+        paint.setColor(baseColor & 0x00ffffff | 0x44000000);
+        float interval = getPixel(1);
+        for (float startX = 0; startX < getWidth(); startX += interval * 3) {
+          canvas.drawRect(getScrollX() + startX, lineStartY, getScrollX() + startX + interval, lineStartY + getPixel(1), paint);
+        }
+      } else if (hasFocus()) { // focused
+        paint.setColor(primaryColor);
+        canvas.drawRect(getScrollX(), lineStartY, getWidth() + getScrollX(), lineStartY + getPixel(2), paint);
+      } else { // normal
+        paint.setColor(baseColor);
+        canvas.drawRect(getScrollX(), lineStartY, getWidth() + getScrollX(), lineStartY + getPixel(1), paint);
       }
-    } else if (hasFocus()) { // focused
-      paint.setColor(primaryColor);
-      canvas.drawRect(getScrollX(), lineStartY, getWidth() + getScrollX(), lineStartY + getPixel(2), paint);
-    } else { // normal
-      paint.setColor(baseColor);
-      canvas.drawRect(getScrollX(), lineStartY, getWidth() + getScrollX(), lineStartY + getPixel(1), paint);
     }
 
     float relativeHeight = -fontMetrics.ascent - fontMetrics.descent;
