@@ -619,7 +619,9 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
   }
 
   /**
-   * Check all validators, sets the error text if not
+   * Check all validators, sets the error text if not.
+   *
+   * NOTE: this stops at the first validator to report invalid.
    *
    * @return True if all validators pass, false if not
    */
@@ -650,6 +652,14 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
     return this.validators.size() != 0;
   }
 
+  /**
+   * Adds a new validator to the View's list of validators
+   *
+   * This will be checked with the others in {@link #validate()}
+   *
+   * @param validator Validator to add
+   * @return This instance, for easy chaining
+   */
   public MaterialAutoCompleteTextView addValidator(MaterialETValidator validator) {
     this.validators.add(validator);
     return this;
