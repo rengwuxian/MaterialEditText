@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.rengwuxian.materialedittext.MaterialEditText;
+import com.rengwuxian.materialedittext.validation.RegexpValidator;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -91,16 +92,15 @@ public class MainActivity extends ActionBarActivity {
 
 	private void initValidationEt() {
 		final MaterialEditText validationEt = (MaterialEditText) findViewById(R.id.validationEt);
+    validationEt.addValidator(new RegexpValidator("Only Integer Valid!", "\\d+"));
 		final Button validateBt = (Button) findViewById(R.id.validateBt);
 		validateBt.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				// validate
-				validationEt.validate("\\d+", "Only Integer Valid!");
-
-				// or you can directly use validationEt.isValid(String regex) to do some other work.
-			}
-		});
+      @Override
+      public void onClick(View v) {
+        // validate
+        validationEt.validate();
+      }
+    });
 	}
 
 	@Override
