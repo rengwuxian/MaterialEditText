@@ -25,7 +25,7 @@ import android.widget.EditText;
 
 import com.nineoldandroids.animation.ArgbEvaluator;
 import com.nineoldandroids.animation.ObjectAnimator;
-import com.rengwuxian.materialedittext.validation.MaterialETValidator;
+import com.rengwuxian.materialedittext.validation.METValidator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -182,7 +182,7 @@ public class MaterialEditText extends EditText {
   ObjectAnimator bottomLinesAnimator;
   OnFocusChangeListener innerFocusChangeListener;
   OnFocusChangeListener outerFocusChangeListener;
-  private ArrayList<MaterialETValidator> validators = new ArrayList<>();
+  private ArrayList<METValidator> validators = new ArrayList<>();
 
   public MaterialEditText(Context context) {
     this(context, null);
@@ -624,7 +624,7 @@ public class MaterialEditText extends EditText {
    * @param validator Validator to check
    * @return True if valid, false if not
    */
-  public boolean validate(@NonNull MaterialETValidator validator) {
+  public boolean validate(@NonNull METValidator validator) {
     CharSequence text = getText();
     boolean isValid = validator.isValid(text, text.length() == 0);
     if (!isValid) {
@@ -651,7 +651,7 @@ public class MaterialEditText extends EditText {
     boolean isEmpty = text.length() == 0;
 
     boolean isValid = true;
-    for (MaterialETValidator validator : validators) {
+    for (METValidator validator : validators) {
       //noinspection ConstantConditions
       isValid = isValid && validator.isValid(text, isEmpty);
       if (!isValid) {
@@ -676,12 +676,12 @@ public class MaterialEditText extends EditText {
    * @param validator Validator to add
    * @return This instance, for easy chaining
    */
-  public MaterialEditText addValidator(MaterialETValidator validator) {
+  public MaterialEditText addValidator(METValidator validator) {
     this.validators.add(validator);
     return this;
   }
 
-  public List<MaterialETValidator> getValidators() {
+  public List<METValidator> getValidators() {
     return this.validators;
   }
 
