@@ -650,8 +650,9 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
     return this.validators.size() != 0;
   }
 
-  public void addValidator(MaterialETValidator validator) {
+  public MaterialAutoCompleteTextView addValidator(MaterialETValidator validator) {
     this.validators.add(validator);
+    return this;
   }
 
   public List<MaterialETValidator> getValidators() {

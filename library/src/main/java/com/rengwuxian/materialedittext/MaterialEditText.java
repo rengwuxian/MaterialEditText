@@ -650,8 +650,9 @@ public class MaterialEditText extends EditText {
     return this.validators.size() != 0;
   }
 
-  public void addValidator(MaterialETValidator validator) {
+  public MaterialEditText addValidator(MaterialETValidator validator) {
     this.validators.add(validator);
+    return this;
   }
 
   public List<MaterialETValidator> getValidators() {
