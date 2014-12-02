@@ -619,6 +619,22 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
   }
 
   /**
+   * Run validation on a single validator instance
+   *
+   * @param validator Validator to check
+   * @return True if valid, false if not
+   */
+  public boolean validate(@NonNull MaterialETValidator validator) {
+    CharSequence text = getText();
+    boolean isValid = validator.isValid(text, text.length() == 0);
+    if (!isValid) {
+      setError(validator.getErrorMessage());
+    }
+    postInvalidate();
+    return isValid;
+  }
+
+  /**
    * Check all validators, sets the error text if not.
    *
    * NOTE: this stops at the first validator to report invalid.
