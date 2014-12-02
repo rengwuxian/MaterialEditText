@@ -7,11 +7,11 @@ import java.util.regex.Pattern;
 /**
  * Custom validator for Regexes
  */
-public class RegexValidator extends METValidator {
+public class RegexpValidator extends METValidator {
 
   private Pattern pattern;
 
-  public RegexValidator(@NonNull String errorMessage, @NonNull String regex) {
+  public RegexpValidator(@NonNull String errorMessage, @NonNull String regex) {
     super(errorMessage);
     pattern = Pattern.compile(regex);
   }
