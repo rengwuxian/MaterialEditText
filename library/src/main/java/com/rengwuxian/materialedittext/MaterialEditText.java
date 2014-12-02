@@ -25,7 +25,10 @@ import android.widget.EditText;
 
 import com.nineoldandroids.animation.ArgbEvaluator;
 import com.nineoldandroids.animation.ObjectAnimator;
+import com.rengwuxian.materialedittext.validation.MaterialETValidator;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -179,6 +182,7 @@ public class MaterialEditText extends EditText {
   ObjectAnimator bottomLinesAnimator;
   OnFocusChangeListener innerFocusChangeListener;
   OnFocusChangeListener outerFocusChangeListener;
+  private ArrayList<MaterialETValidator> validators = new ArrayList<>();
 
   public MaterialEditText(Context context) {
     this(context, null);
@@ -586,7 +590,9 @@ public class MaterialEditText extends EditText {
 
   /**
    * if the main text matches the regex
+   * @deprecated use the new validator interface to add your own custom validator
    */
+  @Deprecated
   public boolean isValid(String regex) {
     if (regex == null) {
       return false;
@@ -600,7 +606,9 @@ public class MaterialEditText extends EditText {
    * check if the main text matches the regex, and set the error text if not.
    *
    * @return true if it matches the regex, false if not.
+   * @deprecated use the new validator interface to add your own custom validator
    */
+  @Deprecated
   public boolean validate(String regex, CharSequence errorText) {
     boolean isValid = isValid(regex);
     if (!isValid) {
@@ -608,6 +616,46 @@ public class MaterialEditText extends EditText {
     }
     postInvalidate();
     return isValid;
+  }
+
+  /**
+   * Check all validators, sets the error text if not
+   *
+   * @return True if all validators pass, false if not
+   */
+  public boolean validate() {
+
+    if (validators == null || validators.size() == 0) {
+      return true;
+    }
+
+    CharSequence text = getText();
+    boolean isEmpty = text.length() == 0;
+
+    boolean isValid = true;
+    for (MaterialETValidator validator : validators) {
+      //noinspection ConstantConditions
+      isValid = isValid && validator.isValid(text, isEmpty);
+      if (!isValid) {
+        setError(validator.getErrorMessage());
+        break;
+      }
+    }
+
+    postInvalidate();
+    return isValid;
+  }
+
+  public boolean hasValidator() {
+    return this.validators.size() != 0;
+  }
+
+  public void addValidator(MaterialETValidator validator) {
+    this.validators.add(validator);
+  }
+
+  public List<MaterialETValidator> getValidators() {
+    return this.validators;
   }
 
   @Override
@@ -682,7 +730,7 @@ public class MaterialEditText extends EditText {
     // draw the bottom text
     if (textLayout != null) {
       float bottomTextStartX = getScrollX() + getBottomTextLeftOffset();
-      if (tempErrorText != null) { // regex error
+      if (tempErrorText != null) { // validation failed
         textPaint.setColor(errorColor);
         canvas.save();
         canvas.translate(bottomTextStartX, lineStartY + innerComponentsSpacing - fontPaddingTop);
