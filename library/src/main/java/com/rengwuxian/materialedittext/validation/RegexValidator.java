@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 /**
  * Custom validator for Regexes
  */
-public class RegexValidator extends Validator {
+public class RegexValidator extends MaterialETValidator {
 
   private Pattern pattern;
 

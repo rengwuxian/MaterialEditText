@@ -5,11 +5,11 @@ import android.support.annotation.NonNull;
 /**
  * Base Validator class to either implement or inherit from for custom validation
  */
-public abstract class Validator {
+public abstract class MaterialETValidator {
 
   protected String errorMessage;
 
-  public Validator(@NonNull String errorMessage) {
+  public MaterialETValidator(@NonNull String errorMessage) {
       this.errorMessage = errorMessage;
   }
 
