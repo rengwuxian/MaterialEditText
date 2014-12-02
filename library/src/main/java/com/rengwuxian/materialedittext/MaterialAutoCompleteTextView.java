@@ -624,7 +624,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
    * @param validator Validator to check
    * @return True if valid, false if not
    */
-  public boolean validate(@NonNull METValidator validator) {
+  public boolean validateWith(@NonNull METValidator validator) {
     CharSequence text = getText();
     boolean isValid = validator.isValid(text, text.length() == 0);
     if (!isValid) {
