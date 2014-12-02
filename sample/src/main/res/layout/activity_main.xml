@@ -372,7 +372,7 @@
 			<TextView
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:text="app:helperText=&quot;Integer&quot; (in xml)\nvalidate(&quot;\\\\d+&quot;, &quot;Only Integer Valid!&quot;) (in java)"
+				android:text="app:helperText=&quot;Integer&quot; (in xml)\naddValidator(new RegexValidator(&quot;Only Integer Valid!&quot;, &quot;\\\\d+&quot;)); (in java)"
 				android:textColor="#888888"
 				android:textSize="14sp" />
 
