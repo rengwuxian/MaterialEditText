@@ -58,19 +58,23 @@ AppCompat v21 makes it easy to use Material Design EditText in our apps, but it'
 
   ![CustomAccentTypeface](./images/custom_accent_typeface.png)
 
+9. **Hide Underline**
+
+  ![HideUnderLine](./images/hide_underline.png)
+
 ## Sample
 
-[MaterialEditText-1.5.0-sample.apk](https://github.com/rengwuxian/MaterialEditText/releases/download/1.5.0/MaterialEditText-1.5.0-sample.apk)
+[MaterialEditText-1.6.0-sample.apk](https://github.com/rengwuxian/MaterialEditText/releases/download/1.6.0/MaterialEditText-1.6.0-sample.apk)
   
 ## Download
 
 Eclipse:
-[MaterialEditText-1.5.0.aar](https://github.com/rengwuxian/MaterialEditText/releases/download/1.5.0/MaterialEditText-1.5.0.aar)
+[MaterialEditText-1.6.0.aar](https://github.com/rengwuxian/MaterialEditText/releases/download/1.6.0/MaterialEditText-1.6.0.aar)
 
 gradle:
 
 ```groovy
-compile 'com.rengwuxian.materialedittext:library:1.5.0'
+compile 'com.rengwuxian.materialedittext:library:1.6.0'
 ```
 
 Maven:
@@ -78,7 +82,7 @@ Maven:
 <dependency>
   <groupId>com.rengwuxian.materialedittext</groupId>
   <artifactId>library</artifactId>
-  <version>1.5.0</version>
+  <version>1.6.0</version>
   <type>aar</type>
 </dependency>
 ```

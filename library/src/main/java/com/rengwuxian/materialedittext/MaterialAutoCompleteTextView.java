@@ -724,6 +724,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
 
     if (!hideUnderline) {
       lineStartY += innerComponentsSpacing;
+
       // draw the background
       if (!isInternalValid()) { // not valid
         paint.setColor(errorColor);
@@ -747,7 +748,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
     float fontPaddingTop = floatingLabelTextSize + fontMetrics.ascent + fontMetrics.descent;
 
     // draw the characters counter
-    if (maxCharacters > 0) {
+    if ((hasFocus() && maxCharacters > 0) || !isMaxCharactersValid()) {
       textPaint.setColor(isMaxCharactersValid() ? getCurrentHintTextColor() : errorColor);
       String text = getText().length() + " / " + maxCharacters;
       canvas.drawText(text, getWidth() + getScrollX() - textPaint.measureText(text), lineStartY + innerComponentsSpacing + relativeHeight, textPaint);
@@ -762,7 +763,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
         canvas.translate(bottomTextStartX, lineStartY + innerComponentsSpacing - fontPaddingTop);
         textLayout.draw(canvas);
         canvas.restore();
-      } else if (!TextUtils.isEmpty(helperText)) {
+      } else if (hasFocus() && !TextUtils.isEmpty(helperText)) {
         textPaint.setColor(getCurrentHintTextColor());
         canvas.save();
         canvas.translate(bottomTextStartX, lineStartY + innerComponentsSpacing - fontPaddingTop);
