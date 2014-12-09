@@ -518,9 +518,8 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
 
   public void setSingleLineEllipsis(boolean enabled) {
     singleLineEllipsis = enabled;
-    if (enabled) {
-      initPadding();
-    }
+    initMinBottomLines();
+    initPadding();
     postInvalidate();
   }
 
@@ -530,9 +529,8 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
 
   public void setMaxCharacters(int max) {
     maxCharacters = max;
-    if (max > 0) {
-      initPadding();
-    }
+    initMinBottomLines();
+    initPadding();
     postInvalidate();
   }
 
@@ -635,7 +633,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
   }
 
   /**
-   * Check all validators, sets the error text if not.
+   * Check all validators, sets the error text if not
    *
    * NOTE: this stops at the first validator to report invalid.
    *

@@ -518,9 +518,8 @@ public class MaterialEditText extends EditText {
 
   public void setSingleLineEllipsis(boolean enabled) {
     singleLineEllipsis = enabled;
-    if (enabled) {
-      initPadding();
-    }
+    initMinBottomLines();
+    initPadding();
     postInvalidate();
   }
 
@@ -530,9 +529,8 @@ public class MaterialEditText extends EditText {
 
   public void setMaxCharacters(int max) {
     maxCharacters = max;
-    if (max > 0) {
-      initPadding();
-    }
+    initMinBottomLines();
+    initPadding();
     postInvalidate();
   }
 
