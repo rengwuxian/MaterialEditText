@@ -137,6 +137,11 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
   private String helperText;
 
   /**
+   * Helper text color
+   */
+  private int helperTextColor = -1;
+
+  /**
    * error text for manually invoked {@link #setError(CharSequence)}
    */
   private String tempErrorText;
@@ -214,6 +219,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
     maxCharacters = typedArray.getInt(R.styleable.MaterialEditText_maxCharacters, 0);
     singleLineEllipsis = typedArray.getBoolean(R.styleable.MaterialEditText_singleLineEllipsis, false);
     helperText = typedArray.getString(R.styleable.MaterialEditText_helperText);
+    helperTextColor = typedArray.getColor(R.styleable.MaterialEditText_helperTextColor, -1);
     minBottomTextLines = typedArray.getInt(R.styleable.MaterialEditText_minBottomTextLines, 0);
     String fontPath = typedArray.getString(R.styleable.MaterialEditText_accentTypeface);
     if (fontPath != null) {
@@ -534,6 +540,10 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
     postInvalidate();
   }
 
+  public int getErrorColor() {
+    return errorColor;
+  }
+
   public void setErrorColor(int color) {
     errorColor = color;
     postInvalidate();
@@ -547,6 +557,15 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
 
   public String getHelperText() {
     return helperText;
+  }
+
+  public int getHelperTextColor() {
+    return helperTextColor;
+  }
+
+  public void setHelperTextColor(int color) {
+    helperTextColor = color;
+    postInvalidate();
   }
 
   @Override
@@ -762,7 +781,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
         textLayout.draw(canvas);
         canvas.restore();
       } else if (hasFocus() && !TextUtils.isEmpty(helperText)) {
-        textPaint.setColor(getCurrentHintTextColor());
+        textPaint.setColor(helperTextColor != -1 ? helperTextColor : getCurrentHintTextColor());
         canvas.save();
         canvas.translate(bottomTextStartX, lineStartY + innerComponentsSpacing - fontPaddingTop);
         textLayout.draw(canvas);

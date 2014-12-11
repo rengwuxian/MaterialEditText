@@ -21,6 +21,8 @@
     <attr name="minBottomTextLines" format="integer"/>
     <!-- Helper text at the bottom -->
     <attr name="helperText" format="string"/>
+    <!-- Helper text color -->
+    <attr name="helperTextColor" format="color"/>
     <!-- Font of the paint used to draw accent texts -->
     <attr name="accentTypeface" format="string"/>
     <!-- Custom float label text -->
