@@ -41,7 +41,9 @@ import java.util.regex.Pattern;
 public class MaterialEditText extends EditText {
 
   @IntDef({FLOATING_LABEL_NONE, FLOATING_LABEL_NORMAL, FLOATING_LABEL_HIGHLIGHT})
-  public @interface FloatingLabelType {}
+  public @interface FloatingLabelType {
+  }
+
   public static final int FLOATING_LABEL_NONE = 0;
   public static final int FLOATING_LABEL_NORMAL = 1;
   public static final int FLOATING_LABEL_HIGHLIGHT = 2;
@@ -132,6 +134,11 @@ public class MaterialEditText extends EditText {
   private float currentBottomLines;
 
   /**
+   * bottom lines count.
+   */
+  private float bottomLines;
+
+  /**
    * Helper text at the bottom
    */
   private String helperText;
@@ -176,7 +183,6 @@ public class MaterialEditText extends EditText {
    */
   private boolean hideUnderline;
 
-  private boolean attachedToWindow = false;
   private ArgbEvaluator focusEvaluator = new ArgbEvaluator();
   Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
   TextPaint textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
@@ -372,26 +378,6 @@ public class MaterialEditText extends EditText {
     setPaddings(getPaddingLeft(), paddingTop, getPaddingRight(), paddingBottom);
   }
 
-  @Override
-  protected void onAttachedToWindow() {
-    super.onAttachedToWindow();
-    attachedToWindow = true;
-  }
-
-  @Override
-  protected void onDetachedFromWindow() {
-    super.onDetachedFromWindow();
-    attachedToWindow = false;
-  }
-
-  @Override
-  public void onWindowFocusChanged(boolean hasWindowFocus) {
-    super.onWindowFocusChanged(hasWindowFocus);
-    if (hasWindowFocus) {
-      adjustBottomLines();
-    }
-  }
-
   /**
    * calculate {@link #minBottomLines}
    */
@@ -416,6 +402,35 @@ public class MaterialEditText extends EditText {
     innerPaddingTop = top;
     innerPaddingBottom = bottom;
     super.setPadding(left, top + extraPaddingTop, right, bottom + extraPaddingBottom);
+  }
+
+  @Override
+  protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    int oldWidth = getWidth();
+    super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    int newWidth = getWidth();
+
+    if (newWidth >= 0 && oldWidth != newWidth) {
+      adjustBottomLines();
+    }
+  }
+
+  private void adjustBottomLines() {
+    // adjust bottom lines
+    int destBottomLines;
+    if (tempErrorText != null) {
+      textLayout = new StaticLayout(tempErrorText, textPaint, getWidth() - getBottomTextLeftOffset() - getBottomTextRightOffset(), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, true);
+      destBottomLines = Math.max(textLayout.getLineCount(), minBottomTextLines);
+    } else if (helperText != null) {
+      textLayout = new StaticLayout(helperText, textPaint, getWidth() - getBottomTextLeftOffset() - getBottomTextRightOffset(), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, true);
+      destBottomLines = Math.max(textLayout.getLineCount(), minBottomTextLines);
+    } else {
+      destBottomLines = minBottomLines;
+    }
+    if (bottomLines != destBottomLines) {
+      getBottomLinesAnimator(destBottomLines).start();
+    }
+    bottomLines = destBottomLines;
   }
 
   /**
@@ -551,8 +566,8 @@ public class MaterialEditText extends EditText {
 
   public void setHelperText(CharSequence helperText) {
     this.helperText = helperText == null ? null : helperText.toString();
-    postInvalidate();
     adjustBottomLines();
+    postInvalidate();
   }
 
   public String getHelperText() {
@@ -571,31 +586,13 @@ public class MaterialEditText extends EditText {
   @Override
   public void setError(CharSequence errorText) {
     tempErrorText = errorText == null ? null : errorText.toString();
-    postInvalidate();
     adjustBottomLines();
+    postInvalidate();
   }
 
   @Override
   public CharSequence getError() {
     return tempErrorText;
-  }
-
-  private void adjustBottomLines() {
-    int destBottomLines;
-    if (tempErrorText != null) {
-      textLayout = new StaticLayout(tempErrorText, textPaint, getWidth() - getBottomTextLeftOffset() - getBottomTextRightOffset(), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, true);
-      destBottomLines = Math.max(textLayout.getLineCount(), minBottomTextLines);
-    } else if (helperText != null) {
-      textLayout = new StaticLayout(helperText, textPaint, getWidth() - getBottomTextLeftOffset() - getBottomTextRightOffset(), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, true);
-      destBottomLines = Math.max(textLayout.getLineCount(), minBottomTextLines);
-    } else {
-      destBottomLines = minBottomLines;
-    }
-    if (attachedToWindow) {
-      getBottomLinesAnimator(destBottomLines).start();
-    } else {
-      currentBottomLines = minBottomLines;
-    }
   }
 
   /**
@@ -607,6 +604,7 @@ public class MaterialEditText extends EditText {
 
   /**
    * if the main text matches the regex
+   *
    * @deprecated use the new validator interface to add your own custom validator
    */
   @Deprecated
@@ -653,7 +651,7 @@ public class MaterialEditText extends EditText {
 
   /**
    * Check all validators, sets the error text if not
-   *
+   * <p/>
    * NOTE: this stops at the first validator to report invalid.
    *
    * @return True if all validators pass, false if not
@@ -687,7 +685,7 @@ public class MaterialEditText extends EditText {
 
   /**
    * Adds a new validator to the View's list of validators
-   *
+   * <p/>
    * This will be checked with the others in {@link #validate()}
    *
    * @param validator Validator to add
