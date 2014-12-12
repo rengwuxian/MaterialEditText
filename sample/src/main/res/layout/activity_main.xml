@@ -88,49 +88,6 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_marginTop="16dp"
-				android:text="Custom Base Color:"
-				android:textColor="#333333"
-				android:textSize="14sp"/>
-
-			<TextView
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:text="app:baseColor=&quot;#0056d3&quot;"
-				android:textColor="#888888"
-				android:textSize="14sp"/>
-
-			<com.rengwuxian.materialedittext.MaterialEditText
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:hint="Custom Base Color"
-				app:baseColor="#0056d3"/>
-
-			<TextView
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="16dp"
-				android:text="Custom Primary Color:"
-				android:textColor="#333333"
-				android:textSize="14sp"/>
-
-			<TextView
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:text="app:baseColor=&quot;#0056d3&quot;\napp:primaryColor=&quot;#982360&quot;"
-				android:textColor="#888888"
-				android:textSize="14sp"/>
-
-			<com.rengwuxian.materialedittext.MaterialEditText
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:hint="Custom Primary Color"
-				app:baseColor="#0056d3"
-				app:primaryColor="#982360"/>
-
-			<TextView
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="16dp"
 				android:text="Floating Label:"
 				android:textColor="#333333"
 				android:textSize="14sp"/>
@@ -159,7 +116,7 @@
 			<TextView
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:text="app:floatingLabel=&quot;highlight&quot;\napp:primaryColor=&quot;#0056d3&quot;"
+				android:text="app:floatingLabel=&quot;highlight&quot;"
 				android:textColor="#888888"
 				android:textSize="14sp"/>
 
@@ -167,8 +124,7 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:hint="Highlight Floating Label"
-				app:floatingLabel="highlight"
-				app:primaryColor="#982360"/>
+				app:floatingLabel="highlight"/>
 
 			<TextView
 				android:layout_width="match_parent"
@@ -219,14 +175,14 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_marginTop="16dp"
-				android:text="Max Characters:"
+				android:text="Max/Min Characters:"
 				android:textColor="#333333"
 				android:textSize="14sp"/>
 
 			<TextView
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:text="app:maxCharacters=&quot;10&quot;"
+				android:text="app:maxCharacters=&quot;5&quot;"
 				android:textColor="#888888"
 				android:textSize="14sp"/>
 
@@ -234,29 +190,34 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:hint="Max Characters"
-				app:maxCharacters="10"/>
+				app:maxCharacters="5"/>
 
 			<TextView
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:layout_marginTop="16dp"
-				android:text="Max Characters With Custom Error Color:"
-				android:textColor="#333333"
-				android:textSize="14sp"/>
-
-			<TextView
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:text="app:maxCharacters=&quot;10&quot;\napp:errorColor=&quot;#ddaa00&quot;"
+				android:text="app:minCharacters=&quot;3&quot;"
 				android:textColor="#888888"
 				android:textSize="14sp"/>
 
 			<com.rengwuxian.materialedittext.MaterialEditText
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:hint="Max Characters With Custom Error Color"
-				app:errorColor="#ddaa00"
-				app:maxCharacters="10"/>
+				android:hint="Min Characters"
+				app:minCharacters="3"/>
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="app:minCharacters=&quot;3&quot;\napp:maxCharacters=&quot;5&quot;"
+				android:textColor="#888888"
+				android:textSize="14sp"/>
+
+			<com.rengwuxian.materialedittext.MaterialEditText
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:hint="Min and Max"
+				app:minCharacters="3"
+				app:maxCharacters="5"/>
 
 			<TextView
 				android:layout_width="match_parent"
@@ -365,6 +326,78 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_marginTop="16dp"
+				android:text="Custom Base/Primary/Error/HelperText Color:"
+				android:textColor="#333333"
+				android:textSize="14sp"/>
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="app:baseColor=&quot;#009688&quot;\napp:primaryColor=&quot;#2196F3&quot;\napp:errorColor=&quot;#ddaa00&quot;\napp:helperTextColor=&quot;#795548&quot;"
+				android:textColor="#888888"
+				android:textSize="14sp"/>
+
+			<com.rengwuxian.materialedittext.MaterialEditText
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:hint="Custom Colors"
+				app:floatingLabel="highlight"
+				app:helperText="Helper Text"
+				app:maxCharacters="5"
+				app:baseColor="#009688"
+				app:primaryColor="#2196F3"
+				app:errorColor="#ddaa00"
+				app:helperTextColor="#795548"/>
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="16dp"
+				android:text="Custom Accent Typeface:"
+				android:textColor="#333333"
+				android:textSize="14sp"/>
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="app:floatingLabel=&quot;normal&quot;\napp:helperText=&quot;Helper Text&quot;\napp:maxCharacters=&quot;5&quot;\napp:accentTypeface=&quot;fonts/Roboto-LightItalic.ttf&quot;"
+				android:textColor="#888888"
+				android:textSize="14sp"/>
+
+			<com.rengwuxian.materialedittext.MaterialEditText
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:hint="Custom Accent Typeface"
+				app:accentTypeface="fonts/Roboto-LightItalic.ttf"
+				app:floatingLabel="normal"
+				app:helperText="Helper Text"
+				app:maxCharacters="5"/>
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="16dp"
+				android:text="Hide underline"
+				android:textColor="#333333"
+				android:textSize="14sp"/>
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="app:hideUnderline=&quot;true&quot;"
+				android:textColor="#888888"
+				android:textSize="14sp"/>
+
+			<com.rengwuxian.materialedittext.MaterialEditText
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:hint="Hidden underline"
+				app:hideUnderline="true"/>
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="16dp"
 				android:text="Validation:"
 				android:textColor="#333333"
 				android:textSize="14sp"/>
@@ -397,80 +430,6 @@
 					android:text="VALIDATE"/>
 
 			</LinearLayout>
-
-			<TextView
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="16dp"
-				android:text="Custom Accent Typeface:"
-				android:textColor="#333333"
-				android:textSize="14sp"/>
-
-			<TextView
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:text="app:floatingLabel=&quot;normal&quot;\napp:helperText=&quot;Helper Text&quot;\napp:maxCharacters=&quot;10&quot;\napp:accentTypeface=&quot;fonts/Roboto-LightItalic.ttf&quot;"
-				android:textColor="#888888"
-				android:textSize="14sp"/>
-
-			<com.rengwuxian.materialedittext.MaterialEditText
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:hint="Custom Accent Typeface"
-				app:accentTypeface="fonts/Roboto-LightItalic.ttf"
-				app:floatingLabel="normal"
-				app:helperText="Helper Text"
-				app:maxCharacters="10"/>
-
-			<TextView
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="16dp"
-				android:text="Hide underline"
-				android:textColor="#333333"
-				android:textSize="14sp"/>
-
-			<TextView
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:text="app:hideUnderline=&quot;true&quot;"
-				android:textColor="#888888"
-				android:textSize="14sp"/>
-
-			<com.rengwuxian.materialedittext.MaterialEditText
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:hint="Hidden underline"
-				app:hideUnderline="true"/>
-
-			<TextView
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="16dp"
-				android:text="Complex:"
-				android:textColor="#333333"
-				android:textSize="14sp"/>
-
-			<TextView
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:text="app:baseColor=&quot;#982360&quot;\napp:primaryColor=&quot;#0056d3&quot;\napp:floatingLabel=&quot;highlight&quot;\napp:floatingLabelText=&quot;Label&quot;\napp:maxCharacters=&quot;10&quot;\napp:errorColor=&quot;#ddaa00&quot;\napp:singleLineEllipsis=&quot;true&quot;\napp:accentTypeface=&quot;fonts/Roboto-LightItalic.ttf&quot;"
-				android:textColor="#888888"
-				android:textSize="14sp"/>
-
-			<com.rengwuxian.materialedittext.MaterialEditText
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:hint="Complex"
-				app:accentTypeface="fonts/Roboto-LightItalic.ttf"
-				app:baseColor="#982360"
-				app:errorColor="#ddaa00"
-				app:floatingLabel="highlight"
-				app:floatingLabelText="Label"
-				app:helperText="Helper Text"
-				app:maxCharacters="10"
-				app:primaryColor="#0056d3"
-				app:singleLineEllipsis="true"/>
 
 		</LinearLayout>
 	</LinearLayout>

@@ -452,11 +452,11 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
 
   @Override
   protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-    int oldWidth = getWidth();
+    int oldWidth = getMeasuredWidth();
     super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-    int newWidth = getWidth();
+    int newWidth = getMeasuredWidth();
 
-    if (newWidth >= 0 && oldWidth != newWidth) {
+    if (newWidth > 0 && oldWidth != newWidth) {
       adjustBottomLines();
     }
   }
@@ -465,10 +465,10 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
     // adjust bottom lines
     int destBottomLines;
     if (tempErrorText != null) {
-      textLayout = new StaticLayout(tempErrorText, textPaint, getWidth() - getBottomTextLeftOffset() - getBottomTextRightOffset(), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, true);
+      textLayout = new StaticLayout(tempErrorText, textPaint, getMeasuredWidth() - getBottomTextLeftOffset() - getBottomTextRightOffset(), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, true);
       destBottomLines = Math.max(textLayout.getLineCount(), minBottomTextLines);
     } else if (helperText != null) {
-      textLayout = new StaticLayout(helperText, textPaint, getWidth() - getBottomTextLeftOffset() - getBottomTextRightOffset(), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, true);
+      textLayout = new StaticLayout(helperText, textPaint, getMeasuredWidth() - getBottomTextLeftOffset() - getBottomTextRightOffset(), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, true);
       destBottomLines = Math.max(textLayout.getLineCount(), minBottomTextLines);
     } else {
       destBottomLines = minBottomLines;

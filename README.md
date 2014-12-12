@@ -10,71 +10,65 @@ AppCompat v21 makes it easy to use Material Design EditText in our apps, but it'
 ## Features
 1. **Basic**
 
-  ![Basic](./images/basic.jpg)
+  ![Basic](./images/basic.png)
   
-2. **Custom Base Color**
-  
-  ![BaseColor](./images/custom_base_color.jpg)
-  
-3. **Custom Primary Color**
-  
-  ![PrimaryColor](./images/custom_primary_color.jpg)
-  
-4. **Floating Label**
+2. **Floating Label**
   
   normal:
   
-  ![FloatingLabel](./images/floating_label.jpg)
+  ![FloatingLabel](./images/floating_label.png)
   
   highlight:
   
-  ![HighlightFloatingLabel](./images/highlight.jpg)
+  ![HighlightFloatingLabel](./images/highlight.png)
 
   custom floating label text:
 
   ![CustomFloatingLabelText](./images/custom_floating_label_text.png)
   
-5. **Single Line Ellipsis**
+3. **Single Line Ellipsis**
   
-  ![SingLineEllipsis](./images/ellipsis.jpg)
+  ![SingLineEllipsis](./images/ellipsis.png)
   
-6. **Max Characters**
+4. **Max/Min Characters**
   
-  default error color:
-  
-  ![MaxCharacters](./images/max_characters.jpg)
-  
-  custom error color:
-  
-  ![CustomErrorColor](./images/custom_error.jpg)
-  
-7. **Helper Text and Error Text**
+  ![MaxCharacters](./images/max_characters.png)
 
-  ![HelperTextAndErrorText](./images/helper_text_and_error_text.jpg)
+  ![MinCharacters](./images/min_characters.png)
 
-8. **Custom accent typeface**
+  ![MinAndMaxCharacters](./images/min_and_max.png)
+  
+5. **Helper Text and Error Text**
+
+  ![HelperTextAndErrorText](./images/helper_error_text.png)
+
+6. **Custom Base/Primary/Error/HelperText Colors**
+
+  ![CustomColors](./images/custom_colors.png)
+
+7. **Custom accent typeface**
 
   floating label, error/helper text, character counter, etc.
 
   ![CustomAccentTypeface](./images/custom_accent_typeface.png)
 
-9. **Hide Underline**
+8. **Hide Underline**
 
   ![HideUnderLine](./images/hide_underline.png)
 
 ## Sample
 
-[MaterialEditText-1.6.0-sample.apk](https://github.com/rengwuxian/MaterialEditText/releases/download/1.6.0/MaterialEditText-1.6.0-sample.apk)
+[MaterialEditText-1.7.1-sample.apk](https://github.com/rengwuxian/MaterialEditText/releases/download/1.7.1/MaterialEditText-1.7.1-sample.apk)
   
 ## Download
 
 Eclipse:
-[MaterialEditText-1.6.0.aar](https://github.com/rengwuxian/MaterialEditText/releases/download/1.6.0/MaterialEditText-1.6.0.aar)
+[MaterialEditText-1.7.1.aar](https://github.com/rengwuxian/MaterialEditText/releases/download/1.7.1/MaterialEditText-1.7.1.aar)
 
 gradle:
 
 ```groovy
-compile 'com.rengwuxian.materialedittext:library:1.6.0'
+compile 'com.rengwuxian.materialedittext:library:1.7.1'
 ```
 
 Maven:
@@ -82,7 +76,7 @@ Maven:
 <dependency>
   <groupId>com.rengwuxian.materialedittext</groupId>
   <artifactId>library</artifactId>
-  <version>1.6.0</version>
+  <version>1.7.1</version>
   <type>aar</type>
 </dependency>
 ```
