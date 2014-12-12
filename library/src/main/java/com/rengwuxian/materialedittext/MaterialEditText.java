@@ -1,5 +1,6 @@
 package com.rengwuxian.materialedittext;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
@@ -19,6 +20,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.TransformationMethod;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
@@ -203,6 +205,7 @@ public class MaterialEditText extends EditText {
     this(context, attrs, 0);
   }
 
+  @TargetApi(Build.VERSION_CODES.LOLLIPOP)
   public MaterialEditText(Context context, AttributeSet attrs, int style) {
     super(context, attrs, style);
 
@@ -214,12 +217,42 @@ public class MaterialEditText extends EditText {
     innerComponentsSpacing = getResources().getDimensionPixelSize(R.dimen.inner_components_spacing);
     bottomEllipsisSize = getResources().getDimensionPixelSize(R.dimen.bottom_ellipsis_height);
 
+
+    // retrieve the default baseColor
+    int defaultBaseColor;
+    TypedValue baseColorTypedValue = new TypedValue();
+    context.getTheme().resolveAttribute(android.R.attr.windowBackground, baseColorTypedValue, true);
+    defaultBaseColor = Colors.getBaseColor(baseColorTypedValue.data);
+
     TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.MaterialEditText);
-    baseColor = typedArray.getColor(R.styleable.MaterialEditText_baseColor, Color.BLACK);
+    baseColor = typedArray.getColor(R.styleable.MaterialEditText_baseColor, defaultBaseColor);
     ColorStateList colorStateList = new ColorStateList(new int[][]{new int[]{android.R.attr.state_enabled}, EMPTY_STATE_SET}, new int[]{baseColor & 0x00ffffff | 0xdf000000, baseColor & 0x00ffffff | 0x44000000});
     setTextColor(colorStateList);
 
-    primaryColor = typedArray.getColor(R.styleable.MaterialEditText_primaryColor, baseColor);
+    // retrieve the default primaryColor
+    int defaultPrimaryColor;
+    TypedValue primaryColorTypedValue = new TypedValue();
+    try {
+      if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+        throw new RuntimeException("SDK_INT less than LOLLIPOP");
+      }
+      context.getTheme().resolveAttribute(android.R.attr.colorPrimary, primaryColorTypedValue, true);
+      defaultPrimaryColor = primaryColorTypedValue.data;
+    } catch (Exception e) {
+      try {
+        int colorAccentId = getResources().getIdentifier("colorPrimary", "attr", getContext().getPackageName());
+        if (colorAccentId != 0) {
+          context.getTheme().resolveAttribute(colorAccentId, primaryColorTypedValue, true);
+          defaultPrimaryColor = primaryColorTypedValue.data;
+        } else {
+          throw new RuntimeException("colorAccent not found");
+        }
+      } catch (Exception e1) {
+        defaultPrimaryColor = baseColor;
+      }
+    }
+
+    primaryColor = typedArray.getColor(R.styleable.MaterialEditText_primaryColor, defaultPrimaryColor);
     setFloatingLabelInternal(typedArray.getInt(R.styleable.MaterialEditText_floatingLabel, 0));
     errorColor = typedArray.getColor(R.styleable.MaterialEditText_errorColor, Color.parseColor("#e7492E"));
     maxCharacters = typedArray.getInt(R.styleable.MaterialEditText_maxCharacters, 0);
