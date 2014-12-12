@@ -787,7 +787,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
         paint.setColor(primaryColor);
         canvas.drawRect(getScrollX(), lineStartY, getWidth() + getScrollX(), lineStartY + getPixel(2), paint);
       } else { // normal
-        paint.setColor(baseColor);
+        paint.setColor(baseColor & 0x00ffffff | 0x44000000);
         canvas.drawRect(getScrollX(), lineStartY, getWidth() + getScrollX(), lineStartY + getPixel(1), paint);
       }
     }
