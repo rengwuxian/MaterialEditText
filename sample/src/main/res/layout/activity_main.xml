@@ -234,7 +234,7 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:hint="Max Characters"
-				app:maxCharacters="10"/>
+				app:minCharacters="8"/>
 
 			<TextView
 				android:layout_width="match_parent"

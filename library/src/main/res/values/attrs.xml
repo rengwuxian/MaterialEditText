@@ -13,7 +13,9 @@
     </attr>
     <!-- The color for when something is wrong.(e.g. exceeding max characters) -->
     <attr name="errorColor" format="color"/>
-    <!-- Characters count limit. 0 means no limit. -->
+    <!-- Min characters count limit. 0 means no limit. -->
+    <attr name="minCharacters" format="integer"/>
+    <!-- max Characters count limit. 0 means no limit. -->
     <attr name="maxCharacters" format="integer"/>
     <!-- Whether to show the bottom ellipsis in singleLine mode -->
     <attr name="singleLineEllipsis" format="boolean"/>

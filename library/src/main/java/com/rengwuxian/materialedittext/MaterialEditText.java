@@ -111,7 +111,12 @@ public class MaterialEditText extends EditText {
   private int errorColor;
 
   /**
-   * characters count limit. 0 means no limit. default is 0. NOTE: the character counter will increase the View's height.
+   * min characters count limit. 0 means no limit. default is 0. NOTE: the character counter will increase the View's height.
+   */
+  private int minCharacters;
+
+  /**
+   * max characters count limit. 0 means no limit. default is 0. NOTE: the character counter will increase the View's height.
    */
   private int maxCharacters;
 
@@ -260,6 +265,7 @@ public class MaterialEditText extends EditText {
     primaryColor = typedArray.getColor(R.styleable.MaterialEditText_primaryColor, defaultPrimaryColor);
     setFloatingLabelInternal(typedArray.getInt(R.styleable.MaterialEditText_floatingLabel, 0));
     errorColor = typedArray.getColor(R.styleable.MaterialEditText_errorColor, Color.parseColor("#e7492E"));
+    minCharacters = typedArray.getInt(R.styleable.MaterialEditText_minCharacters, 0);
     maxCharacters = typedArray.getInt(R.styleable.MaterialEditText_maxCharacters, 0);
     singleLineEllipsis = typedArray.getBoolean(R.styleable.MaterialEditText_singleLineEllipsis, false);
     helperText = typedArray.getString(R.styleable.MaterialEditText_helperText);
@@ -421,7 +427,7 @@ public class MaterialEditText extends EditText {
    * calculate {@link #minBottomLines}
    */
   private void initMinBottomLines() {
-    boolean extendBottom = maxCharacters > 0 || singleLineEllipsis || tempErrorText != null || helperText != null;
+    boolean extendBottom = minCharacters > 0 || maxCharacters > 0 || singleLineEllipsis || tempErrorText != null || helperText != null;
     currentBottomLines = minBottomLines = minBottomTextLines > 0 ? minBottomTextLines : extendBottom ? 1 : 0;
   }
 
@@ -603,6 +609,17 @@ public class MaterialEditText extends EditText {
     postInvalidate();
   }
 
+  public int getMinCharacters() {
+    return minCharacters;
+  }
+
+  public void setMinCharacters(int min) {
+    minCharacters = min;
+    initMinBottomLines();
+    initPadding();
+    postInvalidate();
+  }
+
   public int getErrorColor() {
     return errorColor;
   }
@@ -647,7 +664,7 @@ public class MaterialEditText extends EditText {
    * only used to draw the bottom line
    */
   private boolean isInternalValid() {
-    return tempErrorText == null && isMaxCharactersValid();
+    return tempErrorText == null && isCharactersCountValid();
   }
 
   /**
@@ -811,9 +828,17 @@ public class MaterialEditText extends EditText {
     float fontPaddingTop = floatingLabelTextSize + fontMetrics.ascent + fontMetrics.descent;
 
     // draw the characters counter
-    if ((hasFocus() && maxCharacters > 0) || !isMaxCharactersValid()) {
-      textPaint.setColor(isMaxCharactersValid() ? getCurrentHintTextColor() : errorColor);
-      String text = getText().length() + " / " + maxCharacters;
+    if ((hasFocus() && hasCharatersCounter()) || !isCharactersCountValid()) {
+      textPaint.setColor(isCharactersCountValid() ? getCurrentHintTextColor() : errorColor);
+      String text;
+      if (minCharacters <= 0) {
+        text = getText().length() + " / " + maxCharacters;
+      } else if (maxCharacters <= 0) {
+        text = getText().length() + " / " + minCharacters + "+";
+      } else {
+        text = getText().length() + " / " + minCharacters + "-" + maxCharacters;
+      }
+
       canvas.drawText(text, getWidth() + getScrollX() - textPaint.measureText(text), lineStartY + bottomSpacing + relativeHeight, textPaint);
     }
 
@@ -871,11 +896,15 @@ public class MaterialEditText extends EditText {
   }
 
   private int getBottomTextRightOffset() {
-    return maxCharacters > 0 ? (int) textPaint.measureText("00/000") : 0;
+    return hasCharatersCounter() ? (int) textPaint.measureText("00/000") : 0;
   }
 
-  public boolean isMaxCharactersValid() {
-    return maxCharacters <= 0 || getText() == null || getText().length() <= maxCharacters;
+  public boolean isCharactersCountValid() {
+    return !hasCharatersCounter() || getText() == null || getText().length() == 0 || (getText().length() >= minCharacters && (maxCharacters <= 0 || getText().length() <= maxCharacters));
+  }
+
+  private boolean hasCharatersCounter() {
+    return minCharacters > 0 || maxCharacters > 0;
   }
 
   @Override
