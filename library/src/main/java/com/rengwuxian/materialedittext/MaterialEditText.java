@@ -66,9 +66,14 @@ public class MaterialEditText extends EditText {
   private final int floatingLabelTextSize;
 
   /**
-   * the spacing between the main text and the inner components (floating label, bottom ellipsis, characters counter).
+   * the spacing between the main text and the floating label.
    */
-  private final int innerComponentsSpacing;
+  private int floatingLabelSpacing;
+
+  /**
+   * the spacing between the main text and the bottom components (bottom ellipsis, helper/error text, characters counter).
+   */
+  private final int bottomSpacing;
 
   /**
    * whether the floating label should be shown. default is false.
@@ -214,7 +219,7 @@ public class MaterialEditText extends EditText {
     setClickable(true);
 
     floatingLabelTextSize = getResources().getDimensionPixelSize(R.dimen.floating_label_text_size);
-    innerComponentsSpacing = getResources().getDimensionPixelSize(R.dimen.inner_components_spacing);
+    bottomSpacing = getResources().getDimensionPixelSize(R.dimen.inner_components_spacing);
     bottomEllipsisSize = getResources().getDimensionPixelSize(R.dimen.bottom_ellipsis_height);
 
 
@@ -269,6 +274,7 @@ public class MaterialEditText extends EditText {
     if (floatingLabelText == null) {
       floatingLabelText = getHint();
     }
+    floatingLabelSpacing = typedArray.getDimensionPixelSize(R.styleable.MaterialEditText_floatingLabelSpacing, bottomSpacing);
     hideUnderline = typedArray.getBoolean(R.styleable.MaterialEditText_hideUnderline, false);
     typedArray.recycle();
 
@@ -406,8 +412,8 @@ public class MaterialEditText extends EditText {
   private void initPadding() {
     int paddingTop = getPaddingTop() - extraPaddingTop;
     int paddingBottom = getPaddingBottom() - extraPaddingBottom;
-    extraPaddingTop = floatingLabelEnabled ? floatingLabelTextSize + innerComponentsSpacing : innerComponentsSpacing;
-    extraPaddingBottom = (int) ((fontMetrics.descent - fontMetrics.ascent) * currentBottomLines) + (hideUnderline ? innerComponentsSpacing : innerComponentsSpacing * 2);
+    extraPaddingTop = floatingLabelEnabled ? floatingLabelTextSize + floatingLabelSpacing : floatingLabelSpacing;
+    extraPaddingBottom = (int) ((fontMetrics.descent - fontMetrics.ascent) * currentBottomLines) + (hideUnderline ? bottomSpacing : bottomSpacing * 2);
     setPaddings(getPaddingLeft(), paddingTop, getPaddingRight(), paddingBottom);
   }
 
@@ -563,6 +569,15 @@ public class MaterialEditText extends EditText {
 
   public void setFloatingLabel(@FloatingLabelType int mode) {
     setFloatingLabelInternal(mode);
+    postInvalidate();
+  }
+
+  public int getFloatingLabelSpacing() {
+    return floatingLabelSpacing;
+  }
+
+  public void setFloatingLabelSpacing(int spacing) {
+    floatingLabelSpacing = spacing;
     postInvalidate();
   }
 
@@ -771,7 +786,7 @@ public class MaterialEditText extends EditText {
     float lineStartY = getScrollY() + getHeight() - getPaddingBottom();
 
     if (!hideUnderline) {
-      lineStartY += innerComponentsSpacing;
+      lineStartY += bottomSpacing;
 
       // draw the background
       if (!isInternalValid()) { // not valid
@@ -799,7 +814,7 @@ public class MaterialEditText extends EditText {
     if ((hasFocus() && maxCharacters > 0) || !isMaxCharactersValid()) {
       textPaint.setColor(isMaxCharactersValid() ? getCurrentHintTextColor() : errorColor);
       String text = getText().length() + " / " + maxCharacters;
-      canvas.drawText(text, getWidth() + getScrollX() - textPaint.measureText(text), lineStartY + innerComponentsSpacing + relativeHeight, textPaint);
+      canvas.drawText(text, getWidth() + getScrollX() - textPaint.measureText(text), lineStartY + bottomSpacing + relativeHeight, textPaint);
     }
 
     // draw the bottom text
@@ -808,13 +823,13 @@ public class MaterialEditText extends EditText {
       if (tempErrorText != null) { // validation failed
         textPaint.setColor(errorColor);
         canvas.save();
-        canvas.translate(bottomTextStartX, lineStartY + innerComponentsSpacing - fontPaddingTop);
+        canvas.translate(bottomTextStartX, lineStartY + bottomSpacing - fontPaddingTop);
         textLayout.draw(canvas);
         canvas.restore();
       } else if (hasFocus() && !TextUtils.isEmpty(helperText)) {
         textPaint.setColor(helperTextColor != -1 ? helperTextColor : getCurrentHintTextColor());
         canvas.save();
-        canvas.translate(bottomTextStartX, lineStartY + innerComponentsSpacing - fontPaddingTop);
+        canvas.translate(bottomTextStartX, lineStartY + bottomSpacing - fontPaddingTop);
         textLayout.draw(canvas);
         canvas.restore();
       }
@@ -826,8 +841,8 @@ public class MaterialEditText extends EditText {
       textPaint.setColor((Integer) focusEvaluator.evaluate(focusFraction, getCurrentHintTextColor(), primaryColor));
 
       // calculate the vertical position
-      int start = innerPaddingTop + floatingLabelTextSize + innerComponentsSpacing;
-      int distance = innerComponentsSpacing;
+      int start = innerPaddingTop + floatingLabelTextSize + floatingLabelSpacing;
+      int distance = floatingLabelSpacing;
       int position = (int) (start - distance * floatingLabelFraction);
 
       // calculate the alpha
@@ -841,7 +856,7 @@ public class MaterialEditText extends EditText {
     // draw the bottom ellipsis
     if (hasFocus() && singleLineEllipsis && getScrollX() != 0) {
       paint.setColor(primaryColor);
-      float startY = lineStartY + innerComponentsSpacing;
+      float startY = lineStartY + bottomSpacing;
       canvas.drawCircle(bottomEllipsisSize / 2 + getScrollX(), startY + bottomEllipsisSize / 2, bottomEllipsisSize / 2, paint);
       canvas.drawCircle(bottomEllipsisSize * 5 / 2 + getScrollX(), startY + bottomEllipsisSize / 2, bottomEllipsisSize / 2, paint);
       canvas.drawCircle(bottomEllipsisSize * 9 / 2 + getScrollX(), startY + bottomEllipsisSize / 2, bottomEllipsisSize / 2, paint);
