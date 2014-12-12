@@ -21,6 +21,7 @@ import android.text.TextWatcher;
 import android.text.method.TransformationMethod;
 import android.util.AttributeSet;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
@@ -865,17 +866,28 @@ public class MaterialEditText extends EditText {
       // calculate the text color
       textPaint.setColor((Integer) focusEvaluator.evaluate(focusFraction, getCurrentHintTextColor(), primaryColor));
 
+      // calculate the horizontal position
+      float floatingLabelWidth = textPaint.measureText(floatingLabelText.toString());
+      int floatingLabelStartX = getScrollX();
+      if ((getGravity() & Gravity.LEFT) == Gravity.LEFT) {
+        floatingLabelStartX += getPaddingLeft();
+      } else if ((getGravity() & Gravity.RIGHT) == Gravity.RIGHT) {
+        floatingLabelStartX += getWidth() - getPaddingRight() - floatingLabelWidth;
+      } else {
+        floatingLabelStartX += (int) (getPaddingLeft() + (getWidth() - getPaddingLeft() - getPaddingRight() - floatingLabelWidth) / 2);
+      }
+
       // calculate the vertical position
-      int start = innerPaddingTop + floatingLabelTextSize + floatingLabelSpacing;
+      int floatingLabelStartY = innerPaddingTop + floatingLabelTextSize + floatingLabelSpacing;
       int distance = floatingLabelSpacing;
-      int position = (int) (start - distance * floatingLabelFraction);
+      int position = (int) (floatingLabelStartY - distance * floatingLabelFraction);
 
       // calculate the alpha
       int alpha = (int) (floatingLabelFraction * 0xff * (0.74f * focusFraction + 0.26f));
       textPaint.setAlpha(alpha);
 
       // draw the floating label
-      canvas.drawText(floatingLabelText.toString(), getPaddingLeft() + getScrollX(), position, textPaint);
+      canvas.drawText(floatingLabelText.toString(), floatingLabelStartX, position, textPaint);
     }
 
     // draw the bottom ellipsis
