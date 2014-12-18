@@ -224,9 +224,16 @@ public class MaterialEditText extends EditText {
     setFocusableInTouchMode(true);
     setClickable(true);
 
-    floatingLabelTextSize = getResources().getDimensionPixelSize(R.dimen.floating_label_text_size);
-    bottomSpacing = getResources().getDimensionPixelSize(R.dimen.inner_components_spacing);
-    bottomEllipsisSize = getResources().getDimensionPixelSize(R.dimen.bottom_ellipsis_height);
+    if (isInEditMode()) {
+      // fake values to satisfy the Preview mode
+      floatingLabelTextSize = 24;
+      bottomSpacing = 16;
+      bottomEllipsisSize = 8;
+    } else {
+      floatingLabelTextSize = getResources().getDimensionPixelSize(R.dimen.floating_label_text_size);
+      bottomSpacing = getResources().getDimensionPixelSize(R.dimen.inner_components_spacing);
+      bottomEllipsisSize = getResources().getDimensionPixelSize(R.dimen.bottom_ellipsis_height);
+    }
 
 
     // retrieve the default baseColor
@@ -273,7 +280,7 @@ public class MaterialEditText extends EditText {
     helperTextColor = typedArray.getColor(R.styleable.MaterialEditText_helperTextColor, -1);
     minBottomTextLines = typedArray.getInt(R.styleable.MaterialEditText_minBottomTextLines, 0);
     String fontPath = typedArray.getString(R.styleable.MaterialEditText_accentTypeface);
-    if (fontPath != null) {
+    if (fontPath != null && !isInEditMode()) {
       accentTypeface = getCustomTypeface(fontPath);
       textPaint.setTypeface(accentTypeface);
     }
