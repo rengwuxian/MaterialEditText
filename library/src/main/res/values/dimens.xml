@@ -4,7 +4,7 @@
   <dimen name="default_padding_bottom">8dp</dimen>
   <dimen name="inner_padding_left">0dp</dimen>
   <dimen name="inner_padding_right">0dp</dimen>
-  <dimen name="floating_label_text_size">12dp</dimen>
+  <dimen name="floating_label_text_size">12sp</dimen>
   <dimen name="inner_components_spacing">8dp</dimen>
   <dimen name="bottom_ellipsis_height">4dp</dimen>
 </resources>

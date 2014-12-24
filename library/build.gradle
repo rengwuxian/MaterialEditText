@@ -17,9 +17,9 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:support-annotations:21.0.0'
+    compile 'com.android.support:support-annotations:21.0.3'
     compile 'com.nineoldandroids:library:2.4.0'
-    compile 'com.android.support:appcompat-v7:21.0.2'
+    compile 'com.android.support:appcompat-v7:21.0.3'
 }
 
 // Used to push in maven
