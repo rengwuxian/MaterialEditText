@@ -196,6 +196,11 @@ public class MaterialEditText extends EditText {
    */
   private boolean hideUnderline;
 
+  /**
+   * Keep track the initial state of edit text
+   */
+  private boolean isTextChanged;
+
   private ArgbEvaluator focusEvaluator = new ArgbEvaluator();
   Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
   TextPaint textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
@@ -332,6 +337,7 @@ public class MaterialEditText extends EditText {
 
       @Override
       public void onTextChanged(CharSequence s, int start, int before, int count) {
+        isTextChanged = (!isTextChanged && !TextUtils.isEmpty(s)) ? true : isTextChanged;
       }
 
       @Override
@@ -752,6 +758,10 @@ public class MaterialEditText extends EditText {
     return isValid;
   }
 
+  public boolean isValidated() {
+    return !isTextChanged || (validate() && isCharactersCountValid());
+  }
+
   public boolean hasValidator() {
     return this.validators.size() != 0;
   }
@@ -814,7 +824,7 @@ public class MaterialEditText extends EditText {
       lineStartY += bottomSpacing;
 
       // draw the background
-      if (!isInternalValid()) { // not valid
+      if (!isValidated()) { // not valid
         paint.setColor(errorColor);
         canvas.drawRect(getScrollX(), lineStartY, getWidth() + getScrollX(), lineStartY + getPixel(2), paint);
       } else if (!isEnabled()) { // disabled
@@ -836,7 +846,7 @@ public class MaterialEditText extends EditText {
     float fontPaddingTop = floatingLabelTextSize + fontMetrics.ascent + fontMetrics.descent;
 
     // draw the characters counter
-    if ((hasFocus() && hasCharatersCounter()) || !isCharactersCountValid()) {
+    if ((hasFocus() && hasCharatersCounter()) || !isValidated()) {
       textPaint.setColor(isCharactersCountValid() ? getCurrentHintTextColor() : errorColor);
       String text;
       if (minCharacters <= 0) {
