@@ -197,9 +197,14 @@ public class MaterialEditText extends EditText {
   private boolean hideUnderline;
 
   /**
-   * Keep track the initial state of edit text
+   * Whether to validate as soon as the text has changed. False by default
    */
-  private boolean isTextChanged;
+  private boolean autoValidate;
+
+  /**
+   * Whether the characters count is valid
+   */
+  private boolean charactersCountValid;
 
   private ArgbEvaluator focusEvaluator = new ArgbEvaluator();
   Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -255,9 +260,9 @@ public class MaterialEditText extends EditText {
       defaultPrimaryColor = primaryColorTypedValue.data;
     } catch (Exception e) {
       try {
-        int colorAccentId = getResources().getIdentifier("colorPrimary", "attr", getContext().getPackageName());
-        if (colorAccentId != 0) {
-          context.getTheme().resolveAttribute(colorAccentId, primaryColorTypedValue, true);
+        int colorPrimaryId = getResources().getIdentifier("colorPrimary", "attr", getContext().getPackageName());
+        if (colorPrimaryId != 0) {
+          context.getTheme().resolveAttribute(colorPrimaryId, primaryColorTypedValue, true);
           defaultPrimaryColor = primaryColorTypedValue.data;
         } else {
           throw new RuntimeException("colorPrimary not found");
@@ -287,6 +292,7 @@ public class MaterialEditText extends EditText {
     }
     floatingLabelSpacing = typedArray.getDimensionPixelSize(R.styleable.MaterialEditText_floatingLabelSpacing, bottomSpacing);
     hideUnderline = typedArray.getBoolean(R.styleable.MaterialEditText_hideUnderline, false);
+    autoValidate = typedArray.getBoolean(R.styleable.MaterialEditText_autoValidate, false);
     typedArray.recycle();
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -305,7 +311,8 @@ public class MaterialEditText extends EditText {
     initPadding();
     initText();
     initFloatingLabel();
-    initErrorTextListener();
+    initTextWatcher();
+    checkCharactersCount();
   }
 
   private void initText() {
@@ -321,7 +328,7 @@ public class MaterialEditText extends EditText {
     }
   }
 
-  private void initErrorTextListener() {
+  private void initTextWatcher() {
     addTextChangedListener(new TextWatcher() {
       @Override
       public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -329,12 +336,17 @@ public class MaterialEditText extends EditText {
 
       @Override
       public void onTextChanged(CharSequence s, int start, int before, int count) {
-        isTextChanged = (!isTextChanged && !TextUtils.isEmpty(s)) ? true : isTextChanged;
       }
 
       @Override
       public void afterTextChanged(Editable s) {
-        setError(null);
+        checkCharactersCount();
+        if (autoValidate) {
+          validate();
+        } else {
+          setError(null);
+        }
+        postInvalidate();
       }
     });
   }
@@ -626,6 +638,17 @@ public class MaterialEditText extends EditText {
     postInvalidate();
   }
 
+  public boolean isAutoValidate() {
+    return autoValidate;
+  }
+
+  public void setAutoValidate(boolean autoValidate) {
+    this.autoValidate = autoValidate;
+    if (autoValidate) {
+      validate();
+    }
+  }
+
   public int getErrorColor() {
     return errorColor;
   }
@@ -728,7 +751,6 @@ public class MaterialEditText extends EditText {
    * @return True if all validators pass, false if not
    */
   public boolean validate() {
-
     if (validators == null || validators.size() == 0) {
       return true;
     }
@@ -745,13 +767,12 @@ public class MaterialEditText extends EditText {
         break;
       }
     }
+    if (isValid) {
+      setError(null);
+    }
 
     postInvalidate();
     return isValid;
-  }
-
-  public boolean isValidated() {
-    return !isTextChanged || (validate() && isCharactersCountValid());
   }
 
   public boolean hasValidator() {
@@ -816,7 +837,7 @@ public class MaterialEditText extends EditText {
       lineStartY += bottomSpacing;
 
       // draw the background
-      if (!isValidated()) { // not valid
+      if (!isInternalValid()) { // not valid
         paint.setColor(errorColor);
         canvas.drawRect(getScrollX(), lineStartY, getWidth() + getScrollX(), lineStartY + getPixel(2), paint);
       } else if (!isEnabled()) { // disabled
@@ -838,7 +859,7 @@ public class MaterialEditText extends EditText {
     float fontPaddingTop = floatingLabelTextSize + fontMetrics.ascent + fontMetrics.descent;
 
     // draw the characters counter
-    if ((hasFocus() && hasCharatersCounter()) || !isValidated()) {
+    if ((hasFocus() && hasCharatersCounter()) || !isCharactersCountValid()) {
       textPaint.setColor(isCharactersCountValid() ? getCurrentHintTextColor() : errorColor);
       String text;
       if (minCharacters <= 0) {
@@ -920,8 +941,12 @@ public class MaterialEditText extends EditText {
     return hasCharatersCounter() ? (int) textPaint.measureText("00/000") : 0;
   }
 
+  public void checkCharactersCount() {
+    charactersCountValid = !hasCharatersCounter() || getText() == null || getText().length() == 0 || (getText().length() >= minCharacters && (maxCharacters <= 0 || getText().length() <= maxCharacters));
+  }
+
   public boolean isCharactersCountValid() {
-    return !hasCharatersCounter() || getText() == null || getText().length() == 0 || (getText().length() >= minCharacters && (maxCharacters <= 0 || getText().length() <= maxCharacters));
+    return charactersCountValid;
   }
 
   private boolean hasCharatersCounter() {

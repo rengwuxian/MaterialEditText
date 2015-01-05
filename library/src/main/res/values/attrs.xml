@@ -33,5 +33,7 @@
     <attr name="floatingLabelSpacing" format="dimension"/>
     <!-- Hide underline -->
     <attr name="hideUnderline" format="boolean"/>
+    <!-- Auto validate -->
+    <attr name="autoValidate" format="boolean"/>
   </declare-styleable>
 </resources>
