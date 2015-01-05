@@ -260,7 +260,7 @@ public class MaterialEditText extends EditText {
           context.getTheme().resolveAttribute(colorAccentId, primaryColorTypedValue, true);
           defaultPrimaryColor = primaryColorTypedValue.data;
         } else {
-          throw new RuntimeException("colorAccent not found");
+          throw new RuntimeException("colorPrimary not found");
         }
       } catch (Exception e1) {
         defaultPrimaryColor = baseColor;
