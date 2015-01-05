@@ -229,17 +229,9 @@ public class MaterialEditText extends EditText {
     setFocusableInTouchMode(true);
     setClickable(true);
 
-    if (isInEditMode()) {
-      // fake values to satisfy the Preview mode
-      floatingLabelTextSize = 24;
-      bottomSpacing = 16;
-      bottomEllipsisSize = 8;
-    } else {
-      floatingLabelTextSize = getResources().getDimensionPixelSize(R.dimen.floating_label_text_size);
-      bottomSpacing = getResources().getDimensionPixelSize(R.dimen.inner_components_spacing);
-      bottomEllipsisSize = getResources().getDimensionPixelSize(R.dimen.bottom_ellipsis_height);
-    }
-
+    floatingLabelTextSize = getResources().getDimensionPixelSize(R.dimen.floating_label_text_size);
+    bottomSpacing = getResources().getDimensionPixelSize(R.dimen.inner_components_spacing);
+    bottomEllipsisSize = getResources().getDimensionPixelSize(R.dimen.bottom_ellipsis_height);
 
     // retrieve the default baseColor
     int defaultBaseColor;

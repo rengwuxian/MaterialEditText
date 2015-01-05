@@ -233,7 +233,6 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
     bottomSpacing = getResources().getDimensionPixelSize(R.dimen.inner_components_spacing);
     bottomEllipsisSize = getResources().getDimensionPixelSize(R.dimen.bottom_ellipsis_height);
 
-
     // retrieve the default baseColor
     int defaultBaseColor;
     TypedValue baseColorTypedValue = new TypedValue();
@@ -278,7 +277,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
     helperTextColor = typedArray.getColor(R.styleable.MaterialEditText_helperTextColor, -1);
     minBottomTextLines = typedArray.getInt(R.styleable.MaterialEditText_minBottomTextLines, 0);
     String fontPath = typedArray.getString(R.styleable.MaterialEditText_accentTypeface);
-    if (fontPath != null) {
+    if (fontPath != null && !isInEditMode()) {
       accentTypeface = getCustomTypeface(fontPath);
       textPaint.setTypeface(accentTypeface);
     }
