@@ -405,7 +405,7 @@
 			<TextView
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:text="app:iconLeft=&quot;@drawable/ic_phone&quot;\napp:iconPadding=&quot;16dp&quot; (Note: 8dp by default, no 0dp)"
+				android:text="app:iconLeft=&quot;@drawable/ic_phone&quot;\napp:iconPadding=&quot;0dp&quot; (Note: 8dp by default, not 0)"
 				android:textColor="#888888"
 				android:textSize="14sp"/>
 
@@ -414,7 +414,7 @@
 				android:layout_height="wrap_content"
 				android:hint="Material Design Icon"
 				app:iconLeft="@drawable/ic_phone"
-				app:iconPadding="16dp"/>
+				app:iconPadding="0dp"/>
 
 			<TextView
 				android:layout_width="match_parent"
