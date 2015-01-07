@@ -6,7 +6,7 @@ import android.graphics.Color;
  * Created by Administrator on 2014/12/12.
  */
 public class Colors {
-  private static boolean isLight(int color) {
+  public static boolean isLight(int color) {
     return Math.sqrt(
         Color.red(color) * Color.red(color) * .241 +
             Color.green(color) * Color.green(color) * .691 +

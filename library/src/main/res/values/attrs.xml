@@ -35,5 +35,11 @@
     <attr name="hideUnderline" format="boolean"/>
     <!-- Auto validate -->
     <attr name="autoValidate" format="boolean"/>
+	  <!-- Left icon -->
+	  <attr name="iconLeft" format="reference"/>
+	  <!-- Right icon -->
+	  <attr name="iconRight" format="reference"/>
+	  <!-- Padding between icon(s) and the main area. 8dp by default. -->
+	  <attr name="iconPadding" format="dimension"/>
   </declare-styleable>
 </resources>

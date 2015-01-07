@@ -4,11 +4,15 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.os.Build;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -62,6 +66,16 @@ public class MaterialEditText extends EditText {
   private int extraPaddingBottom;
 
   /**
+   * the extra spacing between the main text and the left, actually for the left icon.
+   */
+  private int extraPaddingLeft;
+
+  /**
+   * the extra spacing between the main text and the right, actually for the right icon.
+   */
+  private int extraPaddingRight;
+
+  /**
    * the floating label's text size.
    */
   private final int floatingLabelTextSize;
@@ -100,6 +114,16 @@ public class MaterialEditText extends EditText {
    * inner bottom padding
    */
   private int innerPaddingBottom;
+
+  /**
+   * inner left padding
+   */
+  private int innerPaddingLeft;
+
+  /**
+   * inner right padding
+   */
+  private int innerPaddingRight;
 
   /**
    * the underline's highlight color, and the highlight color of the floating label if app:highlightFloatingLabel is set true in the xml. default is black(when app:darkTheme is false) or white(when app:darkTheme is true)
@@ -206,6 +230,20 @@ public class MaterialEditText extends EditText {
    */
   private boolean charactersCountValid;
 
+  /**
+   * Left Icon
+   */
+  private Bitmap[] iconLeftBitmaps;
+
+  /**
+   * Right Icon
+   */
+  private Bitmap[] iconRightBitmaps;
+
+  private final int iconSize;
+  private final int iconOuterWidth;
+  private final int iconOuterHeight;
+  private final int iconPadding;
   private ArgbEvaluator focusEvaluator = new ArgbEvaluator();
   Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
   TextPaint textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
@@ -233,6 +271,10 @@ public class MaterialEditText extends EditText {
     setFocusable(true);
     setFocusableInTouchMode(true);
     setClickable(true);
+
+    iconSize = getPixel(32);
+    iconOuterWidth = getPixel(48);
+    iconOuterHeight = getPixel(32);
 
     floatingLabelTextSize = getResources().getDimensionPixelSize(R.dimen.floating_label_text_size);
     bottomSpacing = getResources().getDimensionPixelSize(R.dimen.inner_components_spacing);
@@ -293,6 +335,9 @@ public class MaterialEditText extends EditText {
     floatingLabelSpacing = typedArray.getDimensionPixelSize(R.styleable.MaterialEditText_floatingLabelSpacing, bottomSpacing);
     hideUnderline = typedArray.getBoolean(R.styleable.MaterialEditText_hideUnderline, false);
     autoValidate = typedArray.getBoolean(R.styleable.MaterialEditText_autoValidate, false);
+    iconLeftBitmaps = generateIconBitmaps(typedArray.getResourceId(R.styleable.MaterialEditText_iconLeft, -1));
+    iconRightBitmaps = generateIconBitmaps(typedArray.getResourceId(R.styleable.MaterialEditText_iconRight, -1));
+    iconPadding = typedArray.getDimensionPixelSize(R.styleable.MaterialEditText_iconPadding, getPixel(8));
     typedArray.recycle();
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -353,6 +398,62 @@ public class MaterialEditText extends EditText {
 
   private Typeface getCustomTypeface(@NonNull String fontPath) {
     return Typeface.createFromAsset(getContext().getAssets(), fontPath);
+  }
+
+  private Bitmap[] generateIconBitmaps(@DrawableRes int origin) {
+    if (origin == -1) {
+      return null;
+    }
+    BitmapFactory.Options options = new BitmapFactory.Options();
+    options.inJustDecodeBounds = true;
+    BitmapFactory.decodeResource(getResources(), origin, options);
+    int size = Math.max(options.outWidth, options.outHeight);
+    options.inSampleSize = size > iconSize ? size / iconSize : 1;
+    options.inJustDecodeBounds = false;
+    return generateIconBitmaps(BitmapFactory.decodeResource(getResources(), origin, options));
+  }
+
+  private Bitmap[] generateIconBitmaps(Bitmap origin) {
+    if (origin == null) {
+      return null;
+    }
+    Bitmap[] iconBitmaps = new Bitmap[4];
+    origin = scaleIcon(origin);
+    iconBitmaps[0] = origin.copy(Bitmap.Config.ARGB_8888, true);
+    Canvas canvas = new Canvas(iconBitmaps[0]);
+    canvas.drawColor(baseColor & 0x00ffffff | (Colors.isLight(baseColor) ? 0xff000000 : 0x8a000000), PorterDuff.Mode.SRC_IN);
+    iconBitmaps[1] = origin.copy(Bitmap.Config.ARGB_8888, true);
+    canvas = new Canvas(iconBitmaps[1]);
+    canvas.drawColor(primaryColor, PorterDuff.Mode.SRC_IN);
+    iconBitmaps[2] = origin.copy(Bitmap.Config.ARGB_8888, true);
+    canvas = new Canvas(iconBitmaps[2]);
+    canvas.drawColor(baseColor & 0x00ffffff | (Colors.isLight(baseColor) ? 0x4c000000 : 0x42000000), PorterDuff.Mode.SRC_IN);
+    iconBitmaps[3] = origin.copy(Bitmap.Config.ARGB_8888, true);
+    canvas = new Canvas(iconBitmaps[3]);
+    canvas.drawColor(errorColor, PorterDuff.Mode.SRC_IN);
+    return iconBitmaps;
+  }
+
+  private Bitmap scaleIcon(Bitmap origin) {
+    int width = origin.getWidth();
+    int height = origin.getHeight();
+    int size = Math.max(width, height);
+    if (size == iconSize) {
+      return origin;
+    } else if (size > iconSize) {
+      int scaledWidth;
+      int scaledHeight;
+      if (width > iconSize) {
+        scaledWidth = iconSize;
+        scaledHeight = (int) (iconSize * ((float) height / width));
+      } else {
+        scaledHeight = iconSize;
+        scaledWidth = (int) (iconSize * ((float) width / height));
+      }
+      return Bitmap.createScaledBitmap(origin, scaledWidth, scaledHeight, false);
+    } else {
+      return origin;
+    }
   }
 
   public float getFloatingLabelFraction() {
@@ -436,9 +537,13 @@ public class MaterialEditText extends EditText {
   private void initPadding() {
     int paddingTop = getPaddingTop() - extraPaddingTop;
     int paddingBottom = getPaddingBottom() - extraPaddingBottom;
+    int paddingLeft = getPaddingLeft() - extraPaddingLeft;
+    int paddingRight = getPaddingRight() - extraPaddingRight;
     extraPaddingTop = floatingLabelEnabled ? floatingLabelTextSize + floatingLabelSpacing : floatingLabelSpacing;
     extraPaddingBottom = (int) ((fontMetrics.descent - fontMetrics.ascent) * currentBottomLines) + (hideUnderline ? bottomSpacing : bottomSpacing * 2);
-    setPaddings(getPaddingLeft(), paddingTop, getPaddingRight(), paddingBottom);
+    extraPaddingLeft = iconLeftBitmaps == null ? 0 : (iconOuterWidth + iconPadding);
+    extraPaddingRight = iconRightBitmaps == null ? 0 : (iconOuterWidth + iconPadding);
+    setPaddings(paddingLeft, paddingTop, paddingRight, paddingBottom);
   }
 
   /**
@@ -464,7 +569,9 @@ public class MaterialEditText extends EditText {
   public void setPaddings(int left, int top, int right, int bottom) {
     innerPaddingTop = top;
     innerPaddingBottom = bottom;
-    super.setPadding(left, top + extraPaddingTop, right, bottom + extraPaddingBottom);
+    innerPaddingLeft = left;
+    innerPaddingRight = right;
+    super.setPadding(left + extraPaddingLeft, top + extraPaddingTop, right + extraPaddingRight, bottom + extraPaddingBottom);
   }
 
   @Override
@@ -508,6 +615,20 @@ public class MaterialEditText extends EditText {
    */
   public int getInnerPaddingBottom() {
     return innerPaddingBottom;
+  }
+
+  /**
+   * get inner left padding, not the real paddingLeft
+   */
+  public int getInnerPaddingLeft() {
+    return innerPaddingLeft;
+  }
+
+  /**
+   * get inner right padding, not the real paddingRight
+   */
+  public int getInnerPaddingRight() {
+    return innerPaddingRight;
   }
 
   private void initFloatingLabel() {
@@ -831,27 +952,43 @@ public class MaterialEditText extends EditText {
 
   @Override
   protected void onDraw(@NonNull Canvas canvas) {
-    float lineStartY = getScrollY() + getHeight() - getPaddingBottom();
+    int startX = getScrollX() + (iconLeftBitmaps == null ? 0 : (iconOuterWidth + iconPadding));
+    int endX = getScrollX() + (iconRightBitmaps == null ? getWidth() : getWidth() - iconOuterWidth - iconPadding);
+    int lineStartY = getScrollY() + getHeight() - getPaddingBottom();
 
+    // draw the icon(s)
+    paint.setAlpha(255);
+    if (iconLeftBitmaps != null) {
+      Bitmap icon = iconLeftBitmaps[!isInternalValid() ? 3 : !isEnabled() ? 2 : hasFocus() ? 1 : 0];
+      int iconLeft = (iconOuterWidth - icon.getWidth()) / 2;
+      int iconTop = lineStartY + bottomSpacing - iconOuterHeight + (iconOuterHeight - icon.getHeight()) / 2;
+      canvas.drawBitmap(icon, iconLeft, iconTop, paint);
+    }
+    if (iconRightBitmaps != null) {
+      Bitmap icon = iconRightBitmaps[!isInternalValid() ? 3 : !isEnabled() ? 2 : hasFocus() ? 1 : 0];
+      int iconRight = endX + iconPadding + (iconOuterWidth - icon.getWidth()) / 2;
+      int iconTop = lineStartY + bottomSpacing - iconOuterHeight + (iconOuterHeight - icon.getHeight()) / 2;
+      canvas.drawBitmap(icon, iconRight, iconTop, paint);
+    }
+
+    // draw the underline
     if (!hideUnderline) {
       lineStartY += bottomSpacing;
-
-      // draw the background
       if (!isInternalValid()) { // not valid
         paint.setColor(errorColor);
-        canvas.drawRect(getScrollX(), lineStartY, getWidth() + getScrollX(), lineStartY + getPixel(2), paint);
+        canvas.drawRect(startX, lineStartY, endX, lineStartY + getPixel(2), paint);
       } else if (!isEnabled()) { // disabled
         paint.setColor(baseColor & 0x00ffffff | 0x44000000);
         float interval = getPixel(1);
-        for (float startX = 0; startX < getWidth(); startX += interval * 3) {
-          canvas.drawRect(getScrollX() + startX, lineStartY, getScrollX() + startX + interval, lineStartY + getPixel(1), paint);
+        for (float xOffset = 0; xOffset < getWidth(); xOffset += interval * 3) {
+          canvas.drawRect(startX + xOffset, lineStartY, startX + xOffset + interval, lineStartY + getPixel(1), paint);
         }
       } else if (hasFocus()) { // focused
         paint.setColor(primaryColor);
-        canvas.drawRect(getScrollX(), lineStartY, getWidth() + getScrollX(), lineStartY + getPixel(2), paint);
+        canvas.drawRect(startX, lineStartY, endX, lineStartY + getPixel(2), paint);
       } else { // normal
         paint.setColor(baseColor & 0x00ffffff | 0x44000000);
-        canvas.drawRect(getScrollX(), lineStartY, getWidth() + getScrollX(), lineStartY + getPixel(1), paint);
+        canvas.drawRect(startX, lineStartY, endX, lineStartY + getPixel(1), paint);
       }
     }
 
@@ -870,12 +1007,12 @@ public class MaterialEditText extends EditText {
         text = getText().length() + " / " + minCharacters + "-" + maxCharacters;
       }
 
-      canvas.drawText(text, getWidth() + getScrollX() - textPaint.measureText(text), lineStartY + bottomSpacing + relativeHeight, textPaint);
+      canvas.drawText(text, endX - textPaint.measureText(text), lineStartY + bottomSpacing + relativeHeight, textPaint);
     }
 
     // draw the bottom text
     if (textLayout != null) {
-      float bottomTextStartX = getScrollX() + getBottomTextLeftOffset();
+      float bottomTextStartX = startX + getBottomTextLeftOffset();
       if (tempErrorText != null) { // validation failed
         textPaint.setColor(errorColor);
         canvas.save();
@@ -898,13 +1035,13 @@ public class MaterialEditText extends EditText {
 
       // calculate the horizontal position
       float floatingLabelWidth = textPaint.measureText(floatingLabelText.toString());
-      int floatingLabelStartX = getScrollX();
+      int floatingLabelStartX = startX;
       if ((getGravity() & Gravity.LEFT) == Gravity.LEFT) {
-        floatingLabelStartX += getPaddingLeft();
+        floatingLabelStartX += getInnerPaddingLeft();
       } else if ((getGravity() & Gravity.RIGHT) == Gravity.RIGHT) {
-        floatingLabelStartX += getWidth() - getPaddingRight() - floatingLabelWidth;
+        floatingLabelStartX += getWidth() - getInnerPaddingRight() - floatingLabelWidth;
       } else {
-        floatingLabelStartX += (int) (getPaddingLeft() + (getWidth() - getPaddingLeft() - getPaddingRight() - floatingLabelWidth) / 2);
+        floatingLabelStartX += (int) (getInnerPaddingLeft() + (getWidth() - getInnerPaddingLeft() - getInnerPaddingRight() - floatingLabelWidth) / 2);
       }
 
       // calculate the vertical position
