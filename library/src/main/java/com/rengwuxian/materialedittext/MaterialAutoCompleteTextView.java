@@ -81,6 +81,11 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
   private final int floatingLabelTextSize;
 
   /**
+   * the bottom texts' size.
+   */
+  private final int bottomTextSize;
+
+  /**
    * the spacing between the main text and the floating label.
    */
   private int floatingLabelSpacing;
@@ -247,7 +252,6 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
   private ArgbEvaluator focusEvaluator = new ArgbEvaluator();
   Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
   TextPaint textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
-  Paint.FontMetrics fontMetrics;
   StaticLayout textLayout;
   ObjectAnimator labelAnimator;
   ObjectAnimator labelFocusAnimator;
@@ -276,7 +280,6 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
     iconOuterWidth = getPixel(48);
     iconOuterHeight = getPixel(32);
 
-    floatingLabelTextSize = getResources().getDimensionPixelSize(R.dimen.floating_label_text_size);
     bottomSpacing = getResources().getDimensionPixelSize(R.dimen.inner_components_spacing);
     bottomEllipsisSize = getResources().getDimensionPixelSize(R.dimen.bottom_ellipsis_height);
 
@@ -333,6 +336,8 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
       floatingLabelText = getHint();
     }
     floatingLabelSpacing = typedArray.getDimensionPixelSize(R.styleable.MaterialEditText_floatingLabelSpacing, bottomSpacing);
+    floatingLabelTextSize = typedArray.getDimensionPixelSize(R.styleable.MaterialEditText_floatingLabelTextSize, getResources().getDimensionPixelSize(R.dimen.floating_label_text_size));
+    bottomTextSize = typedArray.getDimensionPixelSize(R.styleable.MaterialEditText_bottomTextSize, getResources().getDimensionPixelSize(R.dimen.bottom_text_size));
     hideUnderline = typedArray.getBoolean(R.styleable.MaterialEditText_hideUnderline, false);
     autoValidate = typedArray.getBoolean(R.styleable.MaterialEditText_autoValidate, false);
     iconLeftBitmaps = generateIconBitmaps(typedArray.getResourceId(R.styleable.MaterialEditText_iconLeft, -1));
@@ -350,8 +355,6 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
       setSingleLine();
       setTransformationMethod(transformationMethod);
     }
-    textPaint.setTextSize(floatingLabelTextSize);
-    fontMetrics = textPaint.getFontMetrics();
     initMinBottomLines();
     initPadding();
     initText();
@@ -540,7 +543,9 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
     int paddingLeft = getPaddingLeft() - extraPaddingLeft;
     int paddingRight = getPaddingRight() - extraPaddingRight;
     extraPaddingTop = floatingLabelEnabled ? floatingLabelTextSize + floatingLabelSpacing : floatingLabelSpacing;
-    extraPaddingBottom = (int) ((fontMetrics.descent - fontMetrics.ascent) * currentBottomLines) + (hideUnderline ? bottomSpacing : bottomSpacing * 2);
+    textPaint.setTextSize(bottomTextSize);
+    Paint.FontMetrics textMetrics = textPaint.getFontMetrics();
+    extraPaddingBottom = (int) ((textMetrics.descent - textMetrics.ascent) * currentBottomLines) + (hideUnderline ? bottomSpacing : bottomSpacing * 2);
     extraPaddingLeft = iconLeftBitmaps == null ? 0 : (iconOuterWidth + iconPadding);
     extraPaddingRight = iconRightBitmaps == null ? 0 : (iconOuterWidth + iconPadding);
     setPaddings(paddingLeft, paddingTop, paddingRight, paddingBottom);
@@ -575,12 +580,9 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
   }
 
   @Override
-  protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-    int oldWidth = getMeasuredWidth();
-    super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-    int newWidth = getMeasuredWidth();
-
-    if (newWidth > 0 && oldWidth != newWidth) {
+  protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+    super.onLayout(changed, left, top, right, bottom);
+    if (changed) {
       adjustBottomLines();
     }
   }
@@ -588,11 +590,12 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
   private void adjustBottomLines() {
     // adjust bottom lines
     int destBottomLines;
+    textPaint.setTextSize(bottomTextSize);
     if (tempErrorText != null) {
-      textLayout = new StaticLayout(tempErrorText, textPaint, getMeasuredWidth() - getBottomTextLeftOffset() - getBottomTextRightOffset(), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, true);
+      textLayout = new StaticLayout(tempErrorText, textPaint, getWidth() - getBottomTextLeftOffset() - getBottomTextRightOffset() - getPaddingLeft() - getPaddingRight(), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, true);
       destBottomLines = Math.max(textLayout.getLineCount(), minBottomTextLines);
     } else if (helperText != null) {
-      textLayout = new StaticLayout(helperText, textPaint, getMeasuredWidth() - getBottomTextLeftOffset() - getBottomTextRightOffset(), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, true);
+      textLayout = new StaticLayout(helperText, textPaint, getWidth() - getBottomTextLeftOffset() - getBottomTextRightOffset() - getPaddingLeft() - getPaddingRight(), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, true);
       destBottomLines = Math.max(textLayout.getLineCount(), minBottomTextLines);
     } else {
       destBottomLines = minBottomLines;
@@ -992,8 +995,10 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
       }
     }
 
-    float relativeHeight = -fontMetrics.ascent - fontMetrics.descent;
-    float fontPaddingTop = floatingLabelTextSize + fontMetrics.ascent + fontMetrics.descent;
+    textPaint.setTextSize(bottomTextSize);
+    Paint.FontMetrics textMetrics = textPaint.getFontMetrics();
+    float relativeHeight = -textMetrics.ascent - textMetrics.descent;
+    float bottomTextPadding = bottomTextSize + textMetrics.ascent + textMetrics.descent;
 
     // draw the characters counter
     if ((hasFocus() && hasCharatersCounter()) || !isCharactersCountValid()) {
@@ -1016,13 +1021,13 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
       if (tempErrorText != null) { // validation failed
         textPaint.setColor(errorColor);
         canvas.save();
-        canvas.translate(bottomTextStartX, lineStartY + bottomSpacing - fontPaddingTop);
+        canvas.translate(bottomTextStartX, lineStartY + bottomSpacing - bottomTextPadding);
         textLayout.draw(canvas);
         canvas.restore();
       } else if (hasFocus() && !TextUtils.isEmpty(helperText)) {
         textPaint.setColor(helperTextColor != -1 ? helperTextColor : getCurrentHintTextColor());
         canvas.save();
-        canvas.translate(bottomTextStartX, lineStartY + bottomSpacing - fontPaddingTop);
+        canvas.translate(bottomTextStartX, lineStartY + bottomSpacing - bottomTextPadding);
         textLayout.draw(canvas);
         canvas.restore();
       }
@@ -1030,6 +1035,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
 
     // draw the floating label
     if (floatingLabelEnabled && !TextUtils.isEmpty(floatingLabelText)) {
+      textPaint.setTextSize(floatingLabelTextSize);
       // calculate the text color
       textPaint.setColor((Integer) focusEvaluator.evaluate(focusFraction, getCurrentHintTextColor(), primaryColor));
 

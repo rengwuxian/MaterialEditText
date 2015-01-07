@@ -41,5 +41,9 @@
 	  <attr name="iconRight" format="reference"/>
 	  <!-- Padding between icon(s) and the main area. 8dp by default. -->
 	  <attr name="iconPadding" format="dimension"/>
+	  <!-- The floating label's text size. 12sp by default. -->
+	  <attr name="floatingLabelTextSize" format="dimension"/>
+	  <!-- The bottom texts' size. 12sp by default. -->
+	  <attr name="bottomTextSize" format="dimension"/>
   </declare-styleable>
 </resources>
