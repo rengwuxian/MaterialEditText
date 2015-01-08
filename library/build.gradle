@@ -23,4 +23,4 @@ dependencies {
 }
 
 // Used to push in maven
-// apply from: '../maven_push.gradle'
+apply from: '../maven_push.gradle'
