@@ -414,7 +414,8 @@
 				android:layout_height="wrap_content"
 				android:hint="Material Design Icon"
 				app:iconLeft="@drawable/ic_phone"
-				app:iconPadding="0dp"/>
+				app:iconPadding="0dp"
+				app:maxCharacters="5"/>
 
 			<TextView
 				android:layout_width="match_parent"
