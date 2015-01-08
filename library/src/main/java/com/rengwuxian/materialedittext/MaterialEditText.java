@@ -963,7 +963,7 @@ public class MaterialEditText extends EditText {
     paint.setAlpha(255);
     if (iconLeftBitmaps != null) {
       Bitmap icon = iconLeftBitmaps[!isInternalValid() ? 3 : !isEnabled() ? 2 : hasFocus() ? 1 : 0];
-      int iconLeft = (iconOuterWidth - icon.getWidth()) / 2;
+      int iconLeft = startX - iconPadding - iconOuterWidth + (iconOuterWidth - icon.getWidth()) / 2;
       int iconTop = lineStartY + bottomSpacing - iconOuterHeight + (iconOuterHeight - icon.getHeight()) / 2;
       canvas.drawBitmap(icon, iconLeft, iconTop, paint);
     }
@@ -1005,14 +1005,14 @@ public class MaterialEditText extends EditText {
       textPaint.setColor(isCharactersCountValid() ? getCurrentHintTextColor() : errorColor);
       String text;
       if (minCharacters <= 0) {
-        text = getText().length() + " / " + maxCharacters;
+        text = isRTL() ? maxCharacters + " / " + getText().length() : getText().length() + " / " + maxCharacters;
       } else if (maxCharacters <= 0) {
-        text = getText().length() + " / " + minCharacters + "+";
+        text = isRTL() ? "+" + minCharacters + " / " + getText().length() : getText().length() + " / " + minCharacters + "+";
       } else {
-        text = getText().length() + " / " + minCharacters + "-" + maxCharacters;
+        text = isRTL() ? maxCharacters + "-" + minCharacters + " / " + getText().length() : getText().length() + " / " + minCharacters + "-" + maxCharacters;
       }
 
-      canvas.drawText(text, endX - textPaint.measureText(text), lineStartY + bottomSpacing + relativeHeight, textPaint);
+      canvas.drawText(text, isRTL() ? startX : endX - textPaint.measureText(text), lineStartY + bottomSpacing + relativeHeight, textPaint);
     }
 
     // draw the bottom text
@@ -1041,13 +1041,13 @@ public class MaterialEditText extends EditText {
 
       // calculate the horizontal position
       float floatingLabelWidth = textPaint.measureText(floatingLabelText.toString());
-      int floatingLabelStartX = startX;
-      if ((getGravity() & Gravity.LEFT) == Gravity.LEFT) {
-        floatingLabelStartX += getInnerPaddingLeft();
-      } else if ((getGravity() & Gravity.RIGHT) == Gravity.RIGHT) {
-        floatingLabelStartX += getWidth() - getInnerPaddingRight() - floatingLabelWidth;
+      int floatingLabelStartX;
+      if ((getGravity() & Gravity.RIGHT) == Gravity.RIGHT || isRTL()) {
+        floatingLabelStartX = (int) (endX - floatingLabelWidth);
+      } else if ((getGravity() & Gravity.LEFT) == Gravity.LEFT) {
+        floatingLabelStartX = startX;
       } else {
-        floatingLabelStartX += (int) (getInnerPaddingLeft() + (getWidth() - getInnerPaddingLeft() - getInnerPaddingRight() - floatingLabelWidth) / 2);
+        floatingLabelStartX = startX + (int) (getInnerPaddingLeft() + (getWidth() - getInnerPaddingLeft() - getInnerPaddingRight() - floatingLabelWidth) / 2);
       }
 
       // calculate the vertical position
@@ -1067,21 +1067,41 @@ public class MaterialEditText extends EditText {
     if (hasFocus() && singleLineEllipsis && getScrollX() != 0) {
       paint.setColor(primaryColor);
       float startY = lineStartY + bottomSpacing;
-      canvas.drawCircle(bottomEllipsisSize / 2 + getScrollX(), startY + bottomEllipsisSize / 2, bottomEllipsisSize / 2, paint);
-      canvas.drawCircle(bottomEllipsisSize * 5 / 2 + getScrollX(), startY + bottomEllipsisSize / 2, bottomEllipsisSize / 2, paint);
-      canvas.drawCircle(bottomEllipsisSize * 9 / 2 + getScrollX(), startY + bottomEllipsisSize / 2, bottomEllipsisSize / 2, paint);
+      int ellipsisStartX;
+      if (isRTL()) {
+        ellipsisStartX = endX;
+      } else {
+        ellipsisStartX = startX;
+      }
+      int signum = isRTL() ? -1 : 1;
+      canvas.drawCircle(ellipsisStartX + signum * bottomEllipsisSize / 2, startY + bottomEllipsisSize / 2, bottomEllipsisSize / 2, paint);
+      canvas.drawCircle(ellipsisStartX + signum * bottomEllipsisSize * 5 / 2, startY + bottomEllipsisSize / 2, bottomEllipsisSize / 2, paint);
+      canvas.drawCircle(ellipsisStartX + signum * bottomEllipsisSize * 9 / 2, startY + bottomEllipsisSize / 2, bottomEllipsisSize / 2, paint);
     }
 
     // draw the original things
     super.onDraw(canvas);
   }
 
+  @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+  private boolean isRTL() {
+    return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) && getTextDirection() == TEXT_DIRECTION_RTL;
+  }
+
   private int getBottomTextLeftOffset() {
-    return (singleLineEllipsis ? (bottomEllipsisSize * 5 + getPixel(4)) : 0);
+    return isRTL() ? getCharactersCounterWidth() : getBottomEllipsisWidth();
   }
 
   private int getBottomTextRightOffset() {
+    return isRTL() ? getBottomEllipsisWidth() : getCharactersCounterWidth();
+  }
+
+  private int getCharactersCounterWidth() {
     return hasCharatersCounter() ? (int) textPaint.measureText("00/000") : 0;
+  }
+
+  private int getBottomEllipsisWidth() {
+    return singleLineEllipsis ? (bottomEllipsisSize * 5 + getPixel(4)) : 0;
   }
 
   public void checkCharactersCount() {
