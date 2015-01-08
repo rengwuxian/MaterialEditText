@@ -58,7 +58,7 @@ AppCompat v21 makes it easy to use Material Design EditText in our apps, but it'
 
 8. **Material Design Icon**
 
-  ![HideUnderLine](./images/material_design_icon.png)
+  ![MaterialDesignIcon](./images/material_design_icon.png)
 
 ## Sample
 
