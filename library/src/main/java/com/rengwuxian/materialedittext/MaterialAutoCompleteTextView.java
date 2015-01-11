@@ -78,12 +78,12 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
   /**
    * the floating label's text size.
    */
-  private final int floatingLabelTextSize;
+  private int floatingLabelTextSize;
 
   /**
    * the bottom texts' size.
    */
-  private final int bottomTextSize;
+  private int bottomTextSize;
 
   /**
    * the spacing between the main text and the floating label.
@@ -531,6 +531,24 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
   public void setFloatingLabelText(@Nullable CharSequence floatingLabelText) {
     this.floatingLabelText = floatingLabelText == null ? getHint() : floatingLabelText;
     postInvalidate();
+  }
+
+  public int getFloatingLabelTextSize() {
+    return floatingLabelTextSize;
+  }
+
+  public void setFloatingLabelTextSize(int size) {
+    floatingLabelTextSize = size;
+    initPadding();
+  }
+
+  public int getBottomTextSize() {
+    return bottomTextSize;
+  }
+
+  public void setBottomTextSize(int size) {
+    bottomTextSize = size;
+    initPadding();
   }
 
   private int getPixel(int dp) {
