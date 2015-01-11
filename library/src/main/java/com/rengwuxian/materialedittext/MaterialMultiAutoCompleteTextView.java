@@ -90,7 +90,7 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
   /**
    * the spacing between the main text and the bottom components (bottom ellipsis, helper/error text, characters counter).
    */
-  private final int bottomSpacing;
+  private int bottomSpacing;
 
   /**
    * whether the floating label should be shown. default is false.
@@ -155,7 +155,7 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
   /**
    * bottom ellipsis's height
    */
-  private final int bottomEllipsisSize;
+  private int bottomEllipsisSize;
 
   /**
    * min bottom lines count.
@@ -242,10 +242,10 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
    */
   private Bitmap[] iconRightBitmaps;
 
-  private final int iconSize;
-  private final int iconOuterWidth;
-  private final int iconOuterHeight;
-  private final int iconPadding;
+  private int iconSize;
+  private int iconOuterWidth;
+  private int iconOuterHeight;
+  private int iconPadding;
   private ArgbEvaluator focusEvaluator = new ArgbEvaluator();
   Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
   TextPaint textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
@@ -258,21 +258,22 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
   private ArrayList<METValidator> validators = new ArrayList<>();
 
   public MaterialMultiAutoCompleteTextView(Context context) {
-    this(context, null);
+    super(context);
+    init(context, null);
   }
 
   public MaterialMultiAutoCompleteTextView(Context context, AttributeSet attrs) {
-    this(context, attrs, 0);
+    super(context, attrs);
+    init(context, attrs);
   }
 
   @TargetApi(Build.VERSION_CODES.LOLLIPOP)
   public MaterialMultiAutoCompleteTextView(Context context, AttributeSet attrs, int style) {
     super(context, attrs, style);
+    init(context, attrs);
+  }
 
-    setFocusable(true);
-    setFocusableInTouchMode(true);
-    setClickable(true);
-
+  private void init(Context context, AttributeSet attrs) {
     iconSize = getPixel(32);
     iconOuterWidth = getPixel(48);
     iconOuterHeight = getPixel(32);
