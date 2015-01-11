@@ -404,6 +404,26 @@ public class MaterialEditText extends EditText {
     return Typeface.createFromAsset(getContext().getAssets(), fontPath);
   }
 
+  public void setIconLeft(@DrawableRes int res) {
+    iconLeftBitmaps = generateIconBitmaps(res);
+    initPadding();
+  }
+
+  public void setIconLeft(Bitmap bitmap) {
+    iconLeftBitmaps = generateIconBitmaps(bitmap);
+    initPadding();
+  }
+
+  public void setIconRight(@DrawableRes int res) {
+    iconRightBitmaps = generateIconBitmaps(res);
+    initPadding();
+  }
+
+  public void setIconRight(Bitmap bitmap) {
+    iconRightBitmaps = generateIconBitmaps(bitmap);
+    initPadding();
+  }
+
   private Bitmap[] generateIconBitmaps(@DrawableRes int origin) {
     if (origin == -1) {
       return null;
