@@ -168,6 +168,7 @@
         </codeStyleSettings>
       </value>
     </option>
+    <option name="USE_PER_PROJECT_SETTINGS" value="true" />
     <option name="PREFERRED_PROJECT_CODE_STYLE" value="Default (1)" />
   </component>
 </project>
