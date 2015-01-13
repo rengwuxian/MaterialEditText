@@ -986,7 +986,6 @@ public class MaterialEditText extends EditText {
     if (bottomLinesAnimator == null) {
       bottomLinesAnimator = ObjectAnimator.ofFloat(this, "currentBottomLines", destBottomLines);
     } else {
-      bottomLinesAnimator.end();
       bottomLinesAnimator.setFloatValues(destBottomLines);
     }
     return bottomLinesAnimator;
