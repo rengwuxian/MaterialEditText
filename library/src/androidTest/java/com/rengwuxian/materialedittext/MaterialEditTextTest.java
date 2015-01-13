@@ -3,11 +3,11 @@ package com.rengwuxian.materialedittext;
 import android.test.AndroidTestCase;
 
 /**
- * Tests setting and getting the error message from a {@link com.rengwuxian.materialedittext.MaterialEditText}.
+ * Misc tests for {@link com.rengwuxian.materialedittext.MaterialEditText}.
  * <p/>
  * Created by egor on 25/11/14.
  */
-public class MaterialEditTextSetErrorTest extends AndroidTestCase {
+public class MaterialEditTextTest extends AndroidTestCase {
 
     private MaterialEditText editTextUnderTest;
 
@@ -22,7 +22,12 @@ public class MaterialEditTextSetErrorTest extends AndroidTestCase {
     }
 
     public void testGetErrorReturnsMessageSetEarlierViaSetError() {
+        editTextUnderTest.layout(0, 0, 1000, 1000);
         editTextUnderTest.setError("Error!");
         assertEquals("Error!", editTextUnderTest.getError().toString());
+    }
+
+    public void testSetErrorWithZeroSizeDoesNotThrow() {
+        editTextUnderTest.setError("Error!");
     }
 }
