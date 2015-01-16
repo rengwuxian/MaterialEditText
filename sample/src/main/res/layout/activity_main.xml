@@ -84,6 +84,30 @@
 
 			</LinearLayout>
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical">
+
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/goneEt"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@+id/toggleGoneBt"
+                    android:visibility="gone"
+                    android:hint="Gone"/>
+
+                <Button
+                    android:id="@+id/toggleGoneBt"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginLeft="8dp"
+                    android:text="TOGGLE GONE"/>
+                
+            </RelativeLayout>
+
 			<TextView
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"

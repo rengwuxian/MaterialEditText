@@ -626,24 +626,31 @@ public class MaterialEditText extends EditText {
     }
   }
 
-  private void adjustBottomLines() {
-    // adjust bottom lines
-    int destBottomLines;
-    textPaint.setTextSize(bottomTextSize);
-    if (tempErrorText != null) {
-      textLayout = new StaticLayout(tempErrorText, textPaint, getMeasuredWidth() - getBottomTextLeftOffset() - getBottomTextRightOffset() - getPaddingLeft() - getPaddingRight(), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, true);
-      destBottomLines = Math.max(textLayout.getLineCount(), minBottomTextLines);
-    } else if (helperText != null) {
-      textLayout = new StaticLayout(helperText, textPaint, getMeasuredWidth() - getBottomTextLeftOffset() - getBottomTextRightOffset() - getPaddingLeft() - getPaddingRight(), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, true);
-      destBottomLines = Math.max(textLayout.getLineCount(), minBottomTextLines);
-    } else {
-      destBottomLines = minBottomLines;
+    /**
+     * @return True, if adjustments were made that require the view to be invalidated.
+     */
+    private boolean adjustBottomLines() {
+      // Bail out if we have a zero width; lines will be adjusted during next layout.
+      if (getWidth() == 0) {
+        return false;
+      }
+      int destBottomLines;
+      textPaint.setTextSize(bottomTextSize);
+      if (tempErrorText != null) {
+        textLayout = new StaticLayout(tempErrorText, textPaint, getWidth() - getBottomTextLeftOffset() - getBottomTextRightOffset() - getPaddingLeft() - getPaddingRight(), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, true);
+        destBottomLines = Math.max(textLayout.getLineCount(), minBottomTextLines);
+      } else if (helperText != null) {
+        textLayout = new StaticLayout(helperText, textPaint, getWidth() - getBottomTextLeftOffset() - getBottomTextRightOffset() - getPaddingLeft() - getPaddingRight(), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, true);
+        destBottomLines = Math.max(textLayout.getLineCount(), minBottomTextLines);
+      } else {
+        destBottomLines = minBottomLines;
+      }
+      if (bottomLines != destBottomLines) {
+        getBottomLinesAnimator(destBottomLines).start();
+      }
+      bottomLines = destBottomLines;
+      return true;
     }
-    if (bottomLines != destBottomLines) {
-      getBottomLinesAnimator(destBottomLines).start();
-    }
-    bottomLines = destBottomLines;
-  }
 
   /**
    * get inner top padding, not the real paddingTop
@@ -823,8 +830,9 @@ public class MaterialEditText extends EditText {
 
   public void setHelperText(CharSequence helperText) {
     this.helperText = helperText == null ? null : helperText.toString();
-    adjustBottomLines();
-    postInvalidate();
+    if (adjustBottomLines()) {
+      postInvalidate();
+    }
   }
 
   public String getHelperText() {
@@ -843,8 +851,9 @@ public class MaterialEditText extends EditText {
   @Override
   public void setError(CharSequence errorText) {
     tempErrorText = errorText == null ? null : errorText.toString();
-    adjustBottomLines();
-    postInvalidate();
+    if (adjustBottomLines()) {
+      postInvalidate();
+    }
   }
 
   @Override

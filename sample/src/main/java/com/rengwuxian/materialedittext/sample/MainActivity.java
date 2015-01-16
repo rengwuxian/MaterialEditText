@@ -21,6 +21,7 @@ public class MainActivity extends ActionBarActivity {
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setDisplayShowTitleEnabled(false);
 		initEnableBt();
+    initGoneEt();
 		initSingleLineEllipsisEt();
 		initSetErrorEt();
 		initValidationEt();
@@ -37,6 +38,21 @@ public class MainActivity extends ActionBarActivity {
 			}
 		});
 	}
+  private void initGoneEt() {
+    final EditText goneEt = (EditText) findViewById(R.id.goneEt);
+    goneEt.setError("I was hidden from view!");
+    final Button toggleGoneButton = (Button) findViewById(R.id.toggleGoneBt);
+    toggleGoneButton.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        if (goneEt.getVisibility() == View.GONE) {
+          goneEt.setVisibility(View.VISIBLE);
+        } else {
+          goneEt.setVisibility(View.GONE);
+        }
+      }
+    });
+  }
 
 	private void initSingleLineEllipsisEt() {
 		EditText singleLineEllipsisEt = (EditText) findViewById(R.id.singleLineEllipsisEt);
