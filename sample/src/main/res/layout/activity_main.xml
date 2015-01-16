@@ -22,6 +22,7 @@
 			android:paddingTop="16dp">
 
 			<com.rengwuxian.materialedittext.MaterialEditText
+				android:id="@+id/title"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:hint="Library Name"
@@ -30,9 +31,7 @@
 				android:textSize="34sp"
 				app:baseColor="@android:color/white"
 				app:floatingLabel="highlight"
-				app:maxCharacters="20"
-				app:primaryColor="?colorAccent"
-				app:singleLineEllipsis="true"/>
+				app:primaryColor="?colorAccent"/>
 
 			<com.rengwuxian.materialedittext.MaterialEditText
 				android:layout_width="match_parent"

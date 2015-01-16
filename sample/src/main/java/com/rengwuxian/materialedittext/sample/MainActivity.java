@@ -2,6 +2,8 @@ package com.rengwuxian.materialedittext.sample;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -60,6 +62,18 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 	private void initSetErrorEt() {
+		final EditText title = (EditText) findViewById(R.id.title);
+		title.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) { }
+			@Override
+			public void afterTextChanged(Editable s) {
+				title.setError(s.length() < 8 ? "Too short!" : null);
+			}
+		});
+
 		final EditText bottomTextEt = (EditText) findViewById(R.id.bottomTextEt);
 		final Button setErrorBt = (Button) findViewById(R.id.setErrorBt);
 		setErrorBt.setOnClickListener(new View.OnClickListener() {
