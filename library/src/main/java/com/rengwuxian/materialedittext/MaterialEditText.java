@@ -28,6 +28,7 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.nineoldandroids.animation.ArgbEvaluator;
@@ -299,11 +300,12 @@ public class MaterialEditText extends EditText {
     int defaultPrimaryColor;
     TypedValue primaryColorTypedValue = new TypedValue();
     try {
-      if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        context.getTheme().resolveAttribute(android.R.attr.colorPrimary, primaryColorTypedValue, true);
+        defaultPrimaryColor = primaryColorTypedValue.data;
+      } else {
         throw new RuntimeException("SDK_INT less than LOLLIPOP");
       }
-      context.getTheme().resolveAttribute(android.R.attr.colorPrimary, primaryColorTypedValue, true);
-      defaultPrimaryColor = primaryColorTypedValue.data;
     } catch (Exception e) {
       try {
         int colorPrimaryId = getResources().getIdentifier("colorPrimary", "attr", getContext().getPackageName());
@@ -344,6 +346,20 @@ public class MaterialEditText extends EditText {
     iconLeftBitmaps = generateIconBitmaps(typedArray.getResourceId(R.styleable.MaterialEditText_iconLeft, -1));
     iconRightBitmaps = generateIconBitmaps(typedArray.getResourceId(R.styleable.MaterialEditText_iconRight, -1));
     iconPadding = typedArray.getDimensionPixelSize(R.styleable.MaterialEditText_iconPadding, getPixel(8));
+
+    int[] paddings = new int[]{
+        android.R.attr.padding, // 0
+        android.R.attr.paddingLeft, // 1
+        android.R.attr.paddingTop, // 2
+        android.R.attr.paddingRight, // 3
+        android.R.attr.paddingBottom // 4
+    };
+    TypedArray paddingsTypedArray = context.obtainStyledAttributes(attrs, paddings);
+    int padding = paddingsTypedArray.getDimensionPixelSize(0, 0);
+    innerPaddingLeft = paddingsTypedArray.getDimensionPixelSize(1, padding);
+    innerPaddingTop = paddingsTypedArray.getDimensionPixelSize(2, padding);
+    innerPaddingRight = paddingsTypedArray.getDimensionPixelSize(3, padding);
+    innerPaddingBottom = paddingsTypedArray.getDimensionPixelSize(4, padding);
     typedArray.recycle();
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -577,17 +593,18 @@ public class MaterialEditText extends EditText {
   }
 
   private void initPadding() {
-    int paddingTop = getPaddingTop() - extraPaddingTop;
-    int paddingBottom = getPaddingBottom() - extraPaddingBottom;
-    int paddingLeft = getPaddingLeft() - extraPaddingLeft;
-    int paddingRight = getPaddingRight() - extraPaddingRight;
     extraPaddingTop = floatingLabelEnabled ? floatingLabelTextSize + floatingLabelSpacing : floatingLabelSpacing;
     textPaint.setTextSize(bottomTextSize);
     Paint.FontMetrics textMetrics = textPaint.getFontMetrics();
     extraPaddingBottom = (int) ((textMetrics.descent - textMetrics.ascent) * currentBottomLines) + (hideUnderline ? bottomSpacing : bottomSpacing * 2);
     extraPaddingLeft = iconLeftBitmaps == null ? 0 : (iconOuterWidth + iconPadding);
     extraPaddingRight = iconRightBitmaps == null ? 0 : (iconOuterWidth + iconPadding);
-    setPaddings(paddingLeft, paddingTop, paddingRight, paddingBottom);
+
+    System.out.println("left:" + getPaddingLeft() + ", extraPaddingLeft:" + extraPaddingLeft);
+    System.out.println("right:" + getPaddingRight() + ", extraPaddingRight:" + extraPaddingRight);
+    System.out.println("top:" + getPaddingTop() + ", extraPaddingTop:" + extraPaddingTop);
+    System.out.println("bottom:" + getPaddingBottom() + ", extraPaddingBottom:" + extraPaddingBottom);
+    setPaddings(innerPaddingLeft, innerPaddingTop, innerPaddingRight, innerPaddingBottom);
   }
 
   /**
@@ -626,31 +643,31 @@ public class MaterialEditText extends EditText {
     }
   }
 
-    /**
-     * @return True, if adjustments were made that require the view to be invalidated.
-     */
-    private boolean adjustBottomLines() {
-      // Bail out if we have a zero width; lines will be adjusted during next layout.
-      if (getWidth() == 0) {
-        return false;
-      }
-      int destBottomLines;
-      textPaint.setTextSize(bottomTextSize);
-      if (tempErrorText != null) {
-        textLayout = new StaticLayout(tempErrorText, textPaint, getWidth() - getBottomTextLeftOffset() - getBottomTextRightOffset() - getPaddingLeft() - getPaddingRight(), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, true);
-        destBottomLines = Math.max(textLayout.getLineCount(), minBottomTextLines);
-      } else if (helperText != null) {
-        textLayout = new StaticLayout(helperText, textPaint, getWidth() - getBottomTextLeftOffset() - getBottomTextRightOffset() - getPaddingLeft() - getPaddingRight(), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, true);
-        destBottomLines = Math.max(textLayout.getLineCount(), minBottomTextLines);
-      } else {
-        destBottomLines = minBottomLines;
-      }
-      if (bottomLines != destBottomLines) {
-        getBottomLinesAnimator(destBottomLines).start();
-      }
-      bottomLines = destBottomLines;
-      return true;
+  /**
+   * @return True, if adjustments were made that require the view to be invalidated.
+   */
+  private boolean adjustBottomLines() {
+    // Bail out if we have a zero width; lines will be adjusted during next layout.
+    if (getWidth() == 0) {
+      return false;
     }
+    int destBottomLines;
+    textPaint.setTextSize(bottomTextSize);
+    if (tempErrorText != null || helperText != null) {
+      Layout.Alignment alignment = (getGravity() & Gravity.RIGHT) == Gravity.RIGHT || isRTL() ?
+          Layout.Alignment.ALIGN_OPPOSITE : (getGravity() & Gravity.LEFT) == Gravity.LEFT ?
+          Layout.Alignment.ALIGN_NORMAL : Layout.Alignment.ALIGN_CENTER;
+      textLayout = new StaticLayout(tempErrorText != null ? tempErrorText : helperText, textPaint, getWidth() - getBottomTextLeftOffset() - getBottomTextRightOffset() - getPaddingLeft() - getPaddingRight(), alignment, 1.0f, 0.0f, true);
+      destBottomLines = Math.max(textLayout.getLineCount(), minBottomTextLines);
+    } else {
+      destBottomLines = minBottomLines;
+    }
+    if (bottomLines != destBottomLines) {
+      getBottomLinesAnimator(destBottomLines).start();
+    }
+    bottomLines = destBottomLines;
+    return true;
+  }
 
   /**
    * get inner top padding, not the real paddingTop
@@ -995,6 +1012,7 @@ public class MaterialEditText extends EditText {
     if (bottomLinesAnimator == null) {
       bottomLinesAnimator = ObjectAnimator.ofFloat(this, "currentBottomLines", destBottomLines);
     } else {
+      bottomLinesAnimator.cancel();
       bottomLinesAnimator.setFloatValues(destBottomLines);
     }
     return bottomLinesAnimator;
@@ -1064,17 +1082,10 @@ public class MaterialEditText extends EditText {
 
     // draw the bottom text
     if (textLayout != null) {
-      float bottomTextStartX = startX + getBottomTextLeftOffset();
-      if (tempErrorText != null) { // validation failed
-        textPaint.setColor(errorColor);
+      if (tempErrorText != null || (hasFocus() && !TextUtils.isEmpty(helperText))) { // error text or helper text
+        textPaint.setColor(tempErrorText != null ? errorColor : helperTextColor != -1 ? helperTextColor : getCurrentHintTextColor());
         canvas.save();
-        canvas.translate(bottomTextStartX, lineStartY + bottomSpacing - bottomTextPadding);
-        textLayout.draw(canvas);
-        canvas.restore();
-      } else if (hasFocus() && !TextUtils.isEmpty(helperText)) {
-        textPaint.setColor(helperTextColor != -1 ? helperTextColor : getCurrentHintTextColor());
-        canvas.save();
-        canvas.translate(bottomTextStartX, lineStartY + bottomSpacing - bottomTextPadding);
+        canvas.translate(startX + getBottomTextLeftOffset(), lineStartY + bottomSpacing - bottomTextPadding);
         textLayout.draw(canvas);
         canvas.restore();
       }
