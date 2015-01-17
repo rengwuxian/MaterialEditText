@@ -2,6 +2,8 @@ package com.rengwuxian.materialedittext.sample;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,58 +16,86 @@ import com.rengwuxian.materialedittext.validation.RegexpValidator;
 
 public class MainActivity extends ActionBarActivity {
 
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_main);
-    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    getSupportActionBar().setDisplayShowTitleEnabled(false);
-    initEnableBt();
-    initSingleLineEllipsisEt();
-    initSetErrorEt();
-    initValidationEt();
-  }
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setDisplayShowTitleEnabled(false);
+		initEnableBt();
+    initGoneEt();
+		initSingleLineEllipsisEt();
+		initSetErrorEt();
+		initValidationEt();
+	}
 
-  private void initEnableBt() {
-    final EditText basicEt = (EditText) findViewById(R.id.basicEt);
-    final Button enableBt = (Button) findViewById(R.id.enableBt);
-    enableBt.setOnClickListener(new View.OnClickListener() {
+	private void initEnableBt() {
+		final EditText basicEt = (EditText) findViewById(R.id.basicEt);
+		final Button enableBt = (Button) findViewById(R.id.enableBt);
+		enableBt.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				basicEt.setEnabled(!basicEt.isEnabled());
+				enableBt.setText(basicEt.isEnabled() ? "DISABLE" : "ENABLE");
+			}
+		});
+	}
+  private void initGoneEt() {
+    final EditText goneEt = (EditText) findViewById(R.id.goneEt);
+    goneEt.setError("I was hidden from view!");
+    final Button toggleGoneButton = (Button) findViewById(R.id.toggleGoneBt);
+    toggleGoneButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        basicEt.setEnabled(!basicEt.isEnabled());
-        enableBt.setText(basicEt.isEnabled() ? "DISABLE" : "ENABLE");
+        if (goneEt.getVisibility() == View.GONE) {
+          goneEt.setVisibility(View.VISIBLE);
+        } else {
+          goneEt.setVisibility(View.GONE);
+        }
       }
     });
   }
 
-  private void initSingleLineEllipsisEt() {
-    EditText singleLineEllipsisEt = (EditText) findViewById(R.id.singleLineEllipsisEt);
-    singleLineEllipsisEt.setSelection(singleLineEllipsisEt.getText().length());
-  }
+	private void initSingleLineEllipsisEt() {
+		EditText singleLineEllipsisEt = (EditText) findViewById(R.id.singleLineEllipsisEt);
+		singleLineEllipsisEt.setSelection(singleLineEllipsisEt.getText().length());
+	}
 
-  private void initSetErrorEt() {
-    final EditText bottomTextEt = (EditText) findViewById(R.id.bottomTextEt);
-    final Button setErrorBt = (Button) findViewById(R.id.setErrorBt);
-    setErrorBt.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        bottomTextEt.setError("1-Line Error!");
-      }
-    });
-    final Button setError2Bt = (Button) findViewById(R.id.setError2Bt);
+	private void initSetErrorEt() {
+		final EditText title = (EditText) findViewById(R.id.title);
+		title.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) { }
+			@Override
+			public void afterTextChanged(Editable s) {
+				title.setError(s.length() < 8 ? "Too short!" : null);
+			}
+		});
+
+		final EditText bottomTextEt = (EditText) findViewById(R.id.bottomTextEt);
+		final Button setErrorBt = (Button) findViewById(R.id.setErrorBt);
+		setErrorBt.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				bottomTextEt.setError("1-Line Error!");
+			}
+		});
+		final Button setError2Bt = (Button) findViewById(R.id.setError2Bt);
     setError2Bt.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        bottomTextEt.setError("2-Line\nError!");
-      }
-    });
-    final Button setError3Bt = (Button) findViewById(R.id.setError3Bt);
+			@Override
+			public void onClick(View v) {
+				bottomTextEt.setError("2-Line\nError!");
+			}
+		});
+		final Button setError3Bt = (Button) findViewById(R.id.setError3Bt);
     setError3Bt.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        bottomTextEt.setError("So Many Errors! So Many Errors! So Many Errors! So Many Errors! So Many Errors! So Many Errors! So Many Errors! So Many Errors!");
-      }
-    });
+			@Override
+			public void onClick(View v) {
+				bottomTextEt.setError("So Many Errors! So Many Errors! So Many Errors! So Many Errors! So Many Errors! So Many Errors! So Many Errors! So Many Errors!");
+			}
+		});
     final EditText bottomTextWithMinLinesEt = (EditText) findViewById(R.id.bottomTextWithMinLinesEt);
     final Button setErrorWithMinLinesBt = (Button) findViewById(R.id.setErrorWithMinLinesBt);
     setErrorWithMinLinesBt.setOnClickListener(new View.OnClickListener() {
@@ -88,40 +118,40 @@ public class MainActivity extends ActionBarActivity {
         bottomTextWithMinLinesEt.setError("So Many Errors! So Many Errors! So Many Errors! So Many Errors! So Many Errors! So Many Errors! So Many Errors! So Many Errors!");
       }
     });
-  }
+	}
 
-  private void initValidationEt() {
-    final MaterialEditText validationEt = (MaterialEditText) findViewById(R.id.validationEt);
+	private void initValidationEt() {
+		final MaterialEditText validationEt = (MaterialEditText) findViewById(R.id.validationEt);
     validationEt.addValidator(new RegexpValidator("Only Integer Valid!", "\\d+"));
-    final Button validateBt = (Button) findViewById(R.id.validateBt);
-    validateBt.setOnClickListener(new View.OnClickListener() {
+		final Button validateBt = (Button) findViewById(R.id.validateBt);
+		validateBt.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
         // validate
         validationEt.validate();
       }
     });
-  }
+	}
 
-  @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
-    // Inflate the menu; this adds items to the action bar if it is present.
-    getMenuInflater().inflate(R.menu.menu_main, menu);
-    return true;
-  }
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.menu_main, menu);
+		return true;
+	}
 
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
-    // Handle action bar item clicks here. The action bar will
-    // automatically handle clicks on the Home/Up button, so long
-    // as you specify a parent activity in AndroidManifest.xml.
-    int id = item.getItemId();
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle action bar item clicks here. The action bar will
+		// automatically handle clicks on the Home/Up button, so long
+		// as you specify a parent activity in AndroidManifest.xml.
+		int id = item.getItemId();
 
-    //noinspection SimplifiableIfStatement
-    if (id == R.id.action_settings) {
-      return true;
-    }
+		//noinspection SimplifiableIfStatement
+		if (id == R.id.action_settings) {
+			return true;
+		}
 
-    return super.onOptionsItemSelected(item);
-  }
+		return super.onOptionsItemSelected(item);
+	}
 }
