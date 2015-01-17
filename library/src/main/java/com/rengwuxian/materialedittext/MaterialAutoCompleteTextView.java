@@ -156,6 +156,16 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
   private boolean singleLineEllipsis;
 
   /**
+   * Always show the floating label, instead of animating it in/out. False by default.
+   */
+  private boolean floatingLabelAlwaysShown;
+
+  /**
+   * Always show the helper text, no matter if the edit text is focused. False by default.
+   */
+  private boolean helperTextAlwaysShown;
+
+  /**
    * bottom ellipsis's height
    */
   private int bottomEllipsisSize;
@@ -344,6 +354,9 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
     iconLeftBitmaps = generateIconBitmaps(typedArray.getResourceId(R.styleable.MaterialEditText_iconLeft, -1));
     iconRightBitmaps = generateIconBitmaps(typedArray.getResourceId(R.styleable.MaterialEditText_iconRight, -1));
     iconPadding = typedArray.getDimensionPixelSize(R.styleable.MaterialEditText_iconPadding, getPixel(8));
+    floatingLabelAlwaysShown = typedArray.getBoolean(R.styleable.MaterialEditText_floatingLabelAlwaysShown, false);
+    helperTextAlwaysShown = typedArray.getBoolean(R.styleable.MaterialEditText_helperTextAlwaysShown, false);
+    typedArray.recycle();
 
     int[] paddings = new int[]{
         android.R.attr.padding, // 0
@@ -358,7 +371,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
     innerPaddingTop = paddingsTypedArray.getDimensionPixelSize(2, padding);
     innerPaddingRight = paddingsTypedArray.getDimensionPixelSize(3, padding);
     innerPaddingBottom = paddingsTypedArray.getDimensionPixelSize(4, padding);
-    typedArray.recycle();
+    paddingsTypedArray.recycle();
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
       setBackground(null);
@@ -382,9 +395,12 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
     if (!TextUtils.isEmpty(getText())) {
       CharSequence text = getText();
       setText(null);
+      setHintTextColor(baseColor & 0x00ffffff | 0x44000000);
       setText(text);
       floatingLabelFraction = 1;
       floatingLabelShown = true;
+    } else {
+      setHintTextColor(baseColor & 0x00ffffff | 0x44000000);
     }
   }
 
@@ -516,6 +532,24 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
   public void setCurrentBottomLines(float currentBottomLines) {
     this.currentBottomLines = currentBottomLines;
     initPadding();
+  }
+
+  public boolean getFloatingLabelAlwaysShown() {
+    return floatingLabelAlwaysShown;
+  }
+
+  public void setFloatingLabelAlwaysShown(boolean floatingLabelAlwaysShown) {
+    this.floatingLabelAlwaysShown = floatingLabelAlwaysShown;
+    invalidate();
+  }
+
+  public boolean getHelperTextAlwaysShown() {
+    return helperTextAlwaysShown;
+  }
+
+  public void setHelperText(boolean helperTextAlwaysShown) {
+    this.helperTextAlwaysShown = helperTextAlwaysShown;
+    invalidate();
   }
 
   @Nullable
@@ -1076,7 +1110,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
 
     // draw the bottom text
     if (textLayout != null) {
-      if (tempErrorText != null || (hasFocus() && !TextUtils.isEmpty(helperText))) { // error text or helper text
+      if (tempErrorText != null || ((helperTextAlwaysShown || hasFocus()) && !TextUtils.isEmpty(helperText))) { // error text or helper text
         textPaint.setColor(tempErrorText != null ? errorColor : helperTextColor != -1 ? helperTextColor : getCurrentHintTextColor());
         canvas.save();
         canvas.translate(startX + getBottomTextLeftOffset(), lineStartY + bottomSpacing - bottomTextPadding);
@@ -1105,10 +1139,10 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
       // calculate the vertical position
       int floatingLabelStartY = innerPaddingTop + floatingLabelTextSize + floatingLabelSpacing;
       int distance = floatingLabelSpacing;
-      int position = (int) (floatingLabelStartY - distance * floatingLabelFraction);
+      int position = (int) (floatingLabelStartY - distance * (floatingLabelAlwaysShown ? 1 : floatingLabelFraction));
 
       // calculate the alpha
-      int alpha = (int) (floatingLabelFraction * 0xff * (0.74f * focusFraction + 0.26f));
+      int alpha = (int) ((floatingLabelAlwaysShown ? 1 : floatingLabelFraction) * 0xff * (0.74f * focusFraction + 0.26f));
       textPaint.setAlpha(alpha);
 
       // draw the floating label

@@ -45,5 +45,9 @@
     <attr name="floatingLabelTextSize" format="dimension" />
     <!-- The bottom texts' size. 12sp by default. -->
     <attr name="bottomTextSize" format="dimension" />
+    <!-- Always show the floating label, instead of animating it in/out. -->
+    <attr name="floatingLabelAlwaysShown" format="boolean" />
+    <!-- Always show the helper text, no matter if the edit text is focused. -->
+    <attr name="helperTextAlwaysShown" format="boolean" />
   </declare-styleable>
 </resources>
