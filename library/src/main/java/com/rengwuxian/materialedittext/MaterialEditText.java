@@ -35,6 +35,8 @@ import com.nineoldandroids.animation.ArgbEvaluator;
 import com.nineoldandroids.animation.ObjectAnimator;
 import com.rengwuxian.materialedittext.validation.METValidator;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -293,8 +295,7 @@ public class MaterialEditText extends EditText {
 
     TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.MaterialEditText);
     baseColor = typedArray.getColor(R.styleable.MaterialEditText_baseColor, defaultBaseColor);
-    ColorStateList colorStateList = new ColorStateList(new int[][]{new int[]{android.R.attr.state_enabled}, EMPTY_STATE_SET}, new int[]{baseColor & 0x00ffffff | 0xdf000000, baseColor & 0x00ffffff | 0x44000000});
-    setTextColor(colorStateList);
+    setBaseColor(baseColor);
 
     // retrieve the default primaryColor
     int defaultPrimaryColor;
@@ -384,12 +385,9 @@ public class MaterialEditText extends EditText {
     if (!TextUtils.isEmpty(getText())) {
       CharSequence text = getText();
       setText(null);
-      setHintTextColor(baseColor & 0x00ffffff | 0x44000000);
       setText(text);
       floatingLabelFraction = 1;
       floatingLabelShown = true;
-    } else {
-      setHintTextColor(baseColor & 0x00ffffff | 0x44000000);
     }
   }
 
@@ -599,11 +597,6 @@ public class MaterialEditText extends EditText {
     extraPaddingBottom = (int) ((textMetrics.descent - textMetrics.ascent) * currentBottomLines) + (hideUnderline ? bottomSpacing : bottomSpacing * 2);
     extraPaddingLeft = iconLeftBitmaps == null ? 0 : (iconOuterWidth + iconPadding);
     extraPaddingRight = iconRightBitmaps == null ? 0 : (iconOuterWidth + iconPadding);
-
-    System.out.println("left:" + getPaddingLeft() + ", extraPaddingLeft:" + extraPaddingLeft);
-    System.out.println("right:" + getPaddingRight() + ", extraPaddingRight:" + extraPaddingRight);
-    System.out.println("top:" + getPaddingTop() + ", extraPaddingTop:" + extraPaddingTop);
-    System.out.println("bottom:" + getPaddingBottom() + ", extraPaddingBottom:" + extraPaddingBottom);
     setPaddings(innerPaddingLeft, innerPaddingTop, innerPaddingRight, innerPaddingBottom);
   }
 
@@ -698,19 +691,19 @@ public class MaterialEditText extends EditText {
   }
 
   private void initFloatingLabel() {
-    if (floatingLabelEnabled) {
-      // observe the text changing
-      addTextChangedListener(new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        }
+    // observe the text changing
+    addTextChangedListener(new TextWatcher() {
+      @Override
+      public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+      }
 
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-        }
+      @Override
+      public void onTextChanged(CharSequence s, int start, int before, int count) {
+      }
 
-        @Override
-        public void afterTextChanged(Editable s) {
+      @Override
+      public void afterTextChanged(Editable s) {
+        if (floatingLabelEnabled) {
           if (s.length() == 0) {
             if (floatingLabelShown) {
               floatingLabelShown = false;
@@ -725,34 +718,38 @@ public class MaterialEditText extends EditText {
             }
           }
         }
-      });
-      if (highlightFloatingLabel) {
-        // observe the focus state to animate the floating label's text color appropriately
-        innerFocusChangeListener = new OnFocusChangeListener() {
-          @Override
-          public void onFocusChange(View v, boolean hasFocus) {
-            if (hasFocus) {
-              if (getLabelFocusAnimator().isStarted()) {
-                getLabelFocusAnimator().reverse();
-              } else {
-                getLabelFocusAnimator().start();
-              }
-            } else {
-              getLabelFocusAnimator().reverse();
-            }
-            if (outerFocusChangeListener != null) {
-              outerFocusChangeListener.onFocusChange(v, hasFocus);
-            }
-          }
-        };
-        super.setOnFocusChangeListener(innerFocusChangeListener);
       }
-    }
-
+    });
+    // observe the focus state to animate the floating label's text color appropriately
+    innerFocusChangeListener = new OnFocusChangeListener() {
+      @Override
+      public void onFocusChange(View v, boolean hasFocus) {
+        if (floatingLabelEnabled && highlightFloatingLabel) {
+          if (hasFocus) {
+            if (getLabelFocusAnimator().isStarted()) {
+              getLabelFocusAnimator().reverse();
+            } else {
+              getLabelFocusAnimator().start();
+            }
+          } else {
+            getLabelFocusAnimator().reverse();
+          }
+          if (outerFocusChangeListener != null) {
+            outerFocusChangeListener.onFocusChange(v, hasFocus);
+          }
+        }
+      }
+    };
+    super.setOnFocusChangeListener(innerFocusChangeListener);
   }
 
   public void setBaseColor(int color) {
-    baseColor = color;
+    if (baseColor != color) {
+      baseColor = color;
+    }
+    ColorStateList colorStateList = new ColorStateList(new int[][]{new int[]{android.R.attr.state_enabled}, EMPTY_STATE_SET}, new int[]{baseColor & 0x00ffffff | 0xdf000000, baseColor & 0x00ffffff | 0x44000000});
+    setTextColor(colorStateList);
+    setHintTextColor(baseColor & 0x00ffffff | 0x44000000);
     postInvalidate();
   }
 
@@ -780,7 +777,7 @@ public class MaterialEditText extends EditText {
 
   public void setFloatingLabel(@FloatingLabelType int mode) {
     setFloatingLabelInternal(mode);
-    postInvalidate();
+    initPadding();
   }
 
   public int getFloatingLabelSpacing() {
@@ -1055,7 +1052,7 @@ public class MaterialEditText extends EditText {
         paint.setColor(primaryColor);
         canvas.drawRect(startX, lineStartY, endX, lineStartY + getPixel(2), paint);
       } else { // normal
-        paint.setColor(baseColor & 0x00ffffff | 0x44000000);
+        paint.setColor(baseColor & 0x00ffffff | 0x1E000000);
         canvas.drawRect(startX, lineStartY, endX, lineStartY + getPixel(1), paint);
       }
     }
