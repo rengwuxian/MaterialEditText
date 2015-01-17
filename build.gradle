@@ -1,25 +1,25 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:1.0.0'
-    }
+  repositories {
+    jcenter()
+  }
+  dependencies {
+    classpath 'com.android.tools.build:gradle:1.0.0'
+  }
 }
 
 def isReleaseBuild() {
-    return version.contains("SNAPSHOT") == false
+  return version.contains("SNAPSHOT") == false
 }
 
 allprojects {
-    version = VERSION_NAME
-    group = GROUP
+  version = VERSION_NAME
+  group = GROUP
 
-    repositories {
-        jcenter()
-        maven { url 'https://oss.sonatype.org/content/groups/public' }
-    }
+  repositories {
+    jcenter()
+    maven { url 'https://oss.sonatype.org/content/groups/public' }
+  }
 }
 
 apply plugin: 'android-reporting'

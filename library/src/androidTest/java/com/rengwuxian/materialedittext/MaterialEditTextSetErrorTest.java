@@ -9,20 +9,20 @@ import android.test.AndroidTestCase;
  */
 public class MaterialEditTextSetErrorTest extends AndroidTestCase {
 
-    private MaterialEditText editTextUnderTest;
+  private MaterialEditText editTextUnderTest;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        editTextUnderTest = new MaterialEditText(getContext());
-    }
+  @Override
+  protected void setUp() throws Exception {
+    super.setUp();
+    editTextUnderTest = new MaterialEditText(getContext());
+  }
 
-    public void testGetErrorReturnsNullIfNoErrorMessageWasSet() {
-        assertNull(editTextUnderTest.getError());
-    }
+  public void testGetErrorReturnsNullIfNoErrorMessageWasSet() {
+    assertNull(editTextUnderTest.getError());
+  }
 
-    public void testGetErrorReturnsMessageSetEarlierViaSetError() {
-        editTextUnderTest.setError("Error!");
-        assertEquals("Error!", editTextUnderTest.getError().toString());
-    }
+  public void testGetErrorReturnsMessageSetEarlierViaSetError() {
+    editTextUnderTest.setError("Error!");
+    assertEquals("Error!", editTextUnderTest.getError().toString());
+  }
 }
