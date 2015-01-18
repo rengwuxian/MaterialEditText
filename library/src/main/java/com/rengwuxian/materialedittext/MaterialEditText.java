@@ -226,6 +226,11 @@ public class MaterialEditText extends EditText {
   private Typeface accentTypeface;
 
   /**
+   * The font used on the view (EditText content)
+   */
+  private Typeface typeface;
+
+  /**
    * Text for the floatLabel if different from the hint
    */
   private CharSequence floatingLabelText;
@@ -337,10 +342,15 @@ public class MaterialEditText extends EditText {
     helperText = typedArray.getString(R.styleable.MaterialEditText_helperText);
     helperTextColor = typedArray.getColor(R.styleable.MaterialEditText_helperTextColor, -1);
     minBottomTextLines = typedArray.getInt(R.styleable.MaterialEditText_minBottomTextLines, 0);
-    String fontPath = typedArray.getString(R.styleable.MaterialEditText_accentTypeface);
-    if (fontPath != null && !isInEditMode()) {
-      accentTypeface = getCustomTypeface(fontPath);
+    String fontPathForAccent = typedArray.getString(R.styleable.MaterialEditText_accentTypeface);
+    if (fontPathForAccent != null && !isInEditMode()) {
+      accentTypeface = getCustomTypeface(fontPathForAccent);
       textPaint.setTypeface(accentTypeface);
+    }
+    String fontPathForView = typedArray.getString(R.styleable.MaterialEditText_typeface);
+    if (fontPathForView != null && !isInEditMode()) {
+      typeface = getCustomTypeface(fontPathForView);
+      setTypeface(typeface);
     }
     floatingLabelText = typedArray.getString(R.styleable.MaterialEditText_floatingLabelText);
     if (floatingLabelText == null) {
