@@ -221,6 +221,11 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
    * The font used for the accent texts (floating label, error/helper text, character counter, etc.)
    */
   private Typeface accentTypeface;
+  
+  /**
+   * The font used on the view (MultiAutoCompleteTextView content)
+   */
+  private Typeface typeface;
 
   /**
    * Text for the floatLabel if different from the hint
@@ -334,10 +339,15 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
     helperText = typedArray.getString(R.styleable.MaterialEditText_helperText);
     helperTextColor = typedArray.getColor(R.styleable.MaterialEditText_helperTextColor, -1);
     minBottomTextLines = typedArray.getInt(R.styleable.MaterialEditText_minBottomTextLines, 0);
-    String fontPath = typedArray.getString(R.styleable.MaterialEditText_accentTypeface);
-    if (fontPath != null && !isInEditMode()) {
-      accentTypeface = getCustomTypeface(fontPath);
+    String fontPathForAccent = typedArray.getString(R.styleable.MaterialEditText_accentTypeface);
+    if (fontPathForAccent != null && !isInEditMode()) {
+      accentTypeface = getCustomTypeface(fontPathForAccent);
       textPaint.setTypeface(accentTypeface);
+    }
+    String fontPathForView = typedArray.getString(R.styleable.MaterialEditText_typeface);
+    if (fontPathForView != null && !isInEditMode()) {
+      typeface = getCustomTypeface(fontPathForView);
+      setTypeface(typeface);
     }
     floatingLabelText = typedArray.getString(R.styleable.MaterialEditText_floatingLabelText);
     if (floatingLabelText == null) {
