@@ -27,6 +27,8 @@
     <attr name="helperTextColor" format="color" />
     <!-- Font of the paint used to draw accent texts -->
     <attr name="accentTypeface" format="string" />
+    <!-- Font used on view -->
+    <attr name="typeface" format="string" />
     <!-- Custom float label text -->
     <attr name="floatingLabelText" format="string" />
     <!-- spacing between the main text and the floating label -->
