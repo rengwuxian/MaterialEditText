@@ -775,11 +775,11 @@ public class MaterialEditText extends EditText {
           } else {
             getLabelFocusAnimator().reverse();
           }
-          if (outerFocusChangeListener != null) {
-            outerFocusChangeListener.onFocusChange(v, hasFocus);
-          }
         }
-      }
+		if (outerFocusChangeListener != null) {
+			outerFocusChangeListener.onFocusChange(v, hasFocus);
+		}
+	}
     };
     super.setOnFocusChangeListener(innerFocusChangeListener);
   }
