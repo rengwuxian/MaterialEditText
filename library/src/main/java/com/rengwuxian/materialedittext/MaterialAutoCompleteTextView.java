@@ -224,7 +224,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
    * The font used for the accent texts (floating label, error/helper text, character counter, etc.)
    */
   private Typeface accentTypeface;
-  
+
   /**
    * The font used on the view (AutoCompleteTextView content)
    */
@@ -273,7 +273,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
   ObjectAnimator bottomLinesAnimator;
   OnFocusChangeListener innerFocusChangeListener;
   OnFocusChangeListener outerFocusChangeListener;
-  private ArrayList<METValidator> validators = new ArrayList<>();
+  private List<METValidator> validators;
 
   public MaterialAutoCompleteTextView(Context context) {
     super(context);
@@ -978,7 +978,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
    * @return True if all validators pass, false if not
    */
   public boolean validate() {
-    if (validators == null || validators.size() == 0) {
+    if (validators == null || validators.isEmpty()) {
       return true;
     }
 
@@ -1003,7 +1003,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
   }
 
   public boolean hasValidator() {
-    return this.validators.size() != 0;
+    return this.validators != null && !this.validators.isEmpty();
   }
 
   /**
@@ -1015,10 +1015,20 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
    * @return This instance, for easy chaining
    */
   public MaterialAutoCompleteTextView addValidator(METValidator validator) {
+    if (this.validators == null) {
+      this.validators = new ArrayList<>(1);
+    }
     this.validators.add(validator);
     return this;
   }
 
+  public void clearValidator() {
+    if (this.validators != null) {
+      this.validators.clear();
+    }
+  }
+
+  @Nullable
   public List<METValidator> getValidators() {
     return this.validators;
   }

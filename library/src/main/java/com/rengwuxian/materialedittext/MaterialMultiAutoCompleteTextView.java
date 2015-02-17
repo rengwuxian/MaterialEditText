@@ -270,7 +270,7 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
   ObjectAnimator bottomLinesAnimator;
   OnFocusChangeListener innerFocusChangeListener;
   OnFocusChangeListener outerFocusChangeListener;
-  private ArrayList<METValidator> validators = new ArrayList<>();
+  private List<METValidator> validators;
 
   public MaterialMultiAutoCompleteTextView(Context context) {
     super(context);
@@ -975,7 +975,7 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
    * @return True if all validators pass, false if not
    */
   public boolean validate() {
-    if (validators == null || validators.size() == 0) {
+    if (validators == null || validators.isEmpty()) {
       return true;
     }
 
@@ -1000,7 +1000,7 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
   }
 
   public boolean hasValidator() {
-    return this.validators.size() != 0;
+    return this.validators != null && !this.validators.isEmpty();
   }
 
   /**
@@ -1012,10 +1012,20 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
    * @return This instance, for easy chaining
    */
   public MaterialMultiAutoCompleteTextView addValidator(METValidator validator) {
+    if (this.validators == null) {
+      this.validators = new ArrayList<>(1);
+    }
     this.validators.add(validator);
     return this;
   }
 
+  public void clearValidator() {
+    if (this.validators != null) {
+      this.validators.clear();
+    }
+  }
+
+  @Nullable
   public List<METValidator> getValidators() {
     return this.validators;
   }
