@@ -223,7 +223,7 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
   private Typeface accentTypeface;
 
   /**
-   * The font used on the view (MultiAutoCompleteTextView content)
+   * The font used on the view (EditText content)
    */
   private Typeface typeface;
 
@@ -1103,16 +1103,8 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
     // draw the characters counter
     if ((hasFocus() && hasCharatersCounter()) || !isCharactersCountValid()) {
       textPaint.setColor(isCharactersCountValid() ? getCurrentHintTextColor() : errorColor);
-      String text;
-      if (minCharacters <= 0) {
-        text = isRTL() ? maxCharacters + " / " + getText().length() : getText().length() + " / " + maxCharacters;
-      } else if (maxCharacters <= 0) {
-        text = isRTL() ? "+" + minCharacters + " / " + getText().length() : getText().length() + " / " + minCharacters + "+";
-      } else {
-        text = isRTL() ? maxCharacters + "-" + minCharacters + " / " + getText().length() : getText().length() + " / " + minCharacters + "-" + maxCharacters;
-      }
-
-      canvas.drawText(text, isRTL() ? startX : endX - textPaint.measureText(text), lineStartY + bottomSpacing + relativeHeight, textPaint);
+      String charactersCounterText = getCharactersCounterText();
+      canvas.drawText(charactersCounterText, isRTL() ? startX : endX - textPaint.measureText(charactersCounterText), lineStartY + bottomSpacing + relativeHeight, textPaint);
     }
 
     // draw the bottom text
@@ -1190,7 +1182,7 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
   }
 
   private int getCharactersCounterWidth() {
-    return hasCharatersCounter() ? (int) textPaint.measureText("00/000") : 0;
+    return hasCharatersCounter() ? (int) textPaint.measureText(getCharactersCounterText()) : 0;
   }
 
   private int getBottomEllipsisWidth() {
@@ -1207,6 +1199,18 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
 
   private boolean hasCharatersCounter() {
     return minCharacters > 0 || maxCharacters > 0;
+  }
+
+  private String getCharactersCounterText() {
+    String text;
+    if (minCharacters <= 0) {
+      text = isRTL() ? maxCharacters + " / " + getText().length() : getText().length() + " / " + maxCharacters;
+    } else if (maxCharacters <= 0) {
+      text = isRTL() ? "+" + minCharacters + " / " + getText().length() : getText().length() + " / " + minCharacters + "+";
+    } else {
+      text = isRTL() ? maxCharacters + "-" + minCharacters + " / " + getText().length() : getText().length() + " / " + minCharacters + "-" + maxCharacters;
+    }
+    return text;
   }
 
   @Override
