@@ -221,7 +221,7 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
    * The font used for the accent texts (floating label, error/helper text, character counter, etc.)
    */
   private Typeface accentTypeface;
-  
+
   /**
    * The font used on the view (MultiAutoCompleteTextView content)
    */
@@ -772,9 +772,9 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
           } else {
             getLabelFocusAnimator().reverse();
           }
-          if (outerFocusChangeListener != null) {
-            outerFocusChangeListener.onFocusChange(v, hasFocus);
-          }
+        }
+        if (outerFocusChangeListener != null) {
+          outerFocusChangeListener.onFocusChange(v, hasFocus);
         }
       }
     };
