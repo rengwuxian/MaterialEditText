@@ -775,9 +775,9 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
           } else {
             getLabelFocusAnimator().reverse();
           }
-          if (outerFocusChangeListener != null) {
-            outerFocusChangeListener.onFocusChange(v, hasFocus);
-          }
+        }
+        if (outerFocusChangeListener != null) {
+          outerFocusChangeListener.onFocusChange(v, hasFocus);
         }
       }
     };
