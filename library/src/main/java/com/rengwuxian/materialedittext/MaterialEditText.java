@@ -273,7 +273,7 @@ public class MaterialEditText extends EditText {
   ObjectAnimator bottomLinesAnimator;
   OnFocusChangeListener innerFocusChangeListener;
   OnFocusChangeListener outerFocusChangeListener;
-  private ArrayList<METValidator> validators = new ArrayList<>();
+  private List<METValidator> validators;
 
   public MaterialEditText(Context context) {
     super(context);
@@ -776,10 +776,10 @@ public class MaterialEditText extends EditText {
             getLabelFocusAnimator().reverse();
           }
         }
-		if (outerFocusChangeListener != null) {
-			outerFocusChangeListener.onFocusChange(v, hasFocus);
-		}
-	}
+        if (outerFocusChangeListener != null) {
+          outerFocusChangeListener.onFocusChange(v, hasFocus);
+        }
+      }
     };
     super.setOnFocusChangeListener(innerFocusChangeListener);
   }
@@ -978,7 +978,7 @@ public class MaterialEditText extends EditText {
    * @return True if all validators pass, false if not
    */
   public boolean validate() {
-    if (validators == null || validators.size() == 0) {
+    if (validators == null || validators.isEmpty()) {
       return true;
     }
 
@@ -1003,7 +1003,7 @@ public class MaterialEditText extends EditText {
   }
 
   public boolean hasValidator() {
-    return this.validators.size() != 0;
+    return this.validators != null && !this.validators.isEmpty();
   }
 
   /**
@@ -1015,10 +1015,20 @@ public class MaterialEditText extends EditText {
    * @return This instance, for easy chaining
    */
   public MaterialEditText addValidator(METValidator validator) {
+    if (validators == null) {
+      this.validators = new ArrayList<>(1);
+    }
     this.validators.add(validator);
     return this;
   }
 
+  public void clearValidator() {
+    if (this.validators != null) {
+      this.validators.clear();
+    }
+  }
+
+  @Nullable
   public List<METValidator> getValidators() {
     return this.validators;
   }
