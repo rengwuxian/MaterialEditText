@@ -999,7 +999,7 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
     return isValid;
   }
 
-  public boolean hasValidator() {
+  public boolean hasValidators() {
     return this.validators != null && !this.validators.isEmpty();
   }
 
@@ -1019,7 +1019,7 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
     return this;
   }
 
-  public void clearValidator() {
+  public void clearValidators() {
     if (this.validators != null) {
       this.validators.clear();
     }

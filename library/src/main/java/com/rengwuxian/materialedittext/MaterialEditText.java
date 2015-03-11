@@ -1002,7 +1002,7 @@ public class MaterialEditText extends EditText {
     return isValid;
   }
 
-  public boolean hasValidator() {
+  public boolean hasValidators() {
     return this.validators != null && !this.validators.isEmpty();
   }
 
@@ -1022,7 +1022,7 @@ public class MaterialEditText extends EditText {
     return this;
   }
 
-  public void clearValidator() {
+  public void clearValidators() {
     if (this.validators != null) {
       this.validators.clear();
     }
