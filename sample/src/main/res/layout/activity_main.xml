@@ -14,7 +14,7 @@
     <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="?colorPrimary"
+      android:background="?metColorPrimary"
       android:orientation="vertical"
       android:paddingBottom="16dp"
       android:paddingLeft="72dp"
@@ -31,7 +31,7 @@
         app:baseColor="@android:color/white"
         app:floatingLabel="highlight"
         app:maxCharacters="20"
-        app:primaryColor="?colorAccent"
+        app:metPrimaryColor="?colorAccent"
         app:singleLineEllipsis="true" />
 
       <com.rengwuxian.materialedittext.MaterialEditText
@@ -43,7 +43,7 @@
         app:baseColor="@android:color/white"
         app:floatingLabel="highlight"
         app:maxCharacters="20"
-        app:primaryColor="?colorAccent" />
+        app:metPrimaryColor="?colorAccent" />
 
     </LinearLayout>
 
@@ -347,7 +347,7 @@
         app:helperText="Helper Text"
         app:helperTextColor="#795548"
         app:maxCharacters="5"
-        app:primaryColor="#2196F3" />
+        app:metPrimaryColor="#2196F3" />
 
       <TextView
         android:layout_width="match_parent"
