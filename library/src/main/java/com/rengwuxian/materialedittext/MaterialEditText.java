@@ -1016,7 +1016,7 @@ public class MaterialEditText extends EditText {
    */
   public MaterialEditText addValidator(METValidator validator) {
     if (validators == null) {
-      this.validators = new ArrayList<>(1);
+      this.validators = new ArrayList<>();
     }
     this.validators.add(validator);
     return this;

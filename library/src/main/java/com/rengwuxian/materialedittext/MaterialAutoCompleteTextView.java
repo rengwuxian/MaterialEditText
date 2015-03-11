@@ -1016,7 +1016,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
    */
   public MaterialAutoCompleteTextView addValidator(METValidator validator) {
     if (this.validators == null) {
-      this.validators = new ArrayList<>(1);
+      this.validators = new ArrayList<>();
     }
     this.validators.add(validator);
     return this;
