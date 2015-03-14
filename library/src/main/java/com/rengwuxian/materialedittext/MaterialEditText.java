@@ -333,7 +333,11 @@ public class MaterialEditText extends EditText {
       }
     }
 
-    primaryColor = typedArray.getColor(R.styleable.MaterialEditText_primaryColor, defaultPrimaryColor);
+    if (typedArray.hasValue(R.styleable.MaterialEditText_primaryColor)) {
+      primaryColor = typedArray.getColor(R.styleable.MaterialEditText_primaryColor, defaultPrimaryColor);
+    } else {
+      primaryColor = typedArray.getColor(R.styleable.MaterialEditText_metPrimaryColor, defaultPrimaryColor);
+    }
     setFloatingLabelInternal(typedArray.getInt(R.styleable.MaterialEditText_floatingLabel, 0));
     errorColor = typedArray.getColor(R.styleable.MaterialEditText_errorColor, Color.parseColor("#e7492E"));
     minCharacters = typedArray.getInt(R.styleable.MaterialEditText_minCharacters, 0);

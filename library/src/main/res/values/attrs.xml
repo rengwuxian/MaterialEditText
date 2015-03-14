@@ -5,6 +5,8 @@
     <attr name="baseColor" format="color" />
     <!-- The highlight color of the line, and the floating label if the highlightFloatingLabel is true. -->
     <attr name="primaryColor" format="color" />
+    <!-- Same with primaryColor. It's just a fallback if primaryColor runs into conflict with some other libs. -->
+    <attr name="metPrimaryColor" format="color"/>
     <!-- How the floating label should be shown. Default is none -->
     <attr name="floatingLabel">
       <enum name="none" value="0" />
