@@ -306,7 +306,7 @@ public class MaterialEditText extends EditText {
     defaultBaseColor = Colors.getBaseColor(baseColorTypedValue.data);
 
     TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.MaterialEditText);
-    baseColor = typedArray.getColor(R.styleable.MaterialEditText_baseColor, defaultBaseColor);
+    baseColor = typedArray.getColor(R.styleable.MaterialEditText_met_baseColor, defaultBaseColor);
     setBaseColor(baseColor);
 
     // retrieve the default primaryColor
@@ -333,43 +333,39 @@ public class MaterialEditText extends EditText {
       }
     }
 
-    if (typedArray.hasValue(R.styleable.MaterialEditText_primaryColor)) {
-      primaryColor = typedArray.getColor(R.styleable.MaterialEditText_primaryColor, defaultPrimaryColor);
-    } else {
-      primaryColor = typedArray.getColor(R.styleable.MaterialEditText_metPrimaryColor, defaultPrimaryColor);
-    }
-    setFloatingLabelInternal(typedArray.getInt(R.styleable.MaterialEditText_floatingLabel, 0));
-    errorColor = typedArray.getColor(R.styleable.MaterialEditText_errorColor, Color.parseColor("#e7492E"));
-    minCharacters = typedArray.getInt(R.styleable.MaterialEditText_minCharacters, 0);
-    maxCharacters = typedArray.getInt(R.styleable.MaterialEditText_maxCharacters, 0);
-    singleLineEllipsis = typedArray.getBoolean(R.styleable.MaterialEditText_singleLineEllipsis, false);
-    helperText = typedArray.getString(R.styleable.MaterialEditText_helperText);
-    helperTextColor = typedArray.getColor(R.styleable.MaterialEditText_helperTextColor, -1);
-    minBottomTextLines = typedArray.getInt(R.styleable.MaterialEditText_minBottomTextLines, 0);
-    String fontPathForAccent = typedArray.getString(R.styleable.MaterialEditText_accentTypeface);
+    primaryColor = typedArray.getColor(R.styleable.MaterialEditText_met_primaryColor, defaultPrimaryColor);
+    setFloatingLabelInternal(typedArray.getInt(R.styleable.MaterialEditText_met_floatingLabel, 0));
+    errorColor = typedArray.getColor(R.styleable.MaterialEditText_met_errorColor, Color.parseColor("#e7492E"));
+    minCharacters = typedArray.getInt(R.styleable.MaterialEditText_met_minCharacters, 0);
+    maxCharacters = typedArray.getInt(R.styleable.MaterialEditText_met_maxCharacters, 0);
+    singleLineEllipsis = typedArray.getBoolean(R.styleable.MaterialEditText_met_singleLineEllipsis, false);
+    helperText = typedArray.getString(R.styleable.MaterialEditText_met_helperText);
+    helperTextColor = typedArray.getColor(R.styleable.MaterialEditText_met_helperTextColor, -1);
+    minBottomTextLines = typedArray.getInt(R.styleable.MaterialEditText_met_minBottomTextLines, 0);
+    String fontPathForAccent = typedArray.getString(R.styleable.MaterialEditText_met_accentTypeface);
     if (fontPathForAccent != null && !isInEditMode()) {
       accentTypeface = getCustomTypeface(fontPathForAccent);
       textPaint.setTypeface(accentTypeface);
     }
-    String fontPathForView = typedArray.getString(R.styleable.MaterialEditText_typeface);
+    String fontPathForView = typedArray.getString(R.styleable.MaterialEditText_met_typeface);
     if (fontPathForView != null && !isInEditMode()) {
       typeface = getCustomTypeface(fontPathForView);
       setTypeface(typeface);
     }
-    floatingLabelText = typedArray.getString(R.styleable.MaterialEditText_floatingLabelText);
+    floatingLabelText = typedArray.getString(R.styleable.MaterialEditText_met_floatingLabelText);
     if (floatingLabelText == null) {
       floatingLabelText = getHint();
     }
-    floatingLabelSpacing = typedArray.getDimensionPixelSize(R.styleable.MaterialEditText_floatingLabelSpacing, bottomSpacing);
-    floatingLabelTextSize = typedArray.getDimensionPixelSize(R.styleable.MaterialEditText_floatingLabelTextSize, getResources().getDimensionPixelSize(R.dimen.floating_label_text_size));
-    bottomTextSize = typedArray.getDimensionPixelSize(R.styleable.MaterialEditText_bottomTextSize, getResources().getDimensionPixelSize(R.dimen.bottom_text_size));
-    hideUnderline = typedArray.getBoolean(R.styleable.MaterialEditText_hideUnderline, false);
-    autoValidate = typedArray.getBoolean(R.styleable.MaterialEditText_autoValidate, false);
-    iconLeftBitmaps = generateIconBitmaps(typedArray.getResourceId(R.styleable.MaterialEditText_iconLeft, -1));
-    iconRightBitmaps = generateIconBitmaps(typedArray.getResourceId(R.styleable.MaterialEditText_iconRight, -1));
-    iconPadding = typedArray.getDimensionPixelSize(R.styleable.MaterialEditText_iconPadding, getPixel(8));
-    floatingLabelAlwaysShown = typedArray.getBoolean(R.styleable.MaterialEditText_floatingLabelAlwaysShown, false);
-    helperTextAlwaysShown = typedArray.getBoolean(R.styleable.MaterialEditText_helperTextAlwaysShown, false);
+    floatingLabelSpacing = typedArray.getDimensionPixelSize(R.styleable.MaterialEditText_met_floatingLabelSpacing, bottomSpacing);
+    floatingLabelTextSize = typedArray.getDimensionPixelSize(R.styleable.MaterialEditText_met_floatingLabelTextSize, getResources().getDimensionPixelSize(R.dimen.floating_label_text_size));
+    bottomTextSize = typedArray.getDimensionPixelSize(R.styleable.MaterialEditText_met_bottomTextSize, getResources().getDimensionPixelSize(R.dimen.bottom_text_size));
+    hideUnderline = typedArray.getBoolean(R.styleable.MaterialEditText_met_hideUnderline, false);
+    autoValidate = typedArray.getBoolean(R.styleable.MaterialEditText_met_autoValidate, false);
+    iconLeftBitmaps = generateIconBitmaps(typedArray.getResourceId(R.styleable.MaterialEditText_met_iconLeft, -1));
+    iconRightBitmaps = generateIconBitmaps(typedArray.getResourceId(R.styleable.MaterialEditText_met_iconRight, -1));
+    iconPadding = typedArray.getDimensionPixelSize(R.styleable.MaterialEditText_met_iconPadding, getPixel(8));
+    floatingLabelAlwaysShown = typedArray.getBoolean(R.styleable.MaterialEditText_met_floatingLabelAlwaysShown, false);
+    helperTextAlwaysShown = typedArray.getBoolean(R.styleable.MaterialEditText_met_helperTextAlwaysShown, false);
     typedArray.recycle();
 
     int[] paddings = new int[]{
