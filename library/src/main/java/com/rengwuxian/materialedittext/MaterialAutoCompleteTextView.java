@@ -260,10 +260,23 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
    */
   private Bitmap[] iconRightBitmaps;
 
+  /**
+   * Clear Button
+   */
+  private Bitmap[] clearButtonBitmaps;
+
+  /**
+   * Close Button
+   */
+  private Bitmap[] closeButtonBitmaps;
+
+  private boolean showClearButton;
   private int iconSize;
   private int iconOuterWidth;
   private int iconOuterHeight;
   private int iconPadding;
+  private boolean clearButtonTouched;
+  private boolean clearButtonClicking;
   private ArgbEvaluator focusEvaluator = new ArgbEvaluator();
   Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
   TextPaint textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
@@ -363,6 +376,9 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
     autoValidate = typedArray.getBoolean(R.styleable.MaterialEditText_met_autoValidate, false);
     iconLeftBitmaps = generateIconBitmaps(typedArray.getResourceId(R.styleable.MaterialEditText_met_iconLeft, -1));
     iconRightBitmaps = generateIconBitmaps(typedArray.getResourceId(R.styleable.MaterialEditText_met_iconRight, -1));
+    showClearButton = typedArray.getBoolean(R.styleable.MaterialEditText_met_clearButton, false);
+    clearButtonBitmaps = generateIconBitmaps(R.drawable.met_ic_clear);
+    closeButtonBitmaps = generateIconBitmaps(R.drawable.met_ic_close);
     iconPadding = typedArray.getDimensionPixelSize(R.styleable.MaterialEditText_met_iconPadding, getPixel(16));
     floatingLabelAlwaysShown = typedArray.getBoolean(R.styleable.MaterialEditText_met_floatingLabelAlwaysShown, false);
     helperTextAlwaysShown = typedArray.getBoolean(R.styleable.MaterialEditText_met_helperTextAlwaysShown, false);
@@ -459,6 +475,15 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
   public void setIconRight(Bitmap bitmap) {
     iconRightBitmaps = generateIconBitmaps(bitmap);
     initPadding();
+  }
+
+  public void setClearButton(boolean show) {
+    showClearButton = show;
+    correctPaddings();
+  }
+
+  public boolean hasClearButton() {
+    return showClearButton;
   }
 
   private Bitmap[] generateIconBitmaps(@DrawableRes int origin) {
@@ -638,7 +663,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
     extraPaddingBottom = (int) ((textMetrics.descent - textMetrics.ascent) * currentBottomLines) + (hideUnderline ? bottomSpacing : bottomSpacing * 2);
     extraPaddingLeft = iconLeftBitmaps == null ? 0 : (iconOuterWidth + iconPadding);
     extraPaddingRight = iconRightBitmaps == null ? 0 : (iconOuterWidth + iconPadding);
-    setPaddings(innerPaddingLeft, innerPaddingTop, innerPaddingRight, innerPaddingBottom);
+    correctPaddings();
   }
 
   /**
@@ -666,7 +691,25 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
     innerPaddingBottom = bottom;
     innerPaddingLeft = left;
     innerPaddingRight = right;
-    super.setPadding(left + extraPaddingLeft, top + extraPaddingTop, right + extraPaddingRight, bottom + extraPaddingBottom);
+    correctPaddings();
+  }
+
+  /**
+   * Set paddings to the correct values
+   */
+  private void correctPaddings() {
+    int buttonsWidthLeft = 0, buttonsWidthRight = 0;
+    int buttonsWidth = iconOuterWidth * getButtonsCount();
+    if (isRTL()) {
+      buttonsWidthLeft = buttonsWidth;
+    } else {
+      buttonsWidthRight = buttonsWidth;
+    }
+    super.setPadding(innerPaddingLeft + extraPaddingLeft + buttonsWidthLeft, innerPaddingTop + extraPaddingTop, innerPaddingRight + extraPaddingRight + buttonsWidthRight, innerPaddingBottom + extraPaddingBottom);
+  }
+
+  private int getButtonsCount() {
+    return hasClearButton() ? 1 : 0;
   }
 
   @Override
@@ -1015,7 +1058,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
    * @return This instance, for easy chaining
    */
   public MaterialAutoCompleteTextView addValidator(METValidator validator) {
-    if (this.validators == null) {
+    if (validators == null) {
       this.validators = new ArrayList<>();
     }
     this.validators.add(validator);
@@ -1085,6 +1128,21 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
       int iconRight = endX + iconPadding + (iconOuterWidth - icon.getWidth()) / 2;
       int iconTop = lineStartY + bottomSpacing - iconOuterHeight + (iconOuterHeight - icon.getHeight()) / 2;
       canvas.drawBitmap(icon, iconRight, iconTop, paint);
+    }
+
+    // draw the clear button
+    if (hasFocus() && showClearButton) {
+      paint.setAlpha(255);
+      int buttonLeft;
+      if (isRTL()) {
+        buttonLeft = startX;
+      } else {
+        buttonLeft = endX - iconOuterWidth;
+      }
+      Bitmap clearButtonBitmap = TextUtils.isEmpty(getText()) ? closeButtonBitmaps[0] : clearButtonBitmaps[0];
+      buttonLeft += (iconOuterWidth - clearButtonBitmap.getWidth()) / 2;
+      int iconTop = lineStartY + bottomSpacing - iconOuterHeight + (iconOuterHeight - clearButtonBitmap.getHeight()) / 2;
+      canvas.drawBitmap(clearButtonBitmap, buttonLeft, iconTop, paint);
     }
 
     // draw the underline
@@ -1232,6 +1290,56 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
       setSelection(0);
       return false;
     }
+    if (hasFocus() && showClearButton) {
+      switch (event.getAction()) {
+        case MotionEvent.ACTION_DOWN:
+          if (insideClearButton(event)) {
+            clearButtonTouched = true;
+            clearButtonClicking = true;
+          }
+          return true;
+        case MotionEvent.ACTION_MOVE:
+          if (clearButtonClicking && !insideClearButton(event)) {
+            clearButtonClicking = false;
+          }
+          if (clearButtonTouched) {
+            return true;
+          }
+          break;
+        case MotionEvent.ACTION_UP:
+          if (clearButtonClicking) {
+            if (!TextUtils.isEmpty(getText())) {
+              setText(null);
+            }
+            clearButtonClicking = false;
+          }
+          if (clearButtonTouched) {
+            clearButtonTouched = false;
+            return true;
+          }
+          clearButtonTouched = false;
+          break;
+        case MotionEvent.ACTION_CANCEL:
+          clearButtonTouched = false;
+          clearButtonClicking = false;
+          break;
+      }
+    }
     return super.onTouchEvent(event);
+  }
+
+  private boolean insideClearButton(MotionEvent event) {
+    float x = event.getX();
+    float y = event.getY();
+    int startX = getScrollX() + (iconLeftBitmaps == null ? 0 : (iconOuterWidth + iconPadding));
+    int endX = getScrollX() + (iconRightBitmaps == null ? getWidth() : getWidth() - iconOuterWidth - iconPadding);
+    int buttonLeft;
+    if (isRTL()) {
+      buttonLeft = startX;
+    } else {
+      buttonLeft = endX - iconOuterWidth;
+    }
+    int buttonTop = getScrollY() + getHeight() - getPaddingBottom() + bottomSpacing - iconOuterHeight;
+    return (x >= buttonLeft && x < buttonLeft + iconOuterWidth && y >= buttonTop && y < buttonTop + iconOuterHeight);
   }
 }

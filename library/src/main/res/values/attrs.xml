@@ -43,6 +43,8 @@
     <attr name="met_iconRight" format="reference" />
     <!-- Padding between icon(s) and the main area. 8dp by default. -->
     <attr name="met_iconPadding" format="dimension" />
+    <!-- Clear button -->
+    <attr name="met_clearButton" format="boolean" />
     <!-- The floating label's text size. 12sp by default. -->
     <attr name="met_floatingLabelTextSize" format="dimension" />
     <!-- The bottom texts' size. 12sp by default. -->
