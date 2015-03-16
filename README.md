@@ -5,6 +5,15 @@ MaterialEditText
 
 ![MaterialEditText](./images/material_edittext.png)
 
+2.0.0 snapshot:
+```groovy
+maven { url 'https://oss.sonatype.org/content/groups/public' }
+```
+```groovy
+compile 'com.rengwuxian.materialedittext:library:2.0.0-SNAPSHOT'
+```
+**NOTE: There is no doc or sample for `MaterialEditText` v2.0 for now. They will come together with the lib's release version within several days.**
+
 AppCompat v21 makes it easy to use Material Design EditText in our apps, but it's so limited. If you've tried that, you know what I mean. So I wrote MaterialEditText, the EditText in Material Design, with more features that [Google Material Design Spec](http://www.google.com/design/spec/components/text-fields.html) has introduced.
 
 ## Features
