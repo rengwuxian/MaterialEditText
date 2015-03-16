@@ -35,6 +35,8 @@
     <attr name="met_floatingLabelSpacing" format="dimension" />
     <!-- Hide underline -->
     <attr name="met_hideUnderline" format="boolean" />
+    <!-- Underline's color -->
+    <attr name="met_underlineColor" format="color" />
     <!-- Auto validate -->
     <attr name="met_autoValidate" format="boolean" />
     <!-- Left icon -->

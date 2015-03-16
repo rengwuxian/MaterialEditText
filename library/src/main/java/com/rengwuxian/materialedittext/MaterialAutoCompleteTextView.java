@@ -246,6 +246,11 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
   private boolean hideUnderline;
 
   /**
+   * Underline's color
+   */
+  private int underlineColor;
+
+  /**
    * Whether to validate as soon as the text has changed. False by default
    */
   private boolean autoValidate;
@@ -389,6 +394,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
     floatingLabelTextColor = typedArray.getColor(R.styleable.MaterialEditText_met_floatingLabelTextColor, -1);
     bottomTextSize = typedArray.getDimensionPixelSize(R.styleable.MaterialEditText_met_bottomTextSize, getResources().getDimensionPixelSize(R.dimen.bottom_text_size));
     hideUnderline = typedArray.getBoolean(R.styleable.MaterialEditText_met_hideUnderline, false);
+    underlineColor = typedArray.getColor(R.styleable.MaterialEditText_met_underlineColor, -1);
     autoValidate = typedArray.getBoolean(R.styleable.MaterialEditText_met_autoValidate, false);
     iconLeftBitmaps = generateIconBitmaps(typedArray.getResourceId(R.styleable.MaterialEditText_met_iconLeft, -1));
     iconRightBitmaps = generateIconBitmaps(typedArray.getResourceId(R.styleable.MaterialEditText_met_iconRight, -1));
@@ -639,6 +645,15 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
   public void setHideUnderline(boolean hideUnderline) {
     this.hideUnderline = hideUnderline;
     initPadding();
+    postInvalidate();
+  }
+
+  /**
+   * Set the color of the underline for normal state
+   * @param color
+   */
+  public void setUnderlineColor(int color) {
+    this.underlineColor = color;
     postInvalidate();
   }
 
@@ -1183,7 +1198,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
         paint.setColor(errorColor);
         canvas.drawRect(startX, lineStartY, endX, lineStartY + getPixel(2), paint);
       } else if (!isEnabled()) { // disabled
-        paint.setColor(baseColor & 0x00ffffff | 0x44000000);
+        paint.setColor(underlineColor != -1 ? underlineColor : baseColor & 0x00ffffff | 0x44000000);
         float interval = getPixel(1);
         for (float xOffset = 0; xOffset < getWidth(); xOffset += interval * 3) {
           canvas.drawRect(startX + xOffset, lineStartY, startX + xOffset + interval, lineStartY + getPixel(1), paint);
@@ -1192,7 +1207,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
         paint.setColor(primaryColor);
         canvas.drawRect(startX, lineStartY, endX, lineStartY + getPixel(2), paint);
       } else { // normal
-        paint.setColor(baseColor & 0x00ffffff | 0x1E000000);
+        paint.setColor(underlineColor != -1 ? underlineColor : baseColor & 0x00ffffff | 0x1E000000);
         canvas.drawRect(startX, lineStartY, endX, lineStartY + getPixel(1), paint);
       }
     }
