@@ -646,6 +646,13 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
   }
 
   /**
+   * get the color of the underline for normal state
+   */
+  public int getUnderlineColor() {
+    return underlineColor;
+  }
+
+  /**
    * Set the color of the underline for normal state
    * @param color
    */
