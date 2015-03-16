@@ -682,6 +682,15 @@ public class MaterialEditText extends EditText {
     initPadding();
   }
 
+  public int getFloatingLabelTextColor() {
+    return floatingLabelTextColor;
+  }
+
+  public void setFloatingLabelTextColor(int color) {
+    this.floatingLabelTextColor = color;
+    postInvalidate();
+  }
+
   public int getBottomTextSize() {
     return bottomTextSize;
   }
