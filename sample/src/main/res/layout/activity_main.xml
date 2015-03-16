@@ -73,9 +73,7 @@
           android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:layout_weight="1"
-          android:hint="Basic"
-          android:textColor="@android:color/holo_red_dark"
-          android:textColorHint="@android:color/holo_blue_bright"/>
+          android:hint="Basic"/>
 
         <Button
           android:id="@+id/enableBt"
@@ -126,7 +124,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Highlight Floating Label"
-        app:met_floatingLabel="highlight" />
+        app:met_floatingLabel="highlight"/>
 
       <TextView
         android:layout_width="match_parent"

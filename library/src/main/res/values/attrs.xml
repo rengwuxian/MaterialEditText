@@ -47,6 +47,8 @@
     <attr name="met_clearButton" format="boolean" />
     <!-- The floating label's text size. 12sp by default. -->
     <attr name="met_floatingLabelTextSize" format="dimension" />
+    <!-- The floating label's text color. -1 by default. -->
+    <attr name="met_floatingLabelTextColor" format="color" />
     <!-- The bottom texts' size. 12sp by default. -->
     <attr name="met_bottomTextSize" format="dimension" />
     <!-- Always show the floating label, instead of animating it in/out. -->

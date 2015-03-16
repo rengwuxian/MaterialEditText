@@ -78,6 +78,11 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
   private int floatingLabelTextSize;
 
   /**
+   * the floating label's text color.
+   */
+  private int floatingLabelTextColor;
+
+  /**
    * the bottom texts' size.
    */
   private int bottomTextSize;
@@ -378,6 +383,7 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
     }
     floatingLabelSpacing = typedArray.getDimensionPixelSize(R.styleable.MaterialEditText_met_floatingLabelSpacing, bottomSpacing);
     floatingLabelTextSize = typedArray.getDimensionPixelSize(R.styleable.MaterialEditText_met_floatingLabelTextSize, getResources().getDimensionPixelSize(R.dimen.floating_label_text_size));
+    floatingLabelTextColor = typedArray.getColor(R.styleable.MaterialEditText_met_floatingLabelTextColor, -1);
     bottomTextSize = typedArray.getDimensionPixelSize(R.styleable.MaterialEditText_met_bottomTextSize, getResources().getDimensionPixelSize(R.dimen.bottom_text_size));
     hideUnderline = typedArray.getBoolean(R.styleable.MaterialEditText_met_hideUnderline, false);
     autoValidate = typedArray.getBoolean(R.styleable.MaterialEditText_met_autoValidate, false);
@@ -1215,7 +1221,7 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
     if (floatingLabelEnabled && !TextUtils.isEmpty(floatingLabelText)) {
       textPaint.setTextSize(floatingLabelTextSize);
       // calculate the text color
-      textPaint.setColor((Integer) focusEvaluator.evaluate(focusFraction, getCurrentHintTextColor(), primaryColor));
+      textPaint.setColor((Integer) focusEvaluator.evaluate(focusFraction, floatingLabelTextColor != -1 ? floatingLabelTextColor : getCurrentHintTextColor(), primaryColor));
 
       // calculate the horizontal position
       float floatingLabelWidth = textPaint.measureText(floatingLabelText.toString());
