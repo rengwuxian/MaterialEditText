@@ -312,6 +312,16 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
     bottomSpacing = getResources().getDimensionPixelSize(R.dimen.inner_components_spacing);
     bottomEllipsisSize = getResources().getDimensionPixelSize(R.dimen.bottom_ellipsis_height);
 
+    // retrieve the text colors
+    int[] textColorsAttrs = new int[]{
+        android.R.attr.textColor, // 0
+        android.R.attr.textColorHint // 1
+    };
+    TypedArray textColorsTypedArray = context.obtainStyledAttributes(attrs, textColorsAttrs);
+    ColorStateList textColorStateList = textColorsTypedArray.getColorStateList(0);
+    ColorStateList textColorHintStateList = textColorsTypedArray.getColorStateList(1);
+    textColorsTypedArray.recycle();
+
     // retrieve the default baseColor
     int defaultBaseColor;
     TypedValue baseColorTypedValue = new TypedValue();
@@ -320,7 +330,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
 
     TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.MaterialEditText);
     baseColor = typedArray.getColor(R.styleable.MaterialEditText_met_baseColor, defaultBaseColor);
-    setBaseColor(baseColor);
+    setBaseColor(baseColor, textColorStateList, textColorHintStateList);
 
     // retrieve the default primaryColor
     int defaultPrimaryColor;
@@ -411,22 +421,30 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
     }
     initMinBottomLines();
     initPadding();
-    initText();
+    initText(textColorHintStateList);
     initFloatingLabel();
     initTextWatcher();
     checkCharactersCount();
   }
 
-  private void initText() {
+  private void initText(ColorStateList textColorHintStateList) {
     if (!TextUtils.isEmpty(getText())) {
       CharSequence text = getText();
       setText(null);
-      setHintTextColor(baseColor & 0x00ffffff | 0x44000000);
+      if (textColorHintStateList != null) {
+        setHintTextColor(textColorHintStateList);
+      } else {
+        setHintTextColor(baseColor & 0x00ffffff | 0x44000000);
+      }
       setText(text);
       floatingLabelFraction = 1;
       floatingLabelShown = true;
     } else {
-      setHintTextColor(baseColor & 0x00ffffff | 0x44000000);
+      if (textColorHintStateList != null) {
+        setHintTextColor(textColorHintStateList);
+      } else {
+        setHintTextColor(baseColor & 0x00ffffff | 0x44000000);
+      }
     }
   }
 
@@ -827,13 +845,20 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
     super.setOnFocusChangeListener(innerFocusChangeListener);
   }
 
-  public void setBaseColor(int color) {
+  public void setBaseColor(int color, ColorStateList textColorStateList, ColorStateList textColorHintStateList) {
     if (baseColor != color) {
       baseColor = color;
     }
-    ColorStateList colorStateList = new ColorStateList(new int[][]{new int[]{android.R.attr.state_enabled}, EMPTY_STATE_SET}, new int[]{baseColor & 0x00ffffff | 0xdf000000, baseColor & 0x00ffffff | 0x44000000});
-    setTextColor(colorStateList);
-    setHintTextColor(baseColor & 0x00ffffff | 0x44000000);
+
+    if (textColorStateList == null) {
+      textColorStateList = new ColorStateList(new int[][]{new int[]{android.R.attr.state_enabled}, EMPTY_STATE_SET}, new int[]{baseColor & 0x00ffffff | 0xdf000000, baseColor & 0x00ffffff | 0x44000000});
+      setTextColor(textColorStateList);
+    }
+    if (textColorHintStateList == null) {
+      setHintTextColor(baseColor & 0x00ffffff | 0x44000000);
+    } else {
+      setHintTextColor(textColorHintStateList);
+    }
     postInvalidate();
   }
 

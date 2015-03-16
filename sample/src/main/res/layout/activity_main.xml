@@ -73,7 +73,9 @@
           android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:layout_weight="1"
-          android:hint="Basic" />
+          android:hint="Basic"
+          android:textColor="@android:color/holo_red_dark"
+          android:textColorHint="@android:color/holo_blue_bright"/>
 
         <Button
           android:id="@+id/enableBt"
