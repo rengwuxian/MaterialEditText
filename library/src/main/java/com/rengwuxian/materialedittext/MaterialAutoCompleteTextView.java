@@ -449,6 +449,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
         setHintTextColor(baseColor & 0x00ffffff | 0x44000000);
       }
       setText(text);
+      setSelection(text.length());
       floatingLabelFraction = 1;
       floatingLabelShown = true;
     } else {
