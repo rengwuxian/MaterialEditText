@@ -448,6 +448,7 @@ public class MaterialEditText extends EditText {
     } else {
       resetHintTextColor();
     }
+    resetTextColor();
   }
 
   private void initTextWatcher() {

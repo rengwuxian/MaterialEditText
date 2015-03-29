@@ -448,6 +448,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
     } else {
       resetHintTextColor();
     }
+    resetTextColor();
   }
 
   private void initTextWatcher() {

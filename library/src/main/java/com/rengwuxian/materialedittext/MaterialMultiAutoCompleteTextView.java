@@ -445,6 +445,7 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
     } else {
       resetHintTextColor();
     }
+    resetTextColor();
   }
 
   private void initTextWatcher() {
