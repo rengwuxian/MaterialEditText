@@ -2,6 +2,7 @@ package com.rengwuxian.materialedittext;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -1359,7 +1360,11 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
 
   @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
   private boolean isRTL() {
-    return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) && getTextDirection() == TEXT_DIRECTION_RTL;
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
+      return false;
+    }
+    Configuration config = getResources().getConfiguration();
+    return config.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
   }
 
   private int getBottomTextLeftOffset() {
