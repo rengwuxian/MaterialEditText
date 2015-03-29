@@ -920,6 +920,8 @@ public class MaterialEditText extends EditText {
     if (textColorStateList == null) {
       textColorStateList = new ColorStateList(new int[][]{new int[]{android.R.attr.state_enabled}, EMPTY_STATE_SET}, new int[]{baseColor & 0x00ffffff | 0xdf000000, baseColor & 0x00ffffff | 0x44000000});
       setTextColor(textColorStateList);
+    } else {
+      setTextColor(textColorStateList);
     }
   }
 
