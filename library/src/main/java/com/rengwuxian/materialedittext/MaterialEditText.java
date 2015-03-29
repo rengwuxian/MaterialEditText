@@ -1327,7 +1327,7 @@ public class MaterialEditText extends EditText {
       int position = (int) (floatingLabelStartY - distance * (floatingLabelAlwaysShown ? 1 : floatingLabelFraction));
 
       // calculate the alpha
-      int alpha = (int) ((floatingLabelAlwaysShown ? 1 : floatingLabelFraction) * 0xff * (0.74f * focusFraction + 0.26f));
+      int alpha = (int) ((floatingLabelAlwaysShown ? 1 : floatingLabelFraction) * 0xff * (floatingLabelTextColor != -1 ? 1 : (0.74f * focusFraction + 0.26f)));
       textPaint.setAlpha(alpha);
 
       // draw the floating label
