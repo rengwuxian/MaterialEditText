@@ -1375,7 +1375,7 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
     return singleLineEllipsis ? (bottomEllipsisSize * 5 + getPixel(4)) : 0;
   }
 
-  public void checkCharactersCount() {
+  private void checkCharactersCount() {
     charactersCountValid = !hasCharatersCounter() || getText() == null || getText().length() == 0 || (getText().length() >= minCharacters && (maxCharacters <= 0 || getText().length() <= maxCharacters));
   }
 
