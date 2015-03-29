@@ -1007,6 +1007,17 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
     postInvalidate();
   }
 
+  public int getMinBottomTextLines() {
+    return minBottomTextLines;
+  }
+
+  public void setMinBottomTextLines(int lines) {
+    minBottomTextLines = lines;
+    initMinBottomLines();
+    initPadding();
+    postInvalidate();
+  }
+
   public boolean isAutoValidate() {
     return autoValidate;
   }
