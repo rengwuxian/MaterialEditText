@@ -32,7 +32,7 @@
     <!-- Custom float label text -->
     <attr name="met_floatingLabelText" format="string" />
     <!-- spacing between the main text and the floating label -->
-    <attr name="met_floatingLabelSpacing" format="dimension" />
+    <attr name="MaterialEditText_met_floatingLabelPadding" format="dimension" />
     <!-- Hide underline -->
     <attr name="met_hideUnderline" format="boolean" />
     <!-- Underline's color -->

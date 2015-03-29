@@ -90,7 +90,7 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
   /**
    * the spacing between the main text and the floating label.
    */
-  private int floatingLabelSpacing;
+  private int floatingLabelPadding;
 
   /**
    * the spacing between the main text and the bottom components (bottom ellipsis, helper/error text, characters counter).
@@ -387,7 +387,7 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
     if (floatingLabelText == null) {
       floatingLabelText = getHint();
     }
-    floatingLabelSpacing = typedArray.getDimensionPixelSize(R.styleable.MaterialEditText_met_floatingLabelSpacing, bottomSpacing);
+    floatingLabelPadding = typedArray.getDimensionPixelSize(R.styleable.MaterialEditText_met_floatingLabelPadding, bottomSpacing);
     floatingLabelTextSize = typedArray.getDimensionPixelSize(R.styleable.MaterialEditText_met_floatingLabelTextSize, getResources().getDimensionPixelSize(R.dimen.floating_label_text_size));
     floatingLabelTextColor = typedArray.getColor(R.styleable.MaterialEditText_met_floatingLabelTextColor, -1);
     bottomTextSize = typedArray.getDimensionPixelSize(R.styleable.MaterialEditText_met_bottomTextSize, getResources().getDimensionPixelSize(R.dimen.bottom_text_size));
@@ -711,7 +711,7 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
   }
 
   private void initPadding() {
-    extraPaddingTop = floatingLabelEnabled ? floatingLabelTextSize + floatingLabelSpacing : floatingLabelSpacing;
+    extraPaddingTop = floatingLabelEnabled ? floatingLabelTextSize + floatingLabelPadding : floatingLabelPadding;
     textPaint.setTextSize(bottomTextSize);
     Paint.FontMetrics textMetrics = textPaint.getFontMetrics();
     extraPaddingBottom = (int) ((textMetrics.descent - textMetrics.ascent) * currentBottomLines) + (hideUnderline ? bottomSpacing : bottomSpacing * 2);
@@ -962,12 +962,12 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
     initPadding();
   }
 
-  public int getFloatingLabelSpacing() {
-    return floatingLabelSpacing;
+  public int getFloatingLabelPadding() {
+    return floatingLabelPadding;
   }
 
-  public void setFloatingLabelSpacing(int spacing) {
-    floatingLabelSpacing = spacing;
+  public void setFloatingLabelPadding(int padding) {
+    floatingLabelPadding = padding;
     postInvalidate();
   }
 
@@ -1316,8 +1316,8 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
       }
 
       // calculate the vertical position
-      int floatingLabelStartY = innerPaddingTop + floatingLabelTextSize + floatingLabelSpacing;
-      int distance = floatingLabelSpacing;
+      int floatingLabelStartY = innerPaddingTop + floatingLabelTextSize + floatingLabelPadding;
+      int distance = floatingLabelPadding;
       int position = (int) (floatingLabelStartY - distance * (floatingLabelAlwaysShown ? 1 : floatingLabelFraction));
 
       // calculate the alpha
