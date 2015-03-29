@@ -3,6 +3,7 @@ package com.rengwuxian.materialedittext;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -90,7 +91,7 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
   /**
    * the spacing between the main text and the floating label.
    */
-  private int floatingLabelSpacing;
+  private int floatingLabelPadding;
 
   /**
    * the spacing between the main text and the bottom components (bottom ellipsis, helper/error text, characters counter).
@@ -258,6 +259,11 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
   private boolean charactersCountValid;
 
   /**
+   * Whether use animation to show/hide the floating label.
+   */
+  private boolean floatingLabelAnimating;
+
+  /**
    * Left Icon
    */
   private Bitmap[] iconLeftBitmaps;
@@ -284,6 +290,8 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
   private int iconPadding;
   private boolean clearButtonTouched;
   private boolean clearButtonClicking;
+  private ColorStateList textColorStateList;
+  private ColorStateList textColorHintStateList;
   private ArgbEvaluator focusEvaluator = new ArgbEvaluator();
   Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
   TextPaint textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
@@ -325,19 +333,15 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
         android.R.attr.textColorHint // 1
     };
     TypedArray textColorsTypedArray = context.obtainStyledAttributes(attrs, textColorsAttrs);
-    ColorStateList textColorStateList = textColorsTypedArray.getColorStateList(0);
-    ColorStateList textColorHintStateList = textColorsTypedArray.getColorStateList(1);
+    textColorStateList = textColorsTypedArray.getColorStateList(0);
+    textColorHintStateList = textColorsTypedArray.getColorStateList(1);
     textColorsTypedArray.recycle();
 
-    // retrieve the default baseColor
-    int defaultBaseColor;
-    TypedValue baseColorTypedValue = new TypedValue();
-    context.getTheme().resolveAttribute(android.R.attr.windowBackground, baseColorTypedValue, true);
-    defaultBaseColor = Colors.getBaseColor(baseColorTypedValue.data);
+    // default baseColor is black
+    int defaultBaseColor = Color.BLACK;
 
     TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.MaterialEditText);
-    baseColor = typedArray.getColor(R.styleable.MaterialEditText_met_baseColor, defaultBaseColor);
-    setBaseColor(baseColor, textColorStateList, textColorHintStateList);
+    setBaseColor(typedArray.getColor(R.styleable.MaterialEditText_met_baseColor, defaultBaseColor));
 
     // retrieve the default primaryColor
     int defaultPrimaryColor;
@@ -386,9 +390,10 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
     if (floatingLabelText == null) {
       floatingLabelText = getHint();
     }
-    floatingLabelSpacing = typedArray.getDimensionPixelSize(R.styleable.MaterialEditText_met_floatingLabelSpacing, bottomSpacing);
+    floatingLabelPadding = typedArray.getDimensionPixelSize(R.styleable.MaterialEditText_met_floatingLabelPadding, bottomSpacing);
     floatingLabelTextSize = typedArray.getDimensionPixelSize(R.styleable.MaterialEditText_met_floatingLabelTextSize, getResources().getDimensionPixelSize(R.dimen.floating_label_text_size));
     floatingLabelTextColor = typedArray.getColor(R.styleable.MaterialEditText_met_floatingLabelTextColor, -1);
+    floatingLabelAnimating = typedArray.getBoolean(R.styleable.MaterialEditText_met_floatingLabelAnimating, true);
     bottomTextSize = typedArray.getDimensionPixelSize(R.styleable.MaterialEditText_met_bottomTextSize, getResources().getDimensionPixelSize(R.dimen.bottom_text_size));
     hideUnderline = typedArray.getBoolean(R.styleable.MaterialEditText_met_hideUnderline, false);
     underlineColor = typedArray.getColor(R.styleable.MaterialEditText_met_underlineColor, -1);
@@ -430,13 +435,13 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
     }
     initMinBottomLines();
     initPadding();
-    initText(textColorHintStateList);
+    initText();
     initFloatingLabel();
     initTextWatcher();
     checkCharactersCount();
   }
 
-  private void initText(ColorStateList textColorHintStateList) {
+  private void initText() {
     if (!TextUtils.isEmpty(getText())) {
       CharSequence text = getText();
       setText(null);
@@ -505,13 +510,13 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
     initPadding();
   }
 
-  public void setClearButton(boolean show) {
-    showClearButton = show;
-    correctPaddings();
+  public boolean isShowClearButton() {
+    return showClearButton;
   }
 
-  public boolean hasClearButton() {
-    return showClearButton;
+  public void setShowClearButton(boolean show) {
+    showClearButton = show;
+    correctPaddings();
   }
 
   private Bitmap[] generateIconBitmaps(@DrawableRes int origin) {
@@ -597,7 +602,7 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
     initPadding();
   }
 
-  public boolean getFloatingLabelAlwaysShown() {
+  public boolean isFloatingLabelAlwaysShown() {
     return floatingLabelAlwaysShown;
   }
 
@@ -606,11 +611,11 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
     invalidate();
   }
 
-  public boolean getHelperTextAlwaysShown() {
+  public boolean isHelperTextAlwaysShown() {
     return helperTextAlwaysShown;
   }
 
-  public void setHelperText(boolean helperTextAlwaysShown) {
+  public void setHelperTextAlwaysShown(boolean helperTextAlwaysShown) {
     this.helperTextAlwaysShown = helperTextAlwaysShown;
     invalidate();
   }
@@ -629,7 +634,7 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
     postInvalidate();
   }
 
-  public boolean getHideUnderline() {
+  public boolean isHideUnderline() {
     return hideUnderline;
   }
 
@@ -710,7 +715,7 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
   }
 
   private void initPadding() {
-    extraPaddingTop = floatingLabelEnabled ? floatingLabelTextSize + floatingLabelSpacing : floatingLabelSpacing;
+    extraPaddingTop = floatingLabelEnabled ? floatingLabelTextSize + floatingLabelPadding : floatingLabelPadding;
     textPaint.setTextSize(bottomTextSize);
     Paint.FontMetrics textMetrics = textPaint.getFontMetrics();
     extraPaddingBottom = (int) ((textMetrics.descent - textMetrics.ascent) * currentBottomLines) + (hideUnderline ? bottomSpacing : bottomSpacing * 2);
@@ -762,7 +767,7 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
   }
 
   private int getButtonsCount() {
-    return hasClearButton() ? 1 : 0;
+    return isShowClearButton() ? 1 : 0;
   }
 
   @Override
@@ -880,26 +885,69 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
     super.setOnFocusChangeListener(innerFocusChangeListener);
   }
 
-  public void setBaseColor(int color, ColorStateList textColorStateList, ColorStateList textColorHintStateList) {
+  public void setBaseColor(int color) {
     if (baseColor != color) {
       baseColor = color;
     }
 
-    if (textColorStateList == null) {
-      textColorStateList = new ColorStateList(new int[][]{new int[]{android.R.attr.state_enabled}, EMPTY_STATE_SET}, new int[]{baseColor & 0x00ffffff | 0xdf000000, baseColor & 0x00ffffff | 0x44000000});
-      setTextColor(textColorStateList);
-    }
-    if (textColorHintStateList == null) {
-      setHintTextColor(baseColor & 0x00ffffff | 0x44000000);
-    } else {
-      setHintTextColor(textColorHintStateList);
-    }
+    resetTextColor();
+    resetHintTextColor();
+
     postInvalidate();
   }
 
   public void setPrimaryColor(int color) {
     primaryColor = color;
     postInvalidate();
+  }
+
+  /**
+   * Same function as {@link #setTextColor(int)}. (Directly overriding the built-in one could cause some error, so use this method instead.)
+   */
+  public void setMetTextColor(int color) {
+    textColorStateList = ColorStateList.valueOf(color);
+    resetTextColor();
+  }
+
+  /**
+   * Same function as {@link #setTextColor(ColorStateList)}. (Directly overriding the built-in one could cause some error, so use this method instead.)
+   */
+  public void setMetTextColor(ColorStateList colors) {
+    textColorStateList = colors;
+    resetTextColor();
+  }
+
+  private void resetTextColor() {
+    if (textColorStateList == null) {
+      textColorStateList = new ColorStateList(new int[][]{new int[]{android.R.attr.state_enabled}, EMPTY_STATE_SET}, new int[]{baseColor & 0x00ffffff | 0xdf000000, baseColor & 0x00ffffff | 0x44000000});
+      setTextColor(textColorStateList);
+    } else {
+      setTextColor(textColorStateList);
+    }
+  }
+
+  /**
+   * Same function as {@link #setHintTextColor(int)}. (The built-in one is a final method that can't be overridden, so use this method instead.)
+   */
+  public void setMetHintTextColor(int color) {
+    textColorHintStateList = ColorStateList.valueOf(color);
+    resetHintTextColor();
+  }
+
+  /**
+   * Same function as {@link #setHintTextColor(ColorStateList)}. (The built-in one is a final method that can't be overridden, so use this method instead.)
+   */
+  public void setMetHintTextColor(ColorStateList colors) {
+    textColorHintStateList = colors;
+    resetHintTextColor();
+  }
+
+  private void resetHintTextColor() {
+    if (textColorHintStateList == null) {
+      setHintTextColor(baseColor & 0x00ffffff | 0x44000000);
+    } else {
+      setHintTextColor(textColorHintStateList);
+    }
   }
 
   private void setFloatingLabelInternal(int mode) {
@@ -924,13 +972,21 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
     initPadding();
   }
 
-  public int getFloatingLabelSpacing() {
-    return floatingLabelSpacing;
+  public int getFloatingLabelPadding() {
+    return floatingLabelPadding;
   }
 
-  public void setFloatingLabelSpacing(int spacing) {
-    floatingLabelSpacing = spacing;
+  public void setFloatingLabelPadding(int padding) {
+    floatingLabelPadding = padding;
     postInvalidate();
+  }
+
+  public boolean isFloatingLabelAnimating() {
+    return floatingLabelAnimating;
+  }
+
+  public void setFloatingLabelAnimating(boolean animating) {
+    floatingLabelAnimating = animating;
   }
 
   public void setSingleLineEllipsis() {
@@ -961,6 +1017,17 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
 
   public void setMinCharacters(int min) {
     minCharacters = min;
+    initMinBottomLines();
+    initPadding();
+    postInvalidate();
+  }
+
+  public int getMinBottomTextLines() {
+    return minBottomTextLines;
+  }
+
+  public void setMinBottomTextLines(int lines) {
+    minBottomTextLines = lines;
     initMinBottomLines();
     initPadding();
     postInvalidate();
@@ -1149,6 +1216,7 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
     if (labelAnimator == null) {
       labelAnimator = ObjectAnimator.ofFloat(this, "floatingLabelFraction", 0f, 1f);
     }
+    labelAnimator.setDuration(floatingLabelAnimating ? 300 : 0);
     return labelAnimator;
   }
 
@@ -1267,8 +1335,8 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
       }
 
       // calculate the vertical position
-      int floatingLabelStartY = innerPaddingTop + floatingLabelTextSize + floatingLabelSpacing;
-      int distance = floatingLabelSpacing;
+      int floatingLabelStartY = innerPaddingTop + floatingLabelTextSize + floatingLabelPadding;
+      int distance = floatingLabelPadding;
       int position = (int) (floatingLabelStartY - distance * (floatingLabelAlwaysShown ? 1 : floatingLabelFraction));
 
       // calculate the alpha
@@ -1301,7 +1369,11 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
 
   @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
   private boolean isRTL() {
-    return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) && getTextDirection() == TEXT_DIRECTION_RTL;
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
+      return false;
+    }
+    Configuration config = getResources().getConfiguration();
+    return config.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
   }
 
   private int getBottomTextLeftOffset() {
@@ -1320,8 +1392,14 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
     return singleLineEllipsis ? (bottomEllipsisSize * 5 + getPixel(4)) : 0;
   }
 
-  public void checkCharactersCount() {
-    charactersCountValid = !hasCharatersCounter() || getText() == null || getText().length() == 0 || (getText().length() >= minCharacters && (maxCharacters <= 0 || getText().length() <= maxCharacters));
+  private void checkCharactersCount() {
+    if (!hasCharatersCounter()) {
+      charactersCountValid = true;
+    } else {
+      CharSequence text = getText();
+      int count = text == null ? 0 : text.length();
+      charactersCountValid = (count >= minCharacters && (maxCharacters <= 0 || count <= maxCharacters));
+    }
   }
 
   public boolean isCharactersCountValid() {

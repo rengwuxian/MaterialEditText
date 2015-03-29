@@ -32,7 +32,7 @@
     <!-- Custom float label text -->
     <attr name="met_floatingLabelText" format="string" />
     <!-- spacing between the main text and the floating label -->
-    <attr name="met_floatingLabelSpacing" format="dimension" />
+    <attr name="met_floatingLabelPadding" format="dimension" />
     <!-- Hide underline -->
     <attr name="met_hideUnderline" format="boolean" />
     <!-- Underline's color -->
@@ -57,5 +57,7 @@
     <attr name="met_floatingLabelAlwaysShown" format="boolean" />
     <!-- Always show the helper text, no matter if the edit text is focused. -->
     <attr name="met_helperTextAlwaysShown" format="boolean" />
+    <!-- Whether use animation to show/hide the floating label -->
+    <attr name="met_floatingLabelAnimating" format="boolean"/>
   </declare-styleable>
 </resources>
