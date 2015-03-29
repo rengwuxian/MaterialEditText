@@ -598,7 +598,7 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
     initPadding();
   }
 
-  public boolean getFloatingLabelAlwaysShown() {
+  public boolean isFloatingLabelAlwaysShown() {
     return floatingLabelAlwaysShown;
   }
 

@@ -601,7 +601,7 @@ public class MaterialEditText extends EditText {
     initPadding();
   }
 
-  public boolean getFloatingLabelAlwaysShown() {
+  public boolean isFloatingLabelAlwaysShown() {
     return floatingLabelAlwaysShown;
   }
 
