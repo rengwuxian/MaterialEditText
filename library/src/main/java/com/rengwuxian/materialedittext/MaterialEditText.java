@@ -509,7 +509,7 @@ public class MaterialEditText extends EditText {
     initPadding();
   }
 
-  public void setClearButton(boolean show) {
+  public void setShowClearButton(boolean show) {
     showClearButton = show;
     correctPaddings();
   }

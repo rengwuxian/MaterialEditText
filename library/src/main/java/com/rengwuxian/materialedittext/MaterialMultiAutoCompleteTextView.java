@@ -506,7 +506,7 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
     initPadding();
   }
 
-  public void setClearButton(boolean show) {
+  public void setShowClearButton(boolean show) {
     showClearButton = show;
     correctPaddings();
   }

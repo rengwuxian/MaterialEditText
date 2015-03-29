@@ -509,7 +509,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
     initPadding();
   }
 
-  public void setClearButton(boolean show) {
+  public void setShowClearButton(boolean show) {
     showClearButton = show;
     correctPaddings();
   }
