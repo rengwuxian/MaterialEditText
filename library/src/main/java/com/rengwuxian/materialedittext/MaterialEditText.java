@@ -610,7 +610,7 @@ public class MaterialEditText extends EditText {
     invalidate();
   }
 
-  public boolean getHelperTextAlwaysShown() {
+  public boolean isHelperTextAlwaysShown() {
     return helperTextAlwaysShown;
   }
 

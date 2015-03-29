@@ -610,7 +610,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
     invalidate();
   }
 
-  public boolean getHelperTextAlwaysShown() {
+  public boolean isHelperTextAlwaysShown() {
     return helperTextAlwaysShown;
   }
 

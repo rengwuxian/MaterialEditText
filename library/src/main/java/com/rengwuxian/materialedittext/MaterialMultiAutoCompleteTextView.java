@@ -607,7 +607,7 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
     invalidate();
   }
 
-  public boolean getHelperTextAlwaysShown() {
+  public boolean isHelperTextAlwaysShown() {
     return helperTextAlwaysShown;
   }
 
