@@ -1376,7 +1376,13 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
   }
 
   private void checkCharactersCount() {
-    charactersCountValid = !hasCharatersCounter() || getText() == null || getText().length() == 0 || (getText().length() >= minCharacters && (maxCharacters <= 0 || getText().length() <= maxCharacters));
+    if (!hasCharatersCounter()) {
+      charactersCountValid = true;
+    } else {
+      CharSequence text = getText();
+      int count = text == null ? 0 : text.length();
+      charactersCountValid = (count >= minCharacters && (maxCharacters <= 0 || count <= maxCharacters));
+    }
   }
 
   public boolean isCharactersCountValid() {
