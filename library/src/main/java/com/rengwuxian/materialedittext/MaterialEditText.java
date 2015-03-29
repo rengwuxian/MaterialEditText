@@ -633,7 +633,7 @@ public class MaterialEditText extends EditText {
     postInvalidate();
   }
 
-  public boolean getHideUnderline() {
+  public boolean isHideUnderline() {
     return hideUnderline;
   }
 

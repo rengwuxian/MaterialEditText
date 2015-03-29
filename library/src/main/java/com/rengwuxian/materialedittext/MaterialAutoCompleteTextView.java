@@ -633,7 +633,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
     postInvalidate();
   }
 
-  public boolean getHideUnderline() {
+  public boolean isHideUnderline() {
     return hideUnderline;
   }
 
