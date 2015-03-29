@@ -900,14 +900,18 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
     postInvalidate();
   }
 
-  @Override
-  public void setTextColor(int color) {
+  /**
+   * Same function as {@link #setTextColor(int)}. (Directly overriding the built-in one could cause some error, so use this method instead.)
+   */
+  public void setMetTextColor(int color) {
     textColorStateList = ColorStateList.valueOf(color);
     resetTextColor();
   }
 
-  @Override
-  public void setTextColor(ColorStateList colors) {
+  /**
+   * Same function as {@link #setTextColor(ColorStateList)}. (Directly overriding the built-in one could cause some error, so use this method instead.)
+   */
+  public void setMetTextColor(ColorStateList colors) {
     textColorStateList = colors;
     resetTextColor();
   }

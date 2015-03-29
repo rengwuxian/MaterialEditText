@@ -900,14 +900,18 @@ public class MaterialEditText extends EditText {
     postInvalidate();
   }
 
-  @Override
-  public void setTextColor(int color) {
+  /**
+   * Same function as {@link #setTextColor(int)}. (Directly overriding the built-in one could cause some error, so use this method instead.)
+   */
+  public void setMetTextColor(int color) {
     textColorStateList = ColorStateList.valueOf(color);
     resetTextColor();
   }
 
-  @Override
-  public void setTextColor(ColorStateList colors) {
+  /**
+   * Same function as {@link #setTextColor(ColorStateList)}. (Directly overriding the built-in one could cause some error, so use this method instead.)
+   */
+  public void setMetTextColor(ColorStateList colors) {
     textColorStateList = colors;
     resetTextColor();
   }
@@ -915,7 +919,7 @@ public class MaterialEditText extends EditText {
   private void resetTextColor() {
     if (textColorStateList == null) {
       textColorStateList = new ColorStateList(new int[][]{new int[]{android.R.attr.state_enabled}, EMPTY_STATE_SET}, new int[]{baseColor & 0x00ffffff | 0xdf000000, baseColor & 0x00ffffff | 0x44000000});
-      super.setTextColor(textColorStateList);
+      setTextColor(textColorStateList);
     }
   }
 
