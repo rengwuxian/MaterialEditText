@@ -74,7 +74,7 @@
           android:layout_height="wrap_content"
           android:layout_weight="1"
           android:hint="Basic"
-          app:met_underlineColor="@android:color/holo_purple"/>
+          android:textColor="@color/text_color"/>
 
         <Button
           android:id="@+id/enableBt"
@@ -275,14 +275,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Helper/Error Text with Min Lines Count:"
+        android:text="Validation:"
         android:textColor="#333333"
         android:textSize="14sp" />
 
       <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="app:met_helperText=&quot;helper is here&quot;\napp:met_minBottomTextLines=&quot;2&quot; (in xml)\nsetError(&quot;Error!&quot;) (in java)"
+        android:text="addValidator(new RegexValidator(&quot;Only Integer Valid!&quot;, &quot;\\\\d+&quot;)); (in java)"
         android:textColor="#888888"
         android:textSize="14sp" />
 
@@ -292,34 +292,19 @@
         android:gravity="center_vertical">
 
         <com.rengwuxian.materialedittext.MaterialEditText
-          android:id="@+id/bottomTextWithMinLinesEt"
+          android:id="@+id/validationEt"
           android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:layout_weight="1"
-          android:hint="Helper/Error Text"
-          app:met_helperText="helper is here"
-          app:met_minBottomTextLines="2" />
+          android:hint="Validation"
+          app:met_helperText="Integer" />
 
         <Button
-          android:id="@+id/setErrorWithMinLinesBt"
-          android:layout_width="48dp"
+          android:id="@+id/validateBt"
+          android:layout_width="120dp"
           android:layout_height="wrap_content"
           android:layout_marginLeft="8dp"
-          android:text="1" />
-
-        <Button
-          android:id="@+id/setErrorWithMinLines2Bt"
-          android:layout_width="48dp"
-          android:layout_height="wrap_content"
-          android:layout_marginLeft="8dp"
-          android:text="2" />
-
-        <Button
-          android:id="@+id/setErrorWithMinLines3Bt"
-          android:layout_width="48dp"
-          android:layout_height="wrap_content"
-          android:layout_marginLeft="8dp"
-          android:text="3" />
+          android:text="VALIDATE" />
 
       </LinearLayout>
 
@@ -327,14 +312,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Custom Base/Primary/Error/HelperText Color:"
+        android:text="Custom Colors:"
         android:textColor="#333333"
         android:textSize="14sp" />
 
       <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="app:met_baseColor=&quot;#009688&quot;\napp:met_primaryColor=&quot;#2196F3&quot;\napp:met_errorColor=&quot;#ddaa00&quot;\napp:met_helperTextColor=&quot;#795548&quot;"
+        android:text="app:met_baseColor=&quot;#007688&quot;\napp:met_primaryColor=&quot;#2196F3&quot;\napp:met_textColor=&quot;@color/text_color&quot;\napp:met_textColorHint=&quot;#33ff0000&quot;\napp:met_errorColor=&quot;#ddaa00&quot;\napp:met_helperTextColor=&quot;#795548&quot;\napp:met_underlineColor=&quot;#003587&quot;\napp:met_floatingLabelTextColor=&quot;#8805ad&quot;"
         android:textColor="#888888"
         android:textSize="14sp" />
 
@@ -342,26 +327,30 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Custom Colors"
-        app:met_baseColor="#009688"
-        app:met_errorColor="#ddaa00"
-        app:met_floatingLabel="highlight"
+        app:met_floatingLabel="normal"
         app:met_helperText="Helper Text"
-        app:met_helperTextColor="#795548"
         app:met_maxCharacters="5"
-        app:met_primaryColor="#2196F3" />
+        app:met_baseColor="#007688"
+        app:met_primaryColor="#2196F3"
+        app:met_textColor="@color/text_color"
+        app:met_textColorHint="#33ff0000"
+        app:met_errorColor="#ddaa00"
+        app:met_helperTextColor="#795548"
+        app:met_underlineColor="#003587"
+        app:met_floatingLabelTextColor="#8805ad"/>
 
       <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Custom Accent Typeface:"
+        android:text="Custom Typeface:"
         android:textColor="#333333"
         android:textSize="14sp" />
 
       <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="app:met_floatingLabel=&quot;normal&quot;\napp:met_helperText=&quot;Helper Text&quot;\napp:met_maxCharacters=&quot;5&quot;\napp:met_accentTypeface=&quot;fonts/Roboto-LightItalic.ttf&quot;"
+        android:text="app:met_typeface=&quot;fonts/Roboto-LightItalic.ttf&quot;\napp:met_accentTypeface=&quot;fonts/Roboto-LightItalic.ttf&quot;"
         android:textColor="#888888"
         android:textSize="14sp" />
 
@@ -369,6 +358,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Custom Accent Typeface"
+        app:met_typeface="fonts/Roboto-LightItalic.ttf"
         app:met_accentTypeface="fonts/Roboto-LightItalic.ttf"
         app:met_floatingLabel="normal"
         app:met_helperText="Helper Text"
@@ -399,6 +389,27 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:text="Clear Button"
+        android:textColor="#333333"
+        android:textSize="14sp" />
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="app:met_clearButton=&quot;true&quot;"
+        android:textColor="#888888"
+        android:textSize="14sp" />
+
+      <com.rengwuxian.materialedittext.MaterialEditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Clear Button"
+        app:met_clearButton="true" />
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:text="Material Design Icon"
         android:textColor="#333333"
         android:textSize="14sp" />
@@ -406,7 +417,7 @@
       <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="app:met_iconLeft=&quot;@drawable/ic_phone&quot;\napp:met_iconPadding=&quot;0dp&quot; (Note: 8dp by default, not 0)"
+        android:text="app:met_iconLeft=&quot;@drawable/ic_phone&quot;\napp:met_iconPadding=&quot;0dp&quot; (Note: 16dp by default, not 0)"
         android:textColor="#888888"
         android:textSize="14sp" />
 
@@ -417,43 +428,6 @@
         app:met_iconLeft="@drawable/ic_phone"
         app:met_iconPadding="0dp"
         app:met_maxCharacters="5" />
-
-      <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Validation:"
-        android:textColor="#333333"
-        android:textSize="14sp" />
-
-      <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="app:met_helperText=&quot;Integer&quot; (in xml)\naddValidator(new RegexValidator(&quot;Only Integer Valid!&quot;, &quot;\\\\d+&quot;)); (in java)"
-        android:textColor="#888888"
-        android:textSize="14sp" />
-
-      <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical">
-
-        <com.rengwuxian.materialedittext.MaterialEditText
-          android:id="@+id/validationEt"
-          android:layout_width="0dp"
-          android:layout_height="wrap_content"
-          android:layout_weight="1"
-          android:hint="Validation"
-          app:met_helperText="Integer" />
-
-        <Button
-          android:id="@+id/validateBt"
-          android:layout_width="100dp"
-          android:layout_height="wrap_content"
-          android:layout_marginLeft="8dp"
-          android:text="VALIDATE" />
-
-      </LinearLayout>
 
     </LinearLayout>
   </LinearLayout>
