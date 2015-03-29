@@ -287,6 +287,8 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
   private int iconPadding;
   private boolean clearButtonTouched;
   private boolean clearButtonClicking;
+  private ColorStateList textColorStateList;
+  private ColorStateList textColorHintStateList;
   private ArgbEvaluator focusEvaluator = new ArgbEvaluator();
   Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
   TextPaint textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
@@ -328,8 +330,8 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
         android.R.attr.textColorHint // 1
     };
     TypedArray textColorsTypedArray = context.obtainStyledAttributes(attrs, textColorsAttrs);
-    ColorStateList textColorStateList = textColorsTypedArray.getColorStateList(0);
-    ColorStateList textColorHintStateList = textColorsTypedArray.getColorStateList(1);
+    textColorStateList = textColorsTypedArray.getColorStateList(0);
+    textColorHintStateList = textColorsTypedArray.getColorStateList(1);
     textColorsTypedArray.recycle();
 
     // retrieve the default baseColor
@@ -339,8 +341,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
     defaultBaseColor = Colors.getBaseColor(baseColorTypedValue.data);
 
     TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.MaterialEditText);
-    baseColor = typedArray.getColor(R.styleable.MaterialEditText_met_baseColor, defaultBaseColor);
-    setBaseColor(baseColor, textColorStateList, textColorHintStateList);
+    setBaseColor(typedArray.getColor(R.styleable.MaterialEditText_met_baseColor, defaultBaseColor));
 
     // retrieve the default primaryColor
     int defaultPrimaryColor;
@@ -433,13 +434,13 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
     }
     initMinBottomLines();
     initPadding();
-    initText(textColorHintStateList);
+    initText();
     initFloatingLabel();
     initTextWatcher();
     checkCharactersCount();
   }
 
-  private void initText(ColorStateList textColorHintStateList) {
+  private void initText() {
     if (!TextUtils.isEmpty(getText())) {
       CharSequence text = getText();
       setText(null);
@@ -883,26 +884,63 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
     super.setOnFocusChangeListener(innerFocusChangeListener);
   }
 
-  public void setBaseColor(int color, ColorStateList textColorStateList, ColorStateList textColorHintStateList) {
+  public void setBaseColor(int color) {
     if (baseColor != color) {
       baseColor = color;
     }
 
-    if (textColorStateList == null) {
-      textColorStateList = new ColorStateList(new int[][]{new int[]{android.R.attr.state_enabled}, EMPTY_STATE_SET}, new int[]{baseColor & 0x00ffffff | 0xdf000000, baseColor & 0x00ffffff | 0x44000000});
-      setTextColor(textColorStateList);
-    }
-    if (textColorHintStateList == null) {
-      setHintTextColor(baseColor & 0x00ffffff | 0x44000000);
-    } else {
-      setHintTextColor(textColorHintStateList);
-    }
+    resetTextColor();
+    resetHintTextColor();
+
     postInvalidate();
   }
 
   public void setPrimaryColor(int color) {
     primaryColor = color;
     postInvalidate();
+  }
+
+  @Override
+  public void setTextColor(int color) {
+    textColorStateList = ColorStateList.valueOf(color);
+    resetTextColor();
+  }
+
+  @Override
+  public void setTextColor(ColorStateList colors) {
+    textColorStateList = colors;
+    resetTextColor();
+  }
+
+  private void resetTextColor() {
+    if (textColorStateList == null) {
+      textColorStateList = new ColorStateList(new int[][]{new int[]{android.R.attr.state_enabled}, EMPTY_STATE_SET}, new int[]{baseColor & 0x00ffffff | 0xdf000000, baseColor & 0x00ffffff | 0x44000000});
+      super.setTextColor(textColorStateList);
+    }
+  }
+
+  /**
+   * Same function as {@link #setHintTextColor(int)}. (There's something wrong with the build-in method, so use this method instead.
+   */
+  public void setMetHintTextColor(int color) {
+    textColorHintStateList = ColorStateList.valueOf(color);
+    resetHintTextColor();
+  }
+
+  /**
+   * Same function as {@link #setHintTextColor(ColorStateList)}. (There's something wrong with the build-in method, so use this method instead.
+   */
+  public void setMetHintTextColor(ColorStateList colors) {
+    textColorHintStateList = colors;
+    resetHintTextColor();
+  }
+
+  private void resetHintTextColor() {
+    if (textColorHintStateList == null) {
+      setHintTextColor(baseColor & 0x00ffffff | 0x44000000);
+    } else {
+      setHintTextColor(textColorHintStateList);
+    }
   }
 
   private void setFloatingLabelInternal(int mode) {
