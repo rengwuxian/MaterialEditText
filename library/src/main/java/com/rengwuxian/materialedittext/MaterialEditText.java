@@ -509,13 +509,13 @@ public class MaterialEditText extends EditText {
     initPadding();
   }
 
+  public boolean isShowClearButton() {
+    return showClearButton;
+  }
+
   public void setShowClearButton(boolean show) {
     showClearButton = show;
     correctPaddings();
-  }
-
-  public boolean hasClearButton() {
-    return showClearButton;
   }
 
   private Bitmap[] generateIconBitmaps(@DrawableRes int origin) {
@@ -766,7 +766,7 @@ public class MaterialEditText extends EditText {
   }
 
   private int getButtonsCount() {
-    return hasClearButton() ? 1 : 0;
+    return isShowClearButton() ? 1 : 0;
   }
 
   @Override
