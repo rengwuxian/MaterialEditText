@@ -57,5 +57,7 @@
     <attr name="met_floatingLabelAlwaysShown" format="boolean" />
     <!-- Always show the helper text, no matter if the edit text is focused. -->
     <attr name="met_helperTextAlwaysShown" format="boolean" />
+    <!-- Whether use animation to show/hide the floating label -->
+    <attr name="met_floatingLabelAnimating" format="boolean"/>
   </declare-styleable>
 </resources>

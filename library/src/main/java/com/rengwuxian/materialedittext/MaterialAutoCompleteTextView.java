@@ -262,6 +262,11 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
   private boolean charactersCountValid;
 
   /**
+   * Whether use animation to show/hide the floating label.
+   */
+  private boolean floatingLabelAnimating;
+
+  /**
    * Left Icon
    */
   private Bitmap[] iconLeftBitmaps;
@@ -391,6 +396,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
     floatingLabelPadding = typedArray.getDimensionPixelSize(R.styleable.MaterialEditText_met_floatingLabelPadding, bottomSpacing);
     floatingLabelTextSize = typedArray.getDimensionPixelSize(R.styleable.MaterialEditText_met_floatingLabelTextSize, getResources().getDimensionPixelSize(R.dimen.floating_label_text_size));
     floatingLabelTextColor = typedArray.getColor(R.styleable.MaterialEditText_met_floatingLabelTextColor, -1);
+    floatingLabelAnimating = typedArray.getBoolean(R.styleable.MaterialEditText_met_floatingLabelAnimating, true);
     bottomTextSize = typedArray.getDimensionPixelSize(R.styleable.MaterialEditText_met_bottomTextSize, getResources().getDimensionPixelSize(R.dimen.bottom_text_size));
     hideUnderline = typedArray.getBoolean(R.styleable.MaterialEditText_met_hideUnderline, false);
     underlineColor = typedArray.getColor(R.styleable.MaterialEditText_met_underlineColor, -1);
@@ -978,6 +984,14 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
     postInvalidate();
   }
 
+  public boolean isFloatingLabelAnimating() {
+    return floatingLabelAnimating;
+  }
+
+  public void setFloatingLabelAnimating(boolean animating) {
+    floatingLabelAnimating = animating;
+  }
+
   public void setSingleLineEllipsis() {
     setSingleLineEllipsis(true);
   }
@@ -1205,6 +1219,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
     if (labelAnimator == null) {
       labelAnimator = ObjectAnimator.ofFloat(this, "floatingLabelFraction", 0f, 1f);
     }
+    labelAnimator.setDuration(floatingLabelAnimating ? 300 : 0);
     return labelAnimator;
   }
 
