@@ -335,11 +335,8 @@ public class MaterialEditText extends EditText {
     textColorHintStateList = textColorsTypedArray.getColorStateList(1);
     textColorsTypedArray.recycle();
 
-    // retrieve the default baseColor
-    int defaultBaseColor;
-    TypedValue baseColorTypedValue = new TypedValue();
-    context.getTheme().resolveAttribute(android.R.attr.windowBackground, baseColorTypedValue, true);
-    defaultBaseColor = Colors.getBaseColor(baseColorTypedValue.data);
+    // default baseColor is black
+    int defaultBaseColor = Color.BLACK;
 
     TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.MaterialEditText);
     setBaseColor(typedArray.getColor(R.styleable.MaterialEditText_met_baseColor, defaultBaseColor));
