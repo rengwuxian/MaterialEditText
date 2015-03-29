@@ -327,21 +327,13 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
     bottomSpacing = getResources().getDimensionPixelSize(R.dimen.inner_components_spacing);
     bottomEllipsisSize = getResources().getDimensionPixelSize(R.dimen.bottom_ellipsis_height);
 
-    // retrieve the text colors
-    int[] textColorsAttrs = new int[]{
-        android.R.attr.textColor, // 0
-        android.R.attr.textColorHint // 1
-    };
-    TypedArray textColorsTypedArray = context.obtainStyledAttributes(attrs, textColorsAttrs);
-    textColorStateList = textColorsTypedArray.getColorStateList(0);
-    textColorHintStateList = textColorsTypedArray.getColorStateList(1);
-    textColorsTypedArray.recycle();
-
     // default baseColor is black
     int defaultBaseColor = Color.BLACK;
 
     TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.MaterialEditText);
-    setBaseColor(typedArray.getColor(R.styleable.MaterialEditText_met_baseColor, defaultBaseColor));
+    textColorStateList = typedArray.getColorStateList(R.styleable.MaterialEditText_met_textColor);
+    textColorHintStateList = typedArray.getColorStateList(R.styleable.MaterialEditText_met_textColorHint);
+    baseColor = typedArray.getColor(R.styleable.MaterialEditText_met_baseColor, defaultBaseColor);
 
     // retrieve the default primaryColor
     int defaultPrimaryColor;
@@ -445,21 +437,13 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
     if (!TextUtils.isEmpty(getText())) {
       CharSequence text = getText();
       setText(null);
-      if (textColorHintStateList != null) {
-        setHintTextColor(textColorHintStateList);
-      } else {
-        setHintTextColor(baseColor & 0x00ffffff | 0x44000000);
-      }
+      resetHintTextColor();
       setText(text);
       setSelection(text.length());
       floatingLabelFraction = 1;
       floatingLabelShown = true;
     } else {
-      if (textColorHintStateList != null) {
-        setHintTextColor(textColorHintStateList);
-      } else {
-        setHintTextColor(baseColor & 0x00ffffff | 0x44000000);
-      }
+      resetHintTextColor();
     }
   }
 
@@ -890,8 +874,7 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
       baseColor = color;
     }
 
-    resetTextColor();
-    resetHintTextColor();
+    initText();
 
     postInvalidate();
   }

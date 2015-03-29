@@ -59,5 +59,9 @@
     <attr name="met_helperTextAlwaysShown" format="boolean" />
     <!-- Whether use animation to show/hide the floating label -->
     <attr name="met_floatingLabelAnimating" format="boolean"/>
+    <!-- Text color -->
+    <attr name="met_textColor" format="color" />
+    <!-- Hint Text Color -->
+    <attr name="met_textColorHint" format="color" />
   </declare-styleable>
 </resources>
