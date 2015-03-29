@@ -614,7 +614,7 @@ public class MaterialEditText extends EditText {
     return helperTextAlwaysShown;
   }
 
-  public void setHelperText(boolean helperTextAlwaysShown) {
+  public void setHelperTextAlwaysShown(boolean helperTextAlwaysShown) {
     this.helperTextAlwaysShown = helperTextAlwaysShown;
     invalidate();
   }

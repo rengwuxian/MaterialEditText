@@ -614,7 +614,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
     return helperTextAlwaysShown;
   }
 
-  public void setHelperText(boolean helperTextAlwaysShown) {
+  public void setHelperTextAlwaysShown(boolean helperTextAlwaysShown) {
     this.helperTextAlwaysShown = helperTextAlwaysShown;
     invalidate();
   }
