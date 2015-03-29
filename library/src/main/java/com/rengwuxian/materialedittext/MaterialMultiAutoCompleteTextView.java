@@ -917,7 +917,7 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
   }
 
   /**
-   * Same function as {@link #setHintTextColor(int)}. (There's something wrong with the build-in method, so use this method instead.
+   * Same function as {@link #setHintTextColor(int)}. (The built-in one is a final method that can't be overridden, so use this method instead.)
    */
   public void setMetHintTextColor(int color) {
     textColorHintStateList = ColorStateList.valueOf(color);
@@ -925,7 +925,7 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
   }
 
   /**
-   * Same function as {@link #setHintTextColor(ColorStateList)}. (There's something wrong with the build-in method, so use this method instead.
+   * Same function as {@link #setHintTextColor(ColorStateList)}. (The built-in one is a final method that can't be overridden, so use this method instead.)
    */
   public void setMetHintTextColor(ColorStateList colors) {
     textColorHintStateList = colors;
