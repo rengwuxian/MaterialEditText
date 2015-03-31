@@ -2,7 +2,7 @@ MaterialEditText
 ================
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-MaterialEditText-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/1085)
 
-## NOTE: 2.0 is NOT BACKWARDS COMPATIBLE. See more on [wiki](https://github.com/rengwuxian/MaterialEditText/wiki)
+> ## NOTE: 2.0 is NOT BACKWARDS COMPATIBLE! See more on [wiki](https://github.com/rengwuxian/MaterialEditText/wiki) or [中文看这里](rengwuxian.com)
 
 
 ![MaterialEditText](./images/material_edittext.png)
