@@ -410,6 +410,28 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:text="Clear and Close Button"
+        android:textColor="#333333"
+        android:textSize="14sp" />
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="app:met_clearButton=&quot;true&quot;\napp:met_closeButton=&quot;true&quot;"
+        android:textColor="#888888"
+        android:textSize="14sp" />
+
+      <com.rengwuxian.materialedittext.MaterialEditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Clear and Close Button"
+        app:met_clearButton="true"
+        app:met_closeButton="true" />
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:text="Material Design Icon"
         android:textColor="#333333"
         android:textSize="14sp" />
