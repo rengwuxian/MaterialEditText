@@ -287,6 +287,7 @@ public class MaterialEditText extends EditText {
   private Bitmap[] closeButtonBitmaps;
 
   private boolean showClearButton;
+  private boolean clearButtonShown;
   private int iconSize;
   private int iconOuterWidth;
   private int iconOuterHeight;
@@ -431,6 +432,7 @@ public class MaterialEditText extends EditText {
     initMinBottomLines();
     initPadding();
     initText();
+    initClearButton();
     initFloatingLabel();
     initTextWatcher();
     checkCharactersCount();
@@ -445,8 +447,10 @@ public class MaterialEditText extends EditText {
       setSelection(text.length());
       floatingLabelFraction = 1;
       floatingLabelShown = true;
+      clearButtonShown = true;
     } else {
       resetHintTextColor();
+      clearButtonShown = false;
     }
     resetTextColor();
   }
@@ -755,7 +759,7 @@ public class MaterialEditText extends EditText {
   }
 
   private int getButtonsCount() {
-    return isShowClearButton() ? 1 : 0;
+    return isShowClearButton() && clearButtonShown ? 1 : 0;
   }
 
   @Override
@@ -820,6 +824,50 @@ public class MaterialEditText extends EditText {
     return innerPaddingRight;
   }
 
+  private void checkClearButton(Editable s) {
+    if (isShowClearButton()) {
+      clearButtonShown = s.length() != 0;
+      correctPaddings();
+    }
+  }
+
+  private void initClearButton() {
+    // observe the text changing
+    addTextChangedListener(new TextWatcher() {
+      @Override
+      public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+      }
+
+      @Override
+      public void onTextChanged(CharSequence s, int start, int before, int count) {
+      }
+
+      @Override
+      public void afterTextChanged(Editable s) {
+        checkClearButton(s);
+      }
+    });
+
+  }
+
+  private void adjustFloatingLabel(Editable s) {
+    if (floatingLabelEnabled) {
+      if (s.length() == 0) {
+        if (floatingLabelShown) {
+          floatingLabelShown = false;
+          getLabelAnimator().reverse();
+        }
+      } else {
+        floatingLabelShown = true;
+        if (getLabelAnimator().isStarted()) {
+          getLabelAnimator().reverse();
+        } else {
+          getLabelAnimator().start();
+        }
+      }
+    }
+  }
+
   private void initFloatingLabel() {
     // observe the text changing
     addTextChangedListener(new TextWatcher() {
@@ -833,21 +881,7 @@ public class MaterialEditText extends EditText {
 
       @Override
       public void afterTextChanged(Editable s) {
-        if (floatingLabelEnabled) {
-          if (s.length() == 0) {
-            if (floatingLabelShown) {
-              floatingLabelShown = false;
-              getLabelAnimator().reverse();
-            }
-          } else if (!floatingLabelShown) {
-            floatingLabelShown = true;
-            if (getLabelAnimator().isStarted()) {
-              getLabelAnimator().reverse();
-            } else {
-              getLabelAnimator().start();
-            }
-          }
-        }
+        adjustFloatingLabel(s);
       }
     });
     // observe the focus state to animate the floating label's text color appropriately
@@ -1246,7 +1280,7 @@ public class MaterialEditText extends EditText {
     }
 
     // draw the clear button
-    if (hasFocus() && showClearButton) {
+    if (hasFocus() && showClearButton && clearButtonShown) {
       paint.setAlpha(255);
       int buttonLeft;
       if (isRTL()) {
@@ -1410,6 +1444,11 @@ public class MaterialEditText extends EditText {
   }
 
   @Override
+  public void setOnClickListener(OnClickListener listener) {
+    super.setOnClickListener(listener);
+  }
+
+  @Override
   public boolean onTouchEvent(MotionEvent event) {
     if (singleLineEllipsis && getScrollX() > 0 && event.getAction() == MotionEvent.ACTION_DOWN && event.getX() < getPixel(4 * 5) && event.getY() > getHeight() - extraPaddingBottom - innerPaddingBottom && event.getY() < getHeight() - innerPaddingBottom) {
       setSelection(0);
@@ -1451,6 +1490,16 @@ public class MaterialEditText extends EditText {
       }
     }
     return super.onTouchEvent(event);
+  }
+
+  /**
+   * Loose override to make sure we set the clear button and floating label properly
+   * @param s
+   */
+  public void setText(Editable s) {
+    super.setText(s);
+    adjustFloatingLabel(s);
+    checkClearButton(s);
   }
 
   private boolean insideClearButton(MotionEvent event) {
