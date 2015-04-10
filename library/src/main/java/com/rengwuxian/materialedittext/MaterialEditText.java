@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
@@ -487,6 +488,11 @@ public class MaterialEditText extends EditText {
     initPadding();
   }
 
+  public void setIconLeft(Drawable drawable) {
+    iconLeftBitmaps = generateIconBitmaps(drawable);
+    initPadding();
+  }
+
   public void setIconLeft(Bitmap bitmap) {
     iconLeftBitmaps = generateIconBitmaps(bitmap);
     initPadding();
@@ -494,6 +500,11 @@ public class MaterialEditText extends EditText {
 
   public void setIconRight(@DrawableRes int res) {
     iconRightBitmaps = generateIconBitmaps(res);
+    initPadding();
+  }
+
+  public void setIconRight(Drawable drawable) {
+    iconRightBitmaps = generateIconBitmaps(drawable);
     initPadding();
   }
 
@@ -522,6 +533,17 @@ public class MaterialEditText extends EditText {
     options.inSampleSize = size > iconSize ? size / iconSize : 1;
     options.inJustDecodeBounds = false;
     return generateIconBitmaps(BitmapFactory.decodeResource(getResources(), origin, options));
+  }
+
+  private Bitmap[] generateIconBitmaps(Drawable drawable) {
+    if (drawable == null)
+      return null;
+    Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+    Canvas canvas = new Canvas(bitmap);
+    drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+    drawable.draw(canvas);
+
+    return generateIconBitmaps(Bitmap.createScaledBitmap(bitmap, iconSize, iconSize, false));
   }
 
   private Bitmap[] generateIconBitmaps(Bitmap origin) {
@@ -826,7 +848,7 @@ public class MaterialEditText extends EditText {
 
   private void checkClearButton(Editable s) {
     if (isShowClearButton()) {
-      clearButtonShown = s.length() != 0;
+      clearButtonShown = s != null && s.length() != 0;
       correctPaddings();
     }
   }
@@ -852,7 +874,7 @@ public class MaterialEditText extends EditText {
 
   private void adjustFloatingLabel(Editable s) {
     if (floatingLabelEnabled) {
-      if (s.length() == 0) {
+      if (s == null || s.length() == 0) {
         if (floatingLabelShown) {
           floatingLabelShown = false;
           getLabelAnimator().reverse();

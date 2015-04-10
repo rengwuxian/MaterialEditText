@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
@@ -287,6 +288,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
   private Bitmap[] closeButtonBitmaps;
 
   private boolean showClearButton;
+  private boolean clearButtonShown;
   private int iconSize;
   private int iconOuterWidth;
   private int iconOuterHeight;
@@ -431,6 +433,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
     initMinBottomLines();
     initPadding();
     initText();
+    initClearButton();
     initFloatingLabel();
     initTextWatcher();
     checkCharactersCount();
@@ -445,8 +448,10 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
       setSelection(text.length());
       floatingLabelFraction = 1;
       floatingLabelShown = true;
+      clearButtonShown = true;
     } else {
       resetHintTextColor();
+      clearButtonShown = false;
     }
     resetTextColor();
   }
@@ -483,6 +488,11 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
     initPadding();
   }
 
+  public void setIconLeft(Drawable drawable) {
+    iconLeftBitmaps = generateIconBitmaps(drawable);
+    initPadding();
+  }
+
   public void setIconLeft(Bitmap bitmap) {
     iconLeftBitmaps = generateIconBitmaps(bitmap);
     initPadding();
@@ -490,6 +500,11 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
 
   public void setIconRight(@DrawableRes int res) {
     iconRightBitmaps = generateIconBitmaps(res);
+    initPadding();
+  }
+
+  public void setIconRight(Drawable drawable) {
+    iconRightBitmaps = generateIconBitmaps(drawable);
     initPadding();
   }
 
@@ -518,6 +533,17 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
     options.inSampleSize = size > iconSize ? size / iconSize : 1;
     options.inJustDecodeBounds = false;
     return generateIconBitmaps(BitmapFactory.decodeResource(getResources(), origin, options));
+  }
+
+  private Bitmap[] generateIconBitmaps(Drawable drawable) {
+    if (drawable == null)
+      return null;
+    Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+    Canvas canvas = new Canvas(bitmap);
+    drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+    drawable.draw(canvas);
+
+    return generateIconBitmaps(Bitmap.createScaledBitmap(bitmap, iconSize, iconSize, false));
   }
 
   private Bitmap[] generateIconBitmaps(Bitmap origin) {
@@ -755,7 +781,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
   }
 
   private int getButtonsCount() {
-    return isShowClearButton() ? 1 : 0;
+    return isShowClearButton() && clearButtonShown ? 1 : 0;
   }
 
   @Override
@@ -820,6 +846,50 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
     return innerPaddingRight;
   }
 
+  private void checkClearButton(Editable s) {
+    if (isShowClearButton()) {
+      clearButtonShown = s != null && s.length() != 0;
+      correctPaddings();
+    }
+  }
+
+  private void initClearButton() {
+    // observe the text changing
+    addTextChangedListener(new TextWatcher() {
+      @Override
+      public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+      }
+
+      @Override
+      public void onTextChanged(CharSequence s, int start, int before, int count) {
+      }
+
+      @Override
+      public void afterTextChanged(Editable s) {
+        checkClearButton(s);
+      }
+    });
+
+  }
+
+  private void adjustFloatingLabel(Editable s) {
+    if (floatingLabelEnabled) {
+      if (s == null || s.length() == 0) {
+        if (floatingLabelShown) {
+          floatingLabelShown = false;
+          getLabelAnimator().reverse();
+        }
+      } else {
+        floatingLabelShown = true;
+        if (getLabelAnimator().isStarted()) {
+          getLabelAnimator().reverse();
+        } else {
+          getLabelAnimator().start();
+        }
+      }
+    }
+  }
+
   private void initFloatingLabel() {
     // observe the text changing
     addTextChangedListener(new TextWatcher() {
@@ -833,21 +903,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
 
       @Override
       public void afterTextChanged(Editable s) {
-        if (floatingLabelEnabled) {
-          if (s.length() == 0) {
-            if (floatingLabelShown) {
-              floatingLabelShown = false;
-              getLabelAnimator().reverse();
-            }
-          } else if (!floatingLabelShown) {
-            floatingLabelShown = true;
-            if (getLabelAnimator().isStarted()) {
-              getLabelAnimator().reverse();
-            } else {
-              getLabelAnimator().start();
-            }
-          }
-        }
+        adjustFloatingLabel(s);
       }
     });
     // observe the focus state to animate the floating label's text color appropriately
@@ -1246,7 +1302,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
     }
 
     // draw the clear button
-    if (hasFocus() && showClearButton) {
+    if (hasFocus() && showClearButton && clearButtonShown) {
       paint.setAlpha(255);
       int buttonLeft;
       if (isRTL()) {
