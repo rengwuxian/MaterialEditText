@@ -283,6 +283,11 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
    */
   private Bitmap[] closeButtonBitmaps;
 
+  /**
+   * Auto validate when focus lost.
+   */
+  private boolean validateOnFocusLost;
+
   private boolean showClearButton;
   private int iconSize;
   private int iconOuterWidth;
@@ -398,6 +403,7 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
     iconPadding = typedArray.getDimensionPixelSize(R.styleable.MaterialEditText_met_iconPadding, getPixel(16));
     floatingLabelAlwaysShown = typedArray.getBoolean(R.styleable.MaterialEditText_met_floatingLabelAlwaysShown, false);
     helperTextAlwaysShown = typedArray.getBoolean(R.styleable.MaterialEditText_met_helperTextAlwaysShown, false);
+    validateOnFocusLost = typedArray.getBoolean(R.styleable.MaterialEditText_met_validateOnFocusLost, false);
     typedArray.recycle();
 
     int[] paddings = new int[]{
@@ -862,12 +868,23 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
             getLabelFocusAnimator().reverse();
           }
         }
+        if (validateOnFocusLost && !hasFocus) {
+          validate();
+        }
         if (outerFocusChangeListener != null) {
           outerFocusChangeListener.onFocusChange(v, hasFocus);
         }
       }
     };
     super.setOnFocusChangeListener(innerFocusChangeListener);
+  }
+
+  public boolean isValidateOnFocusLost() {
+    return validateOnFocusLost;
+  }
+
+  public void setValidateOnFocusLost(boolean validateOnFocusLost) {
+    this.validateOnFocusLost = validateOnFocusLost;
   }
 
   public void setBaseColor(int color) {
