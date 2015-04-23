@@ -886,8 +886,8 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
     return validateOnFocusLost;
   }
 
-  public void setValidateOnFocusLost(boolean validateOnFocusLost) {
-    this.validateOnFocusLost = validateOnFocusLost;
+  public void setValidateOnFocusLost(boolean validate) {
+    this.validateOnFocusLost = validate;
   }
 
   public void setBaseColor(int color) {
@@ -1315,7 +1315,11 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
       if (tempErrorText != null || ((helperTextAlwaysShown || hasFocus()) && !TextUtils.isEmpty(helperText))) { // error text or helper text
         textPaint.setColor(tempErrorText != null ? errorColor : helperTextColor != -1 ? helperTextColor : (baseColor & 0x00ffffff | 0x44000000));
         canvas.save();
-        canvas.translate(startX + getBottomTextLeftOffset(), lineStartY + bottomSpacing - bottomTextPadding);
+        if (isRTL()) {
+          canvas.translate(endX - textLayout.getWidth(), lineStartY + bottomSpacing - bottomTextPadding);
+        } else {
+          canvas.translate(startX + getBottomTextLeftOffset(), lineStartY + bottomSpacing - bottomTextPadding);
+        }
         textLayout.draw(canvas);
         canvas.restore();
       }
