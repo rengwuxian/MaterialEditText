@@ -292,6 +292,7 @@ public class MaterialEditText extends EditText {
   private boolean validateOnFocusLost;
 
   private boolean showClearButton;
+  private boolean showCloseButton;
   private int iconSize;
   private int iconOuterWidth;
   private int iconOuterHeight;
@@ -401,6 +402,7 @@ public class MaterialEditText extends EditText {
     iconLeftBitmaps = generateIconBitmaps(typedArray.getResourceId(R.styleable.MaterialEditText_met_iconLeft, -1));
     iconRightBitmaps = generateIconBitmaps(typedArray.getResourceId(R.styleable.MaterialEditText_met_iconRight, -1));
     showClearButton = typedArray.getBoolean(R.styleable.MaterialEditText_met_clearButton, false);
+    showCloseButton = typedArray.getBoolean(R.styleable.MaterialEditText_met_closeButton, false);
     clearButtonBitmaps = generateIconBitmaps(R.drawable.met_ic_clear);
     closeButtonBitmaps = generateIconBitmaps(R.drawable.met_ic_close);
     iconPadding = typedArray.getDimensionPixelSize(R.styleable.MaterialEditText_met_iconPadding, getPixel(16));
@@ -511,6 +513,15 @@ public class MaterialEditText extends EditText {
   public void setShowClearButton(boolean show) {
     showClearButton = show;
     correctPaddings();
+  }
+
+  public boolean isShowCloseButton() {
+    return showCloseButton;
+  }
+
+  public void setShowCloseButton(boolean show) {
+	showCloseButton = show;
+	correctPaddings();
   }
 
   private Bitmap[] generateIconBitmaps(@DrawableRes int origin) {
@@ -1262,7 +1273,7 @@ public class MaterialEditText extends EditText {
       canvas.drawBitmap(icon, iconRight, iconTop, paint);
     }
 
-    // draw the clear button
+    // draw the clear button/close button
     if (hasFocus() && showClearButton) {
       paint.setAlpha(255);
       int buttonLeft;
@@ -1271,10 +1282,20 @@ public class MaterialEditText extends EditText {
       } else {
         buttonLeft = endX - iconOuterWidth;
       }
-      Bitmap clearButtonBitmap = TextUtils.isEmpty(getText()) ? closeButtonBitmaps[0] : clearButtonBitmaps[0];
-      buttonLeft += (iconOuterWidth - clearButtonBitmap.getWidth()) / 2;
-      int iconTop = lineStartY + bottomSpacing - iconOuterHeight + (iconOuterHeight - clearButtonBitmap.getHeight()) / 2;
-      canvas.drawBitmap(clearButtonBitmap, buttonLeft, iconTop, paint);
+
+	  Bitmap clearButtonBitmap;
+
+	  if (showCloseButton) {
+        clearButtonBitmap = TextUtils.isEmpty(getText()) ? closeButtonBitmaps[0] : clearButtonBitmaps[0];
+	  } else {
+		clearButtonBitmap = TextUtils.isEmpty(getText()) ? null : clearButtonBitmaps[0];
+	  }
+
+	  if (clearButtonBitmap != null) {
+	    buttonLeft += (iconOuterWidth - clearButtonBitmap.getWidth()) / 2;
+	    int iconTop = lineStartY + bottomSpacing - iconOuterHeight + (iconOuterHeight - clearButtonBitmap.getHeight()) / 2;
+	    canvas.drawBitmap(clearButtonBitmap, buttonLeft, iconTop, paint);
+	  }
     }
 
     // draw the underline

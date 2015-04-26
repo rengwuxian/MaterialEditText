@@ -47,6 +47,8 @@
     <attr name="met_iconPadding" format="dimension" />
     <!-- Clear button -->
     <attr name="met_clearButton" format="boolean" />
+    <!-- Close button -->
+    <attr name="met_closeButton" format="boolean" />
     <!-- The floating label's text size. 12sp by default. -->
     <attr name="met_floatingLabelTextSize" format="dimension" />
     <!-- The floating label's text color. -1 by default. -->
