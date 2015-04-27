@@ -63,5 +63,7 @@
     <attr name="met_textColor" format="color" />
     <!-- Hint Text Color -->
     <attr name="met_textColorHint" format="color" />
+    <!-- Auto validate on focus lost -->
+    <attr name="met_validateOnFocusLost" format="boolean"/>
   </declare-styleable>
 </resources>

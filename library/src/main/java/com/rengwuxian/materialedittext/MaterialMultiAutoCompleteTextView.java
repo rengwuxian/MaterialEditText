@@ -283,6 +283,11 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
    */
   private Bitmap[] closeButtonBitmaps;
 
+  /**
+   * Auto validate when focus lost.
+   */
+  private boolean validateOnFocusLost;
+
   private boolean showClearButton;
   private int iconSize;
   private int iconOuterWidth;
@@ -398,6 +403,7 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
     iconPadding = typedArray.getDimensionPixelSize(R.styleable.MaterialEditText_met_iconPadding, getPixel(16));
     floatingLabelAlwaysShown = typedArray.getBoolean(R.styleable.MaterialEditText_met_floatingLabelAlwaysShown, false);
     helperTextAlwaysShown = typedArray.getBoolean(R.styleable.MaterialEditText_met_helperTextAlwaysShown, false);
+    validateOnFocusLost = typedArray.getBoolean(R.styleable.MaterialEditText_met_validateOnFocusLost, false);
     typedArray.recycle();
 
     int[] paddings = new int[]{
@@ -862,12 +868,23 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
             getLabelFocusAnimator().reverse();
           }
         }
+        if (validateOnFocusLost && !hasFocus) {
+          validate();
+        }
         if (outerFocusChangeListener != null) {
           outerFocusChangeListener.onFocusChange(v, hasFocus);
         }
       }
     };
     super.setOnFocusChangeListener(innerFocusChangeListener);
+  }
+
+  public boolean isValidateOnFocusLost() {
+    return validateOnFocusLost;
+  }
+
+  public void setValidateOnFocusLost(boolean validate) {
+    this.validateOnFocusLost = validate;
   }
 
   public void setBaseColor(int color) {
@@ -1295,7 +1312,11 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
       if (tempErrorText != null || ((helperTextAlwaysShown || hasFocus()) && !TextUtils.isEmpty(helperText))) { // error text or helper text
         textPaint.setColor(tempErrorText != null ? errorColor : helperTextColor != -1 ? helperTextColor : (baseColor & 0x00ffffff | 0x44000000));
         canvas.save();
-        canvas.translate(startX + getBottomTextLeftOffset(), lineStartY + bottomSpacing - bottomTextPadding);
+        if (isRTL()) {
+          canvas.translate(endX - textLayout.getWidth(), lineStartY + bottomSpacing - bottomTextPadding);
+        } else {
+          canvas.translate(startX + getBottomTextLeftOffset(), lineStartY + bottomSpacing - bottomTextPadding);
+        }
         textLayout.draw(canvas);
         canvas.restore();
       }
@@ -1324,7 +1345,7 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
       int position = (int) (floatingLabelStartY - distance * (floatingLabelAlwaysShown ? 1 : floatingLabelFraction));
 
       // calculate the alpha
-      int alpha = (int) ((floatingLabelAlwaysShown ? 1 : floatingLabelFraction) * 0xff * (floatingLabelTextColor != -1 ? 1 : (0.74f * focusFraction + 0.26f)));
+      int alpha = (int) ((int) ((floatingLabelAlwaysShown ? 1 : floatingLabelFraction) * 0xff * (0.74f * focusFraction + 0.26f) * (floatingLabelTextColor != -1 ? 1 : Color.alpha(floatingLabelTextColor) / 256f)));
       textPaint.setAlpha(alpha);
 
       // draw the floating label
