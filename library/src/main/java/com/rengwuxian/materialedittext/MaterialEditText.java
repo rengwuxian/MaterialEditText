@@ -223,6 +223,11 @@ public class MaterialEditText extends EditText {
   private boolean floatingLabelShown;
 
   /**
+   * Whether the floating label is being reversed.
+   */
+  private boolean floatingLabelReverse = false;
+
+  /**
    * the floating label's focusFraction
    */
   private float focusFraction;
@@ -873,19 +878,21 @@ public class MaterialEditText extends EditText {
   }
 
   private void adjustFloatingLabel(Editable s) {
-    if (floatingLabelEnabled) {
+    if (floatingLabelEnabled && !floatingLabelAlwaysShown) {
       if (s == null || s.length() == 0) {
         if (floatingLabelShown) {
           floatingLabelShown = false;
+          floatingLabelReverse = true;
           getLabelAnimator().reverse();
         }
       } else {
-        floatingLabelShown = true;
-        if (getLabelAnimator().isStarted()) {
-          getLabelAnimator().reverse();
-        } else {
-          getLabelAnimator().start();
+        if (!floatingLabelShown) {
+          if (floatingLabelReverse || !getLabelAnimator().isRunning()) {
+            getLabelAnimator().start();
+            floatingLabelReverse = false;
+          }
         }
+        floatingLabelShown = true;
       }
     }
   }
@@ -1361,7 +1368,7 @@ public class MaterialEditText extends EditText {
     }
 
     // draw the floating label
-    if (floatingLabelEnabled && !TextUtils.isEmpty(floatingLabelText)) {
+    if (floatingLabelEnabled && !TextUtils.isEmpty(floatingLabelText) && (floatingLabelShown || floatingLabelAlwaysShown)) {
       textPaint.setTextSize(floatingLabelTextSize);
       // calculate the text color
       textPaint.setColor((Integer) focusEvaluator.evaluate(focusFraction, floatingLabelTextColor != -1 ? floatingLabelTextColor : (baseColor & 0x00ffffff | 0x44000000), primaryColor));

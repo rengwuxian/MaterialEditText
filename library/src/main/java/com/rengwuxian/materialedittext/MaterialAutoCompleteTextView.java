@@ -223,6 +223,11 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
   private boolean floatingLabelShown;
 
   /**
+   * Whether the floating label is being reversed.
+   */
+  private boolean floatingLabelReverse = false;
+
+  /**
    * the floating label's focusFraction
    */
   private float focusFraction;
@@ -873,19 +878,21 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
   }
 
   private void adjustFloatingLabel(Editable s) {
-    if (floatingLabelEnabled) {
+    if (floatingLabelEnabled && !floatingLabelAlwaysShown) {
       if (s == null || s.length() == 0) {
         if (floatingLabelShown) {
           floatingLabelShown = false;
+          floatingLabelReverse = true;
           getLabelAnimator().reverse();
         }
       } else {
-        floatingLabelShown = true;
-        if (getLabelAnimator().isStarted()) {
-          getLabelAnimator().reverse();
-        } else {
-          getLabelAnimator().start();
+        if (!floatingLabelShown) {
+          if (floatingLabelReverse || !getLabelAnimator().isRunning()) {
+            getLabelAnimator().start();
+            floatingLabelReverse = false;
+          }
         }
+        floatingLabelShown = true;
       }
     }
   }
