@@ -17,6 +17,7 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.AppCompatMultiAutoCompleteTextView;
 import android.text.Editable;
 import android.text.Layout;
 import android.text.StaticLayout;
@@ -29,7 +30,6 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.MultiAutoCompleteTextView;
 
 import com.nineoldandroids.animation.ArgbEvaluator;
 import com.nineoldandroids.animation.ObjectAnimator;
@@ -43,7 +43,7 @@ import java.util.regex.Pattern;
 /**
  * Created by rengwuxian on 2015/1/8.
  */
-public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView {
+public class MaterialMultiAutoCompleteTextView extends AppCompatMultiAutoCompleteTextView {
 
   @IntDef({FLOATING_LABEL_NONE, FLOATING_LABEL_NORMAL, FLOATING_LABEL_HIGHLIGHT})
   public @interface FloatingLabelType {

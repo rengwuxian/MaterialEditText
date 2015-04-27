@@ -17,6 +17,7 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
 import android.text.Layout;
 import android.text.StaticLayout;
@@ -46,7 +47,7 @@ import java.util.regex.Pattern;
  * author:rengwuxian
  * <p/>
  */
-public class MaterialEditText extends EditText {
+public class MaterialEditText extends AppCompatEditText {
 
   @IntDef({FLOATING_LABEL_NONE, FLOATING_LABEL_NORMAL, FLOATING_LABEL_HIGHLIGHT})
   public @interface FloatingLabelType {
