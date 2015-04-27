@@ -33,6 +33,7 @@ import android.widget.EditText;
 
 import com.nineoldandroids.animation.ArgbEvaluator;
 import com.nineoldandroids.animation.ObjectAnimator;
+import com.rengwuxian.materialedittext.validation.METLengthChecker;
 import com.rengwuxian.materialedittext.validation.METValidator;
 
 import java.util.ArrayList;
@@ -305,6 +306,7 @@ public class MaterialEditText extends EditText {
   OnFocusChangeListener innerFocusChangeListener;
   OnFocusChangeListener outerFocusChangeListener;
   private List<METValidator> validators;
+  private METLengthChecker lengthChecker;
 
   public MaterialEditText(Context context) {
     super(context);
@@ -1190,6 +1192,10 @@ public class MaterialEditText extends EditText {
     return this.validators;
   }
 
+  public void setLengthChecker(METLengthChecker lengthChecker) {
+    this.lengthChecker = lengthChecker;
+  }
+
   @Override
   public void setOnFocusChangeListener(OnFocusChangeListener listener) {
     if (innerFocusChangeListener == null) {
@@ -1384,7 +1390,7 @@ public class MaterialEditText extends EditText {
       charactersCountValid = true;
     } else {
       CharSequence text = getText();
-      int count = text == null ? 0 : text.length();
+      int count = text == null ? 0 : checkLength(text);
       charactersCountValid = (count >= minCharacters && (maxCharacters <= 0 || count <= maxCharacters));
     }
   }
@@ -1400,11 +1406,11 @@ public class MaterialEditText extends EditText {
   private String getCharactersCounterText() {
     String text;
     if (minCharacters <= 0) {
-      text = isRTL() ? maxCharacters + " / " + getText().length() : getText().length() + " / " + maxCharacters;
+      text = isRTL() ? maxCharacters + " / " + checkLength(getText()) : checkLength(getText()) + " / " + maxCharacters;
     } else if (maxCharacters <= 0) {
-      text = isRTL() ? "+" + minCharacters + " / " + getText().length() : getText().length() + " / " + minCharacters + "+";
+      text = isRTL() ? "+" + minCharacters + " / " + checkLength(getText()) : checkLength(getText()) + " / " + minCharacters + "+";
     } else {
-      text = isRTL() ? maxCharacters + "-" + minCharacters + " / " + getText().length() : getText().length() + " / " + minCharacters + "-" + maxCharacters;
+      text = isRTL() ? maxCharacters + "-" + minCharacters + " / " + checkLength(getText()) : checkLength(getText()) + " / " + minCharacters + "-" + maxCharacters;
     }
     return text;
   }
@@ -1466,5 +1472,10 @@ public class MaterialEditText extends EditText {
     }
     int buttonTop = getScrollY() + getHeight() - getPaddingBottom() + bottomSpacing - iconOuterHeight;
     return (x >= buttonLeft && x < buttonLeft + iconOuterWidth && y >= buttonTop && y < buttonTop + iconOuterHeight);
+  }
+
+  private int checkLength(CharSequence text) {
+    if (lengthChecker==null) return text.length();
+    return lengthChecker.getLength(text);
   }
 }
