@@ -33,6 +33,7 @@ import android.widget.MultiAutoCompleteTextView;
 
 import com.nineoldandroids.animation.ArgbEvaluator;
 import com.nineoldandroids.animation.ObjectAnimator;
+import com.rengwuxian.materialedittext.validation.METLengthChecker;
 import com.rengwuxian.materialedittext.validation.METValidator;
 
 import java.util.ArrayList;
@@ -307,6 +308,7 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
   OnFocusChangeListener innerFocusChangeListener;
   OnFocusChangeListener outerFocusChangeListener;
   private List<METValidator> validators;
+  private METLengthChecker lengthChecker;
 
   public MaterialMultiAutoCompleteTextView(Context context) {
     super(context);
@@ -456,24 +458,24 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
 
   private void initTextWatcher() {
     addTextChangedListener(new TextWatcher() {
-      @Override
-      public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-      }
-
-      @Override
-      public void onTextChanged(CharSequence s, int start, int before, int count) {
-      }
-
-      @Override
-      public void afterTextChanged(Editable s) {
-        checkCharactersCount();
-        if (autoValidate) {
-          validate();
-        } else {
-          setError(null);
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
         }
-        postInvalidate();
-      }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            checkCharactersCount();
+            if (autoValidate) {
+                validate();
+            } else {
+                setError(null);
+            }
+            postInvalidate();
+        }
     });
   }
 
@@ -1204,6 +1206,10 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
     return this.validators;
   }
 
+  public void setLengthChecker(METLengthChecker lengthChecker) {
+    this.lengthChecker = lengthChecker;
+  }
+
   @Override
   public void setOnFocusChangeListener(OnFocusChangeListener listener) {
     if (innerFocusChangeListener == null) {
@@ -1301,7 +1307,7 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
     float bottomTextPadding = bottomTextSize + textMetrics.ascent + textMetrics.descent;
 
     // draw the characters counter
-    if ((hasFocus() && hasCharatersCounter()) || !isCharactersCountValid()) {
+    if ((hasFocus() && hasCharactersCounter()) || !isCharactersCountValid()) {
       textPaint.setColor(isCharactersCountValid() ? (baseColor & 0x00ffffff | 0x44000000) : errorColor);
       String charactersCounterText = getCharactersCounterText();
       canvas.drawText(charactersCounterText, isRTL() ? startX : endX - textPaint.measureText(charactersCounterText), lineStartY + bottomSpacing + relativeHeight, textPaint);
@@ -1390,7 +1396,7 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
   }
 
   private int getCharactersCounterWidth() {
-    return hasCharatersCounter() ? (int) textPaint.measureText(getCharactersCounterText()) : 0;
+    return hasCharactersCounter() ? (int) textPaint.measureText(getCharactersCounterText()) : 0;
   }
 
   private int getBottomEllipsisWidth() {
@@ -1398,11 +1404,11 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
   }
 
   private void checkCharactersCount() {
-    if (!hasCharatersCounter()) {
+    if (!hasCharactersCounter()) {
       charactersCountValid = true;
     } else {
       CharSequence text = getText();
-      int count = text == null ? 0 : text.length();
+      int count = text == null ? 0 : checkLength(text);
       charactersCountValid = (count >= minCharacters && (maxCharacters <= 0 || count <= maxCharacters));
     }
   }
@@ -1411,18 +1417,18 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
     return charactersCountValid;
   }
 
-  private boolean hasCharatersCounter() {
+  private boolean hasCharactersCounter() {
     return minCharacters > 0 || maxCharacters > 0;
   }
 
   private String getCharactersCounterText() {
     String text;
     if (minCharacters <= 0) {
-      text = isRTL() ? maxCharacters + " / " + getText().length() : getText().length() + " / " + maxCharacters;
+      text = isRTL() ? maxCharacters + " / " + checkLength(getText()) : checkLength(getText()) + " / " + maxCharacters;
     } else if (maxCharacters <= 0) {
-      text = isRTL() ? "+" + minCharacters + " / " + getText().length() : getText().length() + " / " + minCharacters + "+";
+      text = isRTL() ? "+" + minCharacters + " / " + checkLength(getText()) : checkLength(getText()) + " / " + minCharacters + "+";
     } else {
-      text = isRTL() ? maxCharacters + "-" + minCharacters + " / " + getText().length() : getText().length() + " / " + minCharacters + "-" + maxCharacters;
+      text = isRTL() ? maxCharacters + "-" + minCharacters + " / " + checkLength(getText()) : checkLength(getText()) + " / " + minCharacters + "-" + maxCharacters;
     }
     return text;
   }
@@ -1484,5 +1490,10 @@ public class MaterialMultiAutoCompleteTextView extends MultiAutoCompleteTextView
     }
     int buttonTop = getScrollY() + getHeight() - getPaddingBottom() + bottomSpacing - iconOuterHeight;
     return (x >= buttonLeft && x < buttonLeft + iconOuterWidth && y >= buttonTop && y < buttonTop + iconOuterHeight);
+  }
+
+  private int checkLength(CharSequence text) {
+    if (lengthChecker==null) return text.length();
+    return lengthChecker.getLength(text);
   }
 }

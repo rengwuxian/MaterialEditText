@@ -33,6 +33,7 @@ import android.content.res.ColorStateList;
 
 import com.nineoldandroids.animation.ArgbEvaluator;
 import com.nineoldandroids.animation.ObjectAnimator;
+import com.rengwuxian.materialedittext.validation.METLengthChecker;
 import com.rengwuxian.materialedittext.validation.METValidator;
 
 import java.util.ArrayList;
@@ -310,6 +311,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
   OnFocusChangeListener innerFocusChangeListener;
   OnFocusChangeListener outerFocusChangeListener;
   private List<METValidator> validators;
+  private METLengthChecker lengthChecker;
 
   public MaterialAutoCompleteTextView(Context context) {
     super(context);
@@ -1207,6 +1209,10 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
     return this.validators;
   }
 
+  public void setLengthChecker(METLengthChecker lengthChecker) {
+    this.lengthChecker = lengthChecker;
+  }
+
   @Override
   public void setOnFocusChangeListener(OnFocusChangeListener listener) {
     if (innerFocusChangeListener == null) {
@@ -1304,7 +1310,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
     float bottomTextPadding = bottomTextSize + textMetrics.ascent + textMetrics.descent;
 
     // draw the characters counter
-    if ((hasFocus() && hasCharatersCounter()) || !isCharactersCountValid()) {
+    if ((hasFocus() && hasCharactersCounter()) || !isCharactersCountValid()) {
       textPaint.setColor(isCharactersCountValid() ? (baseColor & 0x00ffffff | 0x44000000) : errorColor);
       String charactersCounterText = getCharactersCounterText();
       canvas.drawText(charactersCounterText, isRTL() ? startX : endX - textPaint.measureText(charactersCounterText), lineStartY + bottomSpacing + relativeHeight, textPaint);
@@ -1393,7 +1399,7 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
   }
 
   private int getCharactersCounterWidth() {
-    return hasCharatersCounter() ? (int) textPaint.measureText(getCharactersCounterText()) : 0;
+    return hasCharactersCounter() ? (int) textPaint.measureText(getCharactersCounterText()) : 0;
   }
 
   private int getBottomEllipsisWidth() {
@@ -1401,11 +1407,11 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
   }
 
   private void checkCharactersCount() {
-    if (!hasCharatersCounter()) {
+    if (!hasCharactersCounter()) {
       charactersCountValid = true;
     } else {
       CharSequence text = getText();
-      int count = text == null ? 0 : text.length();
+      int count = text == null ? 0 : checkLength(text);
       charactersCountValid = (count >= minCharacters && (maxCharacters <= 0 || count <= maxCharacters));
     }
   }
@@ -1414,18 +1420,18 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
     return charactersCountValid;
   }
 
-  private boolean hasCharatersCounter() {
+  private boolean hasCharactersCounter() {
     return minCharacters > 0 || maxCharacters > 0;
   }
 
   private String getCharactersCounterText() {
     String text;
     if (minCharacters <= 0) {
-      text = isRTL() ? maxCharacters + " / " + getText().length() : getText().length() + " / " + maxCharacters;
+      text = isRTL() ? maxCharacters + " / " + checkLength(getText()) : checkLength(getText()) + " / " + maxCharacters;
     } else if (maxCharacters <= 0) {
-      text = isRTL() ? "+" + minCharacters + " / " + getText().length() : getText().length() + " / " + minCharacters + "+";
+      text = isRTL() ? "+" + minCharacters + " / " + checkLength(getText()) : checkLength(getText()) + " / " + minCharacters + "+";
     } else {
-      text = isRTL() ? maxCharacters + "-" + minCharacters + " / " + getText().length() : getText().length() + " / " + minCharacters + "-" + maxCharacters;
+      text = isRTL() ? maxCharacters + "-" + minCharacters + " / " + checkLength(getText()) : checkLength(getText()) + " / " + minCharacters + "-" + maxCharacters;
     }
     return text;
   }
@@ -1487,5 +1493,10 @@ public class MaterialAutoCompleteTextView extends AutoCompleteTextView {
     }
     int buttonTop = getScrollY() + getHeight() - getPaddingBottom() + bottomSpacing - iconOuterHeight;
     return (x >= buttonLeft && x < buttonLeft + iconOuterWidth && y >= buttonTop && y < buttonTop + iconOuterHeight);
+  }
+
+  private int checkLength(CharSequence text) {
+    if (lengthChecker==null) return text.length();
+    return lengthChecker.getLength(text);
   }
 }

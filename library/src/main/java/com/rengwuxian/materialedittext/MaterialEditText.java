@@ -1310,7 +1310,7 @@ public class MaterialEditText extends EditText {
     float bottomTextPadding = bottomTextSize + textMetrics.ascent + textMetrics.descent;
 
     // draw the characters counter
-    if ((hasFocus() && hasCharatersCounter()) || !isCharactersCountValid()) {
+    if ((hasFocus() && hasCharactersCounter()) || !isCharactersCountValid()) {
       textPaint.setColor(isCharactersCountValid() ? (baseColor & 0x00ffffff | 0x44000000) : errorColor);
       String charactersCounterText = getCharactersCounterText();
       canvas.drawText(charactersCounterText, isRTL() ? startX : endX - textPaint.measureText(charactersCounterText), lineStartY + bottomSpacing + relativeHeight, textPaint);
@@ -1399,7 +1399,7 @@ public class MaterialEditText extends EditText {
   }
 
   private int getCharactersCounterWidth() {
-    return hasCharatersCounter() ? (int) textPaint.measureText(getCharactersCounterText()) : 0;
+    return hasCharactersCounter() ? (int) textPaint.measureText(getCharactersCounterText()) : 0;
   }
 
   private int getBottomEllipsisWidth() {
@@ -1407,7 +1407,7 @@ public class MaterialEditText extends EditText {
   }
 
   private void checkCharactersCount() {
-    if (!hasCharatersCounter()) {
+    if (!hasCharactersCounter()) {
       charactersCountValid = true;
     } else {
       CharSequence text = getText();
@@ -1420,7 +1420,7 @@ public class MaterialEditText extends EditText {
     return charactersCountValid;
   }
 
-  private boolean hasCharatersCounter() {
+  private boolean hasCharactersCounter() {
     return minCharacters > 0 || maxCharacters > 0;
   }
 
