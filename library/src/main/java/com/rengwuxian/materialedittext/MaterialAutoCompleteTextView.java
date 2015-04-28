@@ -1385,7 +1385,7 @@ public class MaterialAutoCompleteTextView extends AppCompatAutoCompleteTextView 
 
     // draw the bottom ellipsis
     if (hasFocus() && singleLineEllipsis && getScrollX() != 0) {
-      paint.setColor(primaryColor);
+      paint.setColor(isInternalValid() ? primaryColor : errorColor);
       float startY = lineStartY + bottomSpacing;
       int ellipsisStartX;
       if (isRTL()) {
