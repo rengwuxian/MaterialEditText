@@ -846,11 +846,7 @@ public class MaterialMultiAutoCompleteTextView extends AppCompatMultiAutoComplet
             }
           } else if (!floatingLabelShown) {
             floatingLabelShown = true;
-            if (getLabelAnimator().isStarted()) {
-              getLabelAnimator().reverse();
-            } else {
-              getLabelAnimator().start();
-            }
+            getLabelAnimator().start();
           }
         }
       }
@@ -861,11 +857,7 @@ public class MaterialMultiAutoCompleteTextView extends AppCompatMultiAutoComplet
       public void onFocusChange(View v, boolean hasFocus) {
         if (floatingLabelEnabled && highlightFloatingLabel) {
           if (hasFocus) {
-            if (getLabelFocusAnimator().isStarted()) {
-              getLabelFocusAnimator().reverse();
-            } else {
-              getLabelFocusAnimator().start();
-            }
+            getLabelFocusAnimator().start();
           } else {
             getLabelFocusAnimator().reverse();
           }
