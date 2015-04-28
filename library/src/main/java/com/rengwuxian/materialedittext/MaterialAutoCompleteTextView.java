@@ -269,6 +269,11 @@ public class MaterialAutoCompleteTextView extends AppCompatAutoCompleteTextView 
   private boolean floatingLabelAnimating;
 
   /**
+   * Whether check the characters count at the beginning it's shown.
+   */
+  private boolean checkCharactersCountAtBeginning;
+
+  /**
    * Left Icon
    */
   private Bitmap[] iconLeftBitmaps;
@@ -294,6 +299,7 @@ public class MaterialAutoCompleteTextView extends AppCompatAutoCompleteTextView 
   private boolean validateOnFocusLost;
 
   private boolean showClearButton;
+  private boolean firstShown;
   private int iconSize;
   private int iconOuterWidth;
   private int iconOuterHeight;
@@ -410,6 +416,7 @@ public class MaterialAutoCompleteTextView extends AppCompatAutoCompleteTextView 
     floatingLabelAlwaysShown = typedArray.getBoolean(R.styleable.MaterialEditText_met_floatingLabelAlwaysShown, false);
     helperTextAlwaysShown = typedArray.getBoolean(R.styleable.MaterialEditText_met_helperTextAlwaysShown, false);
     validateOnFocusLost = typedArray.getBoolean(R.styleable.MaterialEditText_met_validateOnFocusLost, false);
+    checkCharactersCountAtBeginning = typedArray.getBoolean(R.styleable.MaterialEditText_met_checkCharactersCountAtBeginning, true);
     typedArray.recycle();
 
     int[] paddings = new int[]{
@@ -785,6 +792,14 @@ public class MaterialAutoCompleteTextView extends AppCompatAutoCompleteTextView 
 
   private int getButtonsCount() {
     return isShowClearButton() ? 1 : 0;
+  }
+
+  @Override
+  protected void onAttachedToWindow() {
+    super.onAttachedToWindow();
+    if (!firstShown) {
+      firstShown = true;
+    }
   }
 
   @Override
@@ -1420,7 +1435,7 @@ public class MaterialAutoCompleteTextView extends AppCompatAutoCompleteTextView 
   }
 
   private void checkCharactersCount() {
-    if (!hasCharactersCounter()) {
+    if ((!firstShown && !checkCharactersCountAtBeginning) || !hasCharactersCounter()) {
       charactersCountValid = true;
     } else {
       CharSequence text = getText();

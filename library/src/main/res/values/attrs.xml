@@ -53,17 +53,20 @@
     <attr name="met_floatingLabelTextColor" format="color" />
     <!-- The bottom texts' size. 12sp by default. -->
     <attr name="met_bottomTextSize" format="dimension" />
-    <!-- Always show the floating label, instead of animating it in/out. -->
+    <!-- Always show the floating label, instead of animating it in/out. False by default. -->
     <attr name="met_floatingLabelAlwaysShown" format="boolean" />
-    <!-- Always show the helper text, no matter if the edit text is focused. -->
+    <!-- Always show the helper text, no matter if the edit text is focused. False by default. -->
     <attr name="met_helperTextAlwaysShown" format="boolean" />
-    <!-- Whether use animation to show/hide the floating label -->
+    <!-- Whether use animation to show/hide the floating label. True by default. -->
     <attr name="met_floatingLabelAnimating" format="boolean"/>
     <!-- Text color -->
     <attr name="met_textColor" format="color" />
     <!-- Hint Text Color -->
     <attr name="met_textColorHint" format="color" />
-    <!-- Auto validate on focus lost -->
+    <!-- Auto validate on focus lost. False by default. -->
     <attr name="met_validateOnFocusLost" format="boolean"/>
+    <!-- Whether check the characters count at the beginning it's shown. True by default. -->
+    <attr name="met_checkCharactersCountAtBeginning" format="boolean"/>
+
   </declare-styleable>
 </resources>
