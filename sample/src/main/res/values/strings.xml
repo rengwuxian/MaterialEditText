@@ -7,5 +7,6 @@
   <string name="new_account">New Account</string>
   <string name="discription">Description</string>
   <string name="title">Title</string>
+  <string name="action_show_test">Show Test View</string>
 
 </resources>
