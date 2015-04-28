@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
@@ -409,11 +410,11 @@ public class MaterialMultiAutoCompleteTextView extends AppCompatMultiAutoComplet
     typedArray.recycle();
 
     int[] paddings = new int[]{
-        android.R.attr.padding, // 0
-        android.R.attr.paddingLeft, // 1
-        android.R.attr.paddingTop, // 2
-        android.R.attr.paddingRight, // 3
-        android.R.attr.paddingBottom // 4
+      android.R.attr.padding, // 0
+      android.R.attr.paddingLeft, // 1
+      android.R.attr.paddingTop, // 2
+      android.R.attr.paddingRight, // 3
+      android.R.attr.paddingBottom // 4
     };
     TypedArray paddingsTypedArray = context.obtainStyledAttributes(attrs, paddings);
     int padding = paddingsTypedArray.getDimensionPixelSize(0, 0);
@@ -458,24 +459,24 @@ public class MaterialMultiAutoCompleteTextView extends AppCompatMultiAutoComplet
 
   private void initTextWatcher() {
     addTextChangedListener(new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        }
+      @Override
+      public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+      }
 
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-        }
+      @Override
+      public void onTextChanged(CharSequence s, int start, int before, int count) {
+      }
 
-        @Override
-        public void afterTextChanged(Editable s) {
-            checkCharactersCount();
-            if (autoValidate) {
-                validate();
-            } else {
-                setError(null);
-            }
-            postInvalidate();
+      @Override
+      public void afterTextChanged(Editable s) {
+        checkCharactersCount();
+        if (autoValidate) {
+          validate();
+        } else {
+          setError(null);
         }
+        postInvalidate();
+      }
     });
   }
 
@@ -488,6 +489,11 @@ public class MaterialMultiAutoCompleteTextView extends AppCompatMultiAutoComplet
     initPadding();
   }
 
+  public void setIconLeft(Drawable drawable) {
+    iconLeftBitmaps = generateIconBitmaps(drawable);
+    initPadding();
+  }
+
   public void setIconLeft(Bitmap bitmap) {
     iconLeftBitmaps = generateIconBitmaps(bitmap);
     initPadding();
@@ -495,6 +501,11 @@ public class MaterialMultiAutoCompleteTextView extends AppCompatMultiAutoComplet
 
   public void setIconRight(@DrawableRes int res) {
     iconRightBitmaps = generateIconBitmaps(res);
+    initPadding();
+  }
+
+  public void setIconRight(Drawable drawable) {
+    iconRightBitmaps = generateIconBitmaps(drawable);
     initPadding();
   }
 
@@ -523,6 +534,16 @@ public class MaterialMultiAutoCompleteTextView extends AppCompatMultiAutoComplet
     options.inSampleSize = size > iconSize ? size / iconSize : 1;
     options.inJustDecodeBounds = false;
     return generateIconBitmaps(BitmapFactory.decodeResource(getResources(), origin, options));
+  }
+
+  private Bitmap[] generateIconBitmaps(Drawable drawable) {
+    if (drawable == null)
+      return null;
+    Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+    Canvas canvas = new Canvas(bitmap);
+    drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+    drawable.draw(canvas);
+    return generateIconBitmaps(Bitmap.createScaledBitmap(bitmap, iconSize, iconSize, false));
   }
 
   private Bitmap[] generateIconBitmaps(Bitmap origin) {
@@ -783,8 +804,8 @@ public class MaterialMultiAutoCompleteTextView extends AppCompatMultiAutoComplet
     textPaint.setTextSize(bottomTextSize);
     if (tempErrorText != null || helperText != null) {
       Layout.Alignment alignment = (getGravity() & Gravity.RIGHT) == Gravity.RIGHT || isRTL() ?
-          Layout.Alignment.ALIGN_OPPOSITE : (getGravity() & Gravity.LEFT) == Gravity.LEFT ?
-          Layout.Alignment.ALIGN_NORMAL : Layout.Alignment.ALIGN_CENTER;
+        Layout.Alignment.ALIGN_OPPOSITE : (getGravity() & Gravity.LEFT) == Gravity.LEFT ?
+        Layout.Alignment.ALIGN_NORMAL : Layout.Alignment.ALIGN_CENTER;
       textLayout = new StaticLayout(tempErrorText != null ? tempErrorText : helperText, textPaint, getWidth() - getBottomTextLeftOffset() - getBottomTextRightOffset() - getPaddingLeft() - getPaddingRight(), alignment, 1.0f, 0.0f, true);
       destBottomLines = Math.max(textLayout.getLineCount(), minBottomTextLines);
     } else {
