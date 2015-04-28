@@ -289,11 +289,6 @@ public class MaterialAutoCompleteTextView extends AppCompatAutoCompleteTextView 
   private Bitmap[] clearButtonBitmaps;
 
   /**
-   * Close Button
-   */
-  private Bitmap[] closeButtonBitmaps;
-
-  /**
    * Auto validate when focus lost.
    */
   private boolean validateOnFocusLost;
@@ -411,7 +406,6 @@ public class MaterialAutoCompleteTextView extends AppCompatAutoCompleteTextView 
     iconRightBitmaps = generateIconBitmaps(typedArray.getResourceId(R.styleable.MaterialEditText_met_iconRight, -1));
     showClearButton = typedArray.getBoolean(R.styleable.MaterialEditText_met_clearButton, false);
     clearButtonBitmaps = generateIconBitmaps(R.drawable.met_ic_clear);
-    closeButtonBitmaps = generateIconBitmaps(R.drawable.met_ic_close);
     iconPadding = typedArray.getDimensionPixelSize(R.styleable.MaterialEditText_met_iconPadding, getPixel(16));
     floatingLabelAlwaysShown = typedArray.getBoolean(R.styleable.MaterialEditText_met_floatingLabelAlwaysShown, false);
     helperTextAlwaysShown = typedArray.getBoolean(R.styleable.MaterialEditText_met_helperTextAlwaysShown, false);
@@ -1297,7 +1291,7 @@ public class MaterialAutoCompleteTextView extends AppCompatAutoCompleteTextView 
     }
 
     // draw the clear button
-    if (hasFocus() && showClearButton) {
+    if (hasFocus() && showClearButton && !TextUtils.isEmpty(getText())) {
       paint.setAlpha(255);
       int buttonLeft;
       if (isRTL()) {
@@ -1305,7 +1299,7 @@ public class MaterialAutoCompleteTextView extends AppCompatAutoCompleteTextView 
       } else {
         buttonLeft = endX - iconOuterWidth;
       }
-      Bitmap clearButtonBitmap = TextUtils.isEmpty(getText()) ? closeButtonBitmaps[0] : clearButtonBitmaps[0];
+      Bitmap clearButtonBitmap = clearButtonBitmaps[0];
       buttonLeft += (iconOuterWidth - clearButtonBitmap.getWidth()) / 2;
       int iconTop = lineStartY + bottomSpacing - iconOuterHeight + (iconOuterHeight - clearButtonBitmap.getHeight()) / 2;
       canvas.drawBitmap(clearButtonBitmap, buttonLeft, iconTop, paint);
