@@ -153,6 +153,28 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:text="Floating Label with custom underline drawable:"
+        android:textColor="#333333"
+        android:textSize="14sp" />
+
+       <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="app:met_customUnderLineDrawable=&quot;@drawable/edit_text_background&quot;"
+        android:textColor="#888888"
+        android:textSize="14sp" />
+
+       <com.rengwuxian.materialedittext.MaterialEditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Floating Label with custom underline"
+        app:met_floatingLabel="normal"
+        app:met_customUnderLineDrawable="@drawable/edit_text_background"/>
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:text="Single Line Ellipsis:"
         android:textColor="#333333"
         android:textSize="14sp" />
