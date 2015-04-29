@@ -428,11 +428,6 @@ public class MaterialEditText extends AppCompatEditText {
     innerPaddingBottom = paddingsTypedArray.getDimensionPixelSize(4, padding);
     paddingsTypedArray.recycle();
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-      setBackground(null);
-    } else {
-      setBackgroundDrawable(null);
-    }
     if (singleLineEllipsis) {
       TransformationMethod transformationMethod = getTransformationMethod();
       setSingleLine();
@@ -1307,6 +1302,11 @@ public class MaterialEditText extends AppCompatEditText {
 
     // draw the underline
     if (!hideUnderline) {
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+          setBackground(null);
+      } else {
+          setBackgroundDrawable(null);
+      }
       lineStartY += bottomSpacing;
       if (!isInternalValid()) { // not valid
         paint.setColor(errorColor);
