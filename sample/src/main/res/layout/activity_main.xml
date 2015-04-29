@@ -131,6 +131,29 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:text="Custom background drawable:"
+        android:textColor="#333333"
+        android:textSize="14sp" />
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="app:met_hideUnderline=&quot;true&quot;\n android:background=&quot;@drawable/edit_text_background&quot;"
+        android:textColor="#888888"
+        android:textSize="14sp" />
+
+      <com.rengwuxian.materialedittext.MaterialEditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Custom background drawable"
+        app:met_hideUnderline="true"
+        app:met_floatingLabel="normal"
+        android:background="@drawable/edit_text_background"/>
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:text="Custom Floating Label Text:"
         android:textColor="#333333"
         android:textSize="14sp" />
