@@ -293,6 +293,12 @@ public class MaterialEditText extends AppCompatEditText {
    */
   private boolean validateOnFocusLost;
 
+  /**
+   * A custom drawable with the states within (for example state_window_focused, state_enabled, state_activated).
+   */
+
+  private int customUnderLineDrawable;
+
   private boolean showClearButton;
   private boolean firstShown;
   private int iconSize;
@@ -411,6 +417,7 @@ public class MaterialEditText extends AppCompatEditText {
     helperTextAlwaysShown = typedArray.getBoolean(R.styleable.MaterialEditText_met_helperTextAlwaysShown, false);
     validateOnFocusLost = typedArray.getBoolean(R.styleable.MaterialEditText_met_validateOnFocusLost, false);
     checkCharactersCountAtBeginning = typedArray.getBoolean(R.styleable.MaterialEditText_met_checkCharactersCountAtBeginning, true);
+    customUnderLineDrawable = typedArray.getResourceId(R.styleable.MaterialEditText_met_customUnderLineDrawable, -1);
     typedArray.recycle();
 
     int[] paddings = new int[]{
@@ -1306,7 +1313,13 @@ public class MaterialEditText extends AppCompatEditText {
     }
 
     // draw the underline
-    if (!hideUnderline) {
+    if (customUnderLineDrawable != -1){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            setBackground(getResources().getDrawable(customUnderLineDrawable));
+        } else {
+            setBackgroundDrawable(getResources().getDrawable(customUnderLineDrawable));
+        }
+    } else if (!hideUnderline) {
       lineStartY += bottomSpacing;
       if (!isInternalValid()) { // not valid
         paint.setColor(errorColor);
