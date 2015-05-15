@@ -1469,8 +1469,9 @@ public class MaterialEditText extends AppCompatEditText {
           if (insideClearButton(event)) {
             clearButtonTouched = true;
             clearButtonClicking = true;
+            return true;
           }
-          return true;
+          break;
         case MotionEvent.ACTION_MOVE:
           if (clearButtonClicking && !insideClearButton(event)) {
             clearButtonClicking = false;
@@ -1504,8 +1505,8 @@ public class MaterialEditText extends AppCompatEditText {
   private boolean insideClearButton(MotionEvent event) {
     float x = event.getX();
     float y = event.getY();
-    int startX = getScrollX() + (iconLeftBitmaps == null ? 0 : (iconOuterWidth + iconPadding));
-    int endX = getScrollX() + (iconRightBitmaps == null ? getWidth() : getWidth() - iconOuterWidth - iconPadding);
+    int startX = iconLeftBitmaps == null ? 0 : (iconOuterWidth + iconPadding);
+    int endX = iconRightBitmaps == null ? getWidth() : getWidth() - iconOuterWidth - iconPadding;
     int buttonLeft;
     if (isRTL()) {
       buttonLeft = startX;
