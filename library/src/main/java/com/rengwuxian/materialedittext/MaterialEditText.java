@@ -1469,8 +1469,8 @@ public class MaterialEditText extends AppCompatEditText {
           if (insideClearButton(event)) {
             clearButtonTouched = true;
             clearButtonClicking = true;
+            return true;
           }
-          return true;
         case MotionEvent.ACTION_MOVE:
           if (clearButtonClicking && !insideClearButton(event)) {
             clearButtonClicking = false;
