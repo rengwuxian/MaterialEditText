@@ -67,6 +67,8 @@
     <attr name="met_validateOnFocusLost" format="boolean"/>
     <!-- Whether check the characters count at the beginning it's shown. True by default. -->
     <attr name="met_checkCharactersCountAtBeginning" format="boolean"/>
+    <!-- Float hint on focus event. False by default -->
+    <attr name="met_floatingLabelOnFocus" format="boolean"/>
 
   </declare-styleable>
 </resources>
