@@ -485,7 +485,7 @@ public class MaterialEditText extends AppCompatEditText {
   }
 
   private Typeface getCustomTypeface(@NonNull String fontPath) {
-    return Typeface.createFromAsset(getContext().getAssets(), fontPath);
+    return TypefaceCache.get(fontPath, getContext().getAssets());
   }
 
   public void setIconLeft(@DrawableRes int res) {
