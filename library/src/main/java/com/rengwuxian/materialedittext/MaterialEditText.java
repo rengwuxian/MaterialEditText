@@ -331,6 +331,14 @@ public class MaterialEditText extends AppCompatEditText {
     init(context, attrs);
   }
 
+  public String getString() {
+    return getText().toString().trim();
+  }
+
+  public boolean isEmpty() {
+    return TextUtils.isEmpty(getString());
+  }
+
   private void init(Context context, AttributeSet attrs) {
     iconSize = getPixel(32);
     iconOuterWidth = getPixel(48);
