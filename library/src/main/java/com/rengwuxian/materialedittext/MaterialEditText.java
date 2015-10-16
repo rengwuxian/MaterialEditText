@@ -3,6 +3,7 @@ package com.rengwuxian.materialedittext;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,11 +12,13 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
 import android.text.Layout;
 import android.text.StaticLayout;
@@ -28,10 +31,10 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.EditText;
 
 import com.nineoldandroids.animation.ArgbEvaluator;
 import com.nineoldandroids.animation.ObjectAnimator;
+import com.rengwuxian.materialedittext.validation.METLengthChecker;
 import com.rengwuxian.materialedittext.validation.METValidator;
 
 import java.util.ArrayList;
@@ -45,7 +48,7 @@ import java.util.regex.Pattern;
  * author:rengwuxian
  * <p/>
  */
-public class MaterialEditText extends EditText {
+public class MaterialEditText extends AppCompatEditText {
 
   @IntDef({FLOATING_LABEL_NONE, FLOATING_LABEL_NORMAL, FLOATING_LABEL_HIGHLIGHT})
   public @interface FloatingLabelType {
@@ -81,6 +84,11 @@ public class MaterialEditText extends EditText {
   private int floatingLabelTextSize;
 
   /**
+   * the floating label's text color.
+   */
+  private int floatingLabelTextColor;
+
+  /**
    * the bottom texts' size.
    */
   private int bottomTextSize;
@@ -88,7 +96,7 @@ public class MaterialEditText extends EditText {
   /**
    * the spacing between the main text and the floating label.
    */
-  private int floatingLabelSpacing;
+  private int floatingLabelPadding;
 
   /**
    * the spacing between the main text and the bottom components (bottom ellipsis, helper/error text, characters counter).
@@ -241,6 +249,11 @@ public class MaterialEditText extends EditText {
   private boolean hideUnderline;
 
   /**
+   * Underline's color
+   */
+  private int underlineColor;
+
+  /**
    * Whether to validate as soon as the text has changed. False by default
    */
   private boolean autoValidate;
@@ -249,6 +262,16 @@ public class MaterialEditText extends EditText {
    * Whether the characters count is valid
    */
   private boolean charactersCountValid;
+
+  /**
+   * Whether use animation to show/hide the floating label.
+   */
+  private boolean floatingLabelAnimating;
+
+  /**
+   * Whether check the characters count at the beginning it's shown.
+   */
+  private boolean checkCharactersCountAtBeginning;
 
   /**
    * Left Icon
@@ -260,10 +283,26 @@ public class MaterialEditText extends EditText {
    */
   private Bitmap[] iconRightBitmaps;
 
+  /**
+   * Clear Button
+   */
+  private Bitmap[] clearButtonBitmaps;
+
+  /**
+   * Auto validate when focus lost.
+   */
+  private boolean validateOnFocusLost;
+
+  private boolean showClearButton;
+  private boolean firstShown;
   private int iconSize;
   private int iconOuterWidth;
   private int iconOuterHeight;
   private int iconPadding;
+  private boolean clearButtonTouched;
+  private boolean clearButtonClicking;
+  private ColorStateList textColorStateList;
+  private ColorStateList textColorHintStateList;
   private ArgbEvaluator focusEvaluator = new ArgbEvaluator();
   Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
   TextPaint textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
@@ -273,7 +312,8 @@ public class MaterialEditText extends EditText {
   ObjectAnimator bottomLinesAnimator;
   OnFocusChangeListener innerFocusChangeListener;
   OnFocusChangeListener outerFocusChangeListener;
-  private ArrayList<METValidator> validators = new ArrayList<>();
+  private List<METValidator> validators;
+  private METLengthChecker lengthChecker;
 
   public MaterialEditText(Context context) {
     super(context);
@@ -299,15 +339,13 @@ public class MaterialEditText extends EditText {
     bottomSpacing = getResources().getDimensionPixelSize(R.dimen.inner_components_spacing);
     bottomEllipsisSize = getResources().getDimensionPixelSize(R.dimen.bottom_ellipsis_height);
 
-    // retrieve the default baseColor
-    int defaultBaseColor;
-    TypedValue baseColorTypedValue = new TypedValue();
-    context.getTheme().resolveAttribute(android.R.attr.windowBackground, baseColorTypedValue, true);
-    defaultBaseColor = Colors.getBaseColor(baseColorTypedValue.data);
+    // default baseColor is black
+    int defaultBaseColor = Color.BLACK;
 
     TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.MaterialEditText);
-    baseColor = typedArray.getColor(R.styleable.MaterialEditText_baseColor, defaultBaseColor);
-    setBaseColor(baseColor);
+    textColorStateList = typedArray.getColorStateList(R.styleable.MaterialEditText_met_textColor);
+    textColorHintStateList = typedArray.getColorStateList(R.styleable.MaterialEditText_met_textColorHint);
+    baseColor = typedArray.getColor(R.styleable.MaterialEditText_met_baseColor, defaultBaseColor);
 
     // retrieve the default primaryColor
     int defaultPrimaryColor;
@@ -333,39 +371,46 @@ public class MaterialEditText extends EditText {
       }
     }
 
-    primaryColor = typedArray.getColor(R.styleable.MaterialEditText_primaryColor, defaultPrimaryColor);
-    setFloatingLabelInternal(typedArray.getInt(R.styleable.MaterialEditText_floatingLabel, 0));
-    errorColor = typedArray.getColor(R.styleable.MaterialEditText_errorColor, Color.parseColor("#e7492E"));
-    minCharacters = typedArray.getInt(R.styleable.MaterialEditText_minCharacters, 0);
-    maxCharacters = typedArray.getInt(R.styleable.MaterialEditText_maxCharacters, 0);
-    singleLineEllipsis = typedArray.getBoolean(R.styleable.MaterialEditText_singleLineEllipsis, false);
-    helperText = typedArray.getString(R.styleable.MaterialEditText_helperText);
-    helperTextColor = typedArray.getColor(R.styleable.MaterialEditText_helperTextColor, -1);
-    minBottomTextLines = typedArray.getInt(R.styleable.MaterialEditText_minBottomTextLines, 0);
-    String fontPathForAccent = typedArray.getString(R.styleable.MaterialEditText_accentTypeface);
+    primaryColor = typedArray.getColor(R.styleable.MaterialEditText_met_primaryColor, defaultPrimaryColor);
+    setFloatingLabelInternal(typedArray.getInt(R.styleable.MaterialEditText_met_floatingLabel, 0));
+    errorColor = typedArray.getColor(R.styleable.MaterialEditText_met_errorColor, Color.parseColor("#e7492E"));
+    minCharacters = typedArray.getInt(R.styleable.MaterialEditText_met_minCharacters, 0);
+    maxCharacters = typedArray.getInt(R.styleable.MaterialEditText_met_maxCharacters, 0);
+    singleLineEllipsis = typedArray.getBoolean(R.styleable.MaterialEditText_met_singleLineEllipsis, false);
+    helperText = typedArray.getString(R.styleable.MaterialEditText_met_helperText);
+    helperTextColor = typedArray.getColor(R.styleable.MaterialEditText_met_helperTextColor, -1);
+    minBottomTextLines = typedArray.getInt(R.styleable.MaterialEditText_met_minBottomTextLines, 0);
+    String fontPathForAccent = typedArray.getString(R.styleable.MaterialEditText_met_accentTypeface);
     if (fontPathForAccent != null && !isInEditMode()) {
       accentTypeface = getCustomTypeface(fontPathForAccent);
       textPaint.setTypeface(accentTypeface);
     }
-    String fontPathForView = typedArray.getString(R.styleable.MaterialEditText_typeface);
+    String fontPathForView = typedArray.getString(R.styleable.MaterialEditText_met_typeface);
     if (fontPathForView != null && !isInEditMode()) {
       typeface = getCustomTypeface(fontPathForView);
       setTypeface(typeface);
     }
-    floatingLabelText = typedArray.getString(R.styleable.MaterialEditText_floatingLabelText);
+    floatingLabelText = typedArray.getString(R.styleable.MaterialEditText_met_floatingLabelText);
     if (floatingLabelText == null) {
       floatingLabelText = getHint();
     }
-    floatingLabelSpacing = typedArray.getDimensionPixelSize(R.styleable.MaterialEditText_floatingLabelSpacing, bottomSpacing);
-    floatingLabelTextSize = typedArray.getDimensionPixelSize(R.styleable.MaterialEditText_floatingLabelTextSize, getResources().getDimensionPixelSize(R.dimen.floating_label_text_size));
-    bottomTextSize = typedArray.getDimensionPixelSize(R.styleable.MaterialEditText_bottomTextSize, getResources().getDimensionPixelSize(R.dimen.bottom_text_size));
-    hideUnderline = typedArray.getBoolean(R.styleable.MaterialEditText_hideUnderline, false);
-    autoValidate = typedArray.getBoolean(R.styleable.MaterialEditText_autoValidate, false);
-    iconLeftBitmaps = generateIconBitmaps(typedArray.getResourceId(R.styleable.MaterialEditText_iconLeft, -1));
-    iconRightBitmaps = generateIconBitmaps(typedArray.getResourceId(R.styleable.MaterialEditText_iconRight, -1));
-    iconPadding = typedArray.getDimensionPixelSize(R.styleable.MaterialEditText_iconPadding, getPixel(8));
-    floatingLabelAlwaysShown = typedArray.getBoolean(R.styleable.MaterialEditText_floatingLabelAlwaysShown, false);
-    helperTextAlwaysShown = typedArray.getBoolean(R.styleable.MaterialEditText_helperTextAlwaysShown, false);
+    floatingLabelPadding = typedArray.getDimensionPixelSize(R.styleable.MaterialEditText_met_floatingLabelPadding, bottomSpacing);
+    floatingLabelTextSize = typedArray.getDimensionPixelSize(R.styleable.MaterialEditText_met_floatingLabelTextSize, getResources().getDimensionPixelSize(R.dimen.floating_label_text_size));
+    floatingLabelTextColor = typedArray.getColor(R.styleable.MaterialEditText_met_floatingLabelTextColor, -1);
+    floatingLabelAnimating = typedArray.getBoolean(R.styleable.MaterialEditText_met_floatingLabelAnimating, true);
+    bottomTextSize = typedArray.getDimensionPixelSize(R.styleable.MaterialEditText_met_bottomTextSize, getResources().getDimensionPixelSize(R.dimen.bottom_text_size));
+    hideUnderline = typedArray.getBoolean(R.styleable.MaterialEditText_met_hideUnderline, false);
+    underlineColor = typedArray.getColor(R.styleable.MaterialEditText_met_underlineColor, -1);
+    autoValidate = typedArray.getBoolean(R.styleable.MaterialEditText_met_autoValidate, false);
+    iconLeftBitmaps = generateIconBitmaps(typedArray.getResourceId(R.styleable.MaterialEditText_met_iconLeft, -1));
+    iconRightBitmaps = generateIconBitmaps(typedArray.getResourceId(R.styleable.MaterialEditText_met_iconRight, -1));
+    showClearButton = typedArray.getBoolean(R.styleable.MaterialEditText_met_clearButton, false);
+    clearButtonBitmaps = generateIconBitmaps(R.drawable.met_ic_clear);
+    iconPadding = typedArray.getDimensionPixelSize(R.styleable.MaterialEditText_met_iconPadding, getPixel(16));
+    floatingLabelAlwaysShown = typedArray.getBoolean(R.styleable.MaterialEditText_met_floatingLabelAlwaysShown, false);
+    helperTextAlwaysShown = typedArray.getBoolean(R.styleable.MaterialEditText_met_helperTextAlwaysShown, false);
+    validateOnFocusLost = typedArray.getBoolean(R.styleable.MaterialEditText_met_validateOnFocusLost, false);
+    checkCharactersCountAtBeginning = typedArray.getBoolean(R.styleable.MaterialEditText_met_checkCharactersCountAtBeginning, true);
     typedArray.recycle();
 
     int[] paddings = new int[]{
@@ -405,13 +450,15 @@ public class MaterialEditText extends EditText {
     if (!TextUtils.isEmpty(getText())) {
       CharSequence text = getText();
       setText(null);
-      setHintTextColor(baseColor & 0x00ffffff | 0x44000000);
+      resetHintTextColor();
       setText(text);
+      setSelection(text.length());
       floatingLabelFraction = 1;
       floatingLabelShown = true;
     } else {
-      setHintTextColor(baseColor & 0x00ffffff | 0x44000000);
+      resetHintTextColor();
     }
+    resetTextColor();
   }
 
   private void initTextWatcher() {
@@ -446,6 +493,11 @@ public class MaterialEditText extends EditText {
     initPadding();
   }
 
+  public void setIconLeft(Drawable drawable) {
+    iconLeftBitmaps = generateIconBitmaps(drawable);
+    initPadding();
+  }
+
   public void setIconLeft(Bitmap bitmap) {
     iconLeftBitmaps = generateIconBitmaps(bitmap);
     initPadding();
@@ -456,9 +508,23 @@ public class MaterialEditText extends EditText {
     initPadding();
   }
 
+  public void setIconRight(Drawable drawable) {
+    iconRightBitmaps = generateIconBitmaps(drawable);
+    initPadding();
+  }
+
   public void setIconRight(Bitmap bitmap) {
     iconRightBitmaps = generateIconBitmaps(bitmap);
     initPadding();
+  }
+
+  public boolean isShowClearButton() {
+    return showClearButton;
+  }
+
+  public void setShowClearButton(boolean show) {
+    showClearButton = show;
+    correctPaddings();
   }
 
   private Bitmap[] generateIconBitmaps(@DrawableRes int origin) {
@@ -472,6 +538,16 @@ public class MaterialEditText extends EditText {
     options.inSampleSize = size > iconSize ? size / iconSize : 1;
     options.inJustDecodeBounds = false;
     return generateIconBitmaps(BitmapFactory.decodeResource(getResources(), origin, options));
+  }
+
+  private Bitmap[] generateIconBitmaps(Drawable drawable) {
+    if (drawable == null)
+      return null;
+    Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+    Canvas canvas = new Canvas(bitmap);
+    drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+    drawable.draw(canvas);
+    return generateIconBitmaps(Bitmap.createScaledBitmap(bitmap, iconSize, iconSize, false));
   }
 
   private Bitmap[] generateIconBitmaps(Bitmap origin) {
@@ -544,7 +620,7 @@ public class MaterialEditText extends EditText {
     initPadding();
   }
 
-  public boolean getFloatingLabelAlwaysShown() {
+  public boolean isFloatingLabelAlwaysShown() {
     return floatingLabelAlwaysShown;
   }
 
@@ -553,11 +629,11 @@ public class MaterialEditText extends EditText {
     invalidate();
   }
 
-  public boolean getHelperTextAlwaysShown() {
+  public boolean isHelperTextAlwaysShown() {
     return helperTextAlwaysShown;
   }
 
-  public void setHelperText(boolean helperTextAlwaysShown) {
+  public void setHelperTextAlwaysShown(boolean helperTextAlwaysShown) {
     this.helperTextAlwaysShown = helperTextAlwaysShown;
     invalidate();
   }
@@ -576,7 +652,7 @@ public class MaterialEditText extends EditText {
     postInvalidate();
   }
 
-  public boolean getHideUnderline() {
+  public boolean isHideUnderline() {
     return hideUnderline;
   }
 
@@ -590,6 +666,22 @@ public class MaterialEditText extends EditText {
   public void setHideUnderline(boolean hideUnderline) {
     this.hideUnderline = hideUnderline;
     initPadding();
+    postInvalidate();
+  }
+
+  /**
+   * get the color of the underline for normal state
+   */
+  public int getUnderlineColor() {
+    return underlineColor;
+  }
+
+  /**
+   * Set the color of the underline for normal state
+   * @param color
+   */
+  public void setUnderlineColor(int color) {
+    this.underlineColor = color;
     postInvalidate();
   }
 
@@ -618,6 +710,15 @@ public class MaterialEditText extends EditText {
     initPadding();
   }
 
+  public int getFloatingLabelTextColor() {
+    return floatingLabelTextColor;
+  }
+
+  public void setFloatingLabelTextColor(int color) {
+    this.floatingLabelTextColor = color;
+    postInvalidate();
+  }
+
   public int getBottomTextSize() {
     return bottomTextSize;
   }
@@ -632,13 +733,13 @@ public class MaterialEditText extends EditText {
   }
 
   private void initPadding() {
-    extraPaddingTop = floatingLabelEnabled ? floatingLabelTextSize + floatingLabelSpacing : floatingLabelSpacing;
+    extraPaddingTop = floatingLabelEnabled ? floatingLabelTextSize + floatingLabelPadding : floatingLabelPadding;
     textPaint.setTextSize(bottomTextSize);
     Paint.FontMetrics textMetrics = textPaint.getFontMetrics();
     extraPaddingBottom = (int) ((textMetrics.descent - textMetrics.ascent) * currentBottomLines) + (hideUnderline ? bottomSpacing : bottomSpacing * 2);
     extraPaddingLeft = iconLeftBitmaps == null ? 0 : (iconOuterWidth + iconPadding);
     extraPaddingRight = iconRightBitmaps == null ? 0 : (iconOuterWidth + iconPadding);
-    setPaddings(innerPaddingLeft, innerPaddingTop, innerPaddingRight, innerPaddingBottom);
+    correctPaddings();
   }
 
   /**
@@ -666,7 +767,33 @@ public class MaterialEditText extends EditText {
     innerPaddingBottom = bottom;
     innerPaddingLeft = left;
     innerPaddingRight = right;
-    super.setPadding(left + extraPaddingLeft, top + extraPaddingTop, right + extraPaddingRight, bottom + extraPaddingBottom);
+    correctPaddings();
+  }
+
+  /**
+   * Set paddings to the correct values
+   */
+  private void correctPaddings() {
+    int buttonsWidthLeft = 0, buttonsWidthRight = 0;
+    int buttonsWidth = iconOuterWidth * getButtonsCount();
+    if (isRTL()) {
+      buttonsWidthLeft = buttonsWidth;
+    } else {
+      buttonsWidthRight = buttonsWidth;
+    }
+    super.setPadding(innerPaddingLeft + extraPaddingLeft + buttonsWidthLeft, innerPaddingTop + extraPaddingTop, innerPaddingRight + extraPaddingRight + buttonsWidthRight, innerPaddingBottom + extraPaddingBottom);
+  }
+
+  private int getButtonsCount() {
+    return isShowClearButton() ? 1 : 0;
+  }
+
+  @Override
+  protected void onAttachedToWindow() {
+    super.onAttachedToWindow();
+    if (!firstShown) {
+      firstShown = true;
+    }
   }
 
   @Override
@@ -752,11 +879,7 @@ public class MaterialEditText extends EditText {
             }
           } else if (!floatingLabelShown) {
             floatingLabelShown = true;
-            if (getLabelAnimator().isStarted()) {
-              getLabelAnimator().reverse();
-            } else {
-              getLabelAnimator().start();
-            }
+            getLabelAnimator().start();
           }
         }
       }
@@ -767,36 +890,92 @@ public class MaterialEditText extends EditText {
       public void onFocusChange(View v, boolean hasFocus) {
         if (floatingLabelEnabled && highlightFloatingLabel) {
           if (hasFocus) {
-            if (getLabelFocusAnimator().isStarted()) {
-              getLabelFocusAnimator().reverse();
-            } else {
-              getLabelFocusAnimator().start();
-            }
+            getLabelFocusAnimator().start();
           } else {
             getLabelFocusAnimator().reverse();
           }
         }
-		if (outerFocusChangeListener != null) {
-			outerFocusChangeListener.onFocusChange(v, hasFocus);
-		}
-	}
+        if (validateOnFocusLost && !hasFocus) {
+          validate();
+        }
+        if (outerFocusChangeListener != null) {
+          outerFocusChangeListener.onFocusChange(v, hasFocus);
+        }
+      }
     };
     super.setOnFocusChangeListener(innerFocusChangeListener);
+  }
+
+  public boolean isValidateOnFocusLost() {
+    return validateOnFocusLost;
+  }
+
+  public void setValidateOnFocusLost(boolean validate) {
+    this.validateOnFocusLost = validate;
   }
 
   public void setBaseColor(int color) {
     if (baseColor != color) {
       baseColor = color;
     }
-    ColorStateList colorStateList = new ColorStateList(new int[][]{new int[]{android.R.attr.state_enabled}, EMPTY_STATE_SET}, new int[]{baseColor & 0x00ffffff | 0xdf000000, baseColor & 0x00ffffff | 0x44000000});
-    setTextColor(colorStateList);
-    setHintTextColor(baseColor & 0x00ffffff | 0x44000000);
+
+    initText();
+
     postInvalidate();
   }
 
   public void setPrimaryColor(int color) {
     primaryColor = color;
     postInvalidate();
+  }
+
+  /**
+   * Same function as {@link #setTextColor(int)}. (Directly overriding the built-in one could cause some error, so use this method instead.)
+   */
+  public void setMetTextColor(int color) {
+    textColorStateList = ColorStateList.valueOf(color);
+    resetTextColor();
+  }
+
+  /**
+   * Same function as {@link #setTextColor(ColorStateList)}. (Directly overriding the built-in one could cause some error, so use this method instead.)
+   */
+  public void setMetTextColor(ColorStateList colors) {
+    textColorStateList = colors;
+    resetTextColor();
+  }
+
+  private void resetTextColor() {
+    if (textColorStateList == null) {
+      textColorStateList = new ColorStateList(new int[][]{new int[]{android.R.attr.state_enabled}, EMPTY_STATE_SET}, new int[]{baseColor & 0x00ffffff | 0xdf000000, baseColor & 0x00ffffff | 0x44000000});
+      setTextColor(textColorStateList);
+    } else {
+      setTextColor(textColorStateList);
+    }
+  }
+
+  /**
+   * Same function as {@link #setHintTextColor(int)}. (The built-in one is a final method that can't be overridden, so use this method instead.)
+   */
+  public void setMetHintTextColor(int color) {
+    textColorHintStateList = ColorStateList.valueOf(color);
+    resetHintTextColor();
+  }
+
+  /**
+   * Same function as {@link #setHintTextColor(ColorStateList)}. (The built-in one is a final method that can't be overridden, so use this method instead.)
+   */
+  public void setMetHintTextColor(ColorStateList colors) {
+    textColorHintStateList = colors;
+    resetHintTextColor();
+  }
+
+  private void resetHintTextColor() {
+    if (textColorHintStateList == null) {
+      setHintTextColor(baseColor & 0x00ffffff | 0x44000000);
+    } else {
+      setHintTextColor(textColorHintStateList);
+    }
   }
 
   private void setFloatingLabelInternal(int mode) {
@@ -821,13 +1000,21 @@ public class MaterialEditText extends EditText {
     initPadding();
   }
 
-  public int getFloatingLabelSpacing() {
-    return floatingLabelSpacing;
+  public int getFloatingLabelPadding() {
+    return floatingLabelPadding;
   }
 
-  public void setFloatingLabelSpacing(int spacing) {
-    floatingLabelSpacing = spacing;
+  public void setFloatingLabelPadding(int padding) {
+    floatingLabelPadding = padding;
     postInvalidate();
+  }
+
+  public boolean isFloatingLabelAnimating() {
+    return floatingLabelAnimating;
+  }
+
+  public void setFloatingLabelAnimating(boolean animating) {
+    floatingLabelAnimating = animating;
   }
 
   public void setSingleLineEllipsis() {
@@ -858,6 +1045,17 @@ public class MaterialEditText extends EditText {
 
   public void setMinCharacters(int min) {
     minCharacters = min;
+    initMinBottomLines();
+    initPadding();
+    postInvalidate();
+  }
+
+  public int getMinBottomTextLines() {
+    return minBottomTextLines;
+  }
+
+  public void setMinBottomTextLines(int lines) {
+    minBottomTextLines = lines;
     initMinBottomLines();
     initPadding();
     postInvalidate();
@@ -978,7 +1176,7 @@ public class MaterialEditText extends EditText {
    * @return True if all validators pass, false if not
    */
   public boolean validate() {
-    if (validators == null || validators.size() == 0) {
+    if (validators == null || validators.isEmpty()) {
       return true;
     }
 
@@ -1002,8 +1200,8 @@ public class MaterialEditText extends EditText {
     return isValid;
   }
 
-  public boolean hasValidator() {
-    return this.validators.size() != 0;
+  public boolean hasValidators() {
+    return this.validators != null && !this.validators.isEmpty();
   }
 
   /**
@@ -1015,12 +1213,26 @@ public class MaterialEditText extends EditText {
    * @return This instance, for easy chaining
    */
   public MaterialEditText addValidator(METValidator validator) {
+    if (validators == null) {
+      this.validators = new ArrayList<>();
+    }
     this.validators.add(validator);
     return this;
   }
 
+  public void clearValidators() {
+    if (this.validators != null) {
+      this.validators.clear();
+    }
+  }
+
+  @Nullable
   public List<METValidator> getValidators() {
     return this.validators;
+  }
+
+  public void setLengthChecker(METLengthChecker lengthChecker) {
+    this.lengthChecker = lengthChecker;
   }
 
   @Override
@@ -1036,6 +1248,7 @@ public class MaterialEditText extends EditText {
     if (labelAnimator == null) {
       labelAnimator = ObjectAnimator.ofFloat(this, "floatingLabelFraction", 0f, 1f);
     }
+    labelAnimator.setDuration(floatingLabelAnimating ? 300 : 0);
     return labelAnimator;
   }
 
@@ -1077,6 +1290,21 @@ public class MaterialEditText extends EditText {
       canvas.drawBitmap(icon, iconRight, iconTop, paint);
     }
 
+    // draw the clear button
+    if (hasFocus() && showClearButton && !TextUtils.isEmpty(getText())) {
+      paint.setAlpha(255);
+      int buttonLeft;
+      if (isRTL()) {
+        buttonLeft = startX;
+      } else {
+        buttonLeft = endX - iconOuterWidth;
+      }
+      Bitmap clearButtonBitmap = clearButtonBitmaps[0];
+      buttonLeft += (iconOuterWidth - clearButtonBitmap.getWidth()) / 2;
+      int iconTop = lineStartY + bottomSpacing - iconOuterHeight + (iconOuterHeight - clearButtonBitmap.getHeight()) / 2;
+      canvas.drawBitmap(clearButtonBitmap, buttonLeft, iconTop, paint);
+    }
+
     // draw the underline
     if (!hideUnderline) {
       lineStartY += bottomSpacing;
@@ -1084,7 +1312,7 @@ public class MaterialEditText extends EditText {
         paint.setColor(errorColor);
         canvas.drawRect(startX, lineStartY, endX, lineStartY + getPixel(2), paint);
       } else if (!isEnabled()) { // disabled
-        paint.setColor(baseColor & 0x00ffffff | 0x44000000);
+        paint.setColor(underlineColor != -1 ? underlineColor : baseColor & 0x00ffffff | 0x44000000);
         float interval = getPixel(1);
         for (float xOffset = 0; xOffset < getWidth(); xOffset += interval * 3) {
           canvas.drawRect(startX + xOffset, lineStartY, startX + xOffset + interval, lineStartY + getPixel(1), paint);
@@ -1093,7 +1321,7 @@ public class MaterialEditText extends EditText {
         paint.setColor(primaryColor);
         canvas.drawRect(startX, lineStartY, endX, lineStartY + getPixel(2), paint);
       } else { // normal
-        paint.setColor(baseColor & 0x00ffffff | 0x1E000000);
+        paint.setColor(underlineColor != -1 ? underlineColor : baseColor & 0x00ffffff | 0x1E000000);
         canvas.drawRect(startX, lineStartY, endX, lineStartY + getPixel(1), paint);
       }
     }
@@ -1104,26 +1332,22 @@ public class MaterialEditText extends EditText {
     float bottomTextPadding = bottomTextSize + textMetrics.ascent + textMetrics.descent;
 
     // draw the characters counter
-    if ((hasFocus() && hasCharatersCounter()) || !isCharactersCountValid()) {
-      textPaint.setColor(isCharactersCountValid() ? getCurrentHintTextColor() : errorColor);
-      String text;
-      if (minCharacters <= 0) {
-        text = isRTL() ? maxCharacters + " / " + getText().length() : getText().length() + " / " + maxCharacters;
-      } else if (maxCharacters <= 0) {
-        text = isRTL() ? "+" + minCharacters + " / " + getText().length() : getText().length() + " / " + minCharacters + "+";
-      } else {
-        text = isRTL() ? maxCharacters + "-" + minCharacters + " / " + getText().length() : getText().length() + " / " + minCharacters + "-" + maxCharacters;
-      }
-
-      canvas.drawText(text, isRTL() ? startX : endX - textPaint.measureText(text), lineStartY + bottomSpacing + relativeHeight, textPaint);
+    if ((hasFocus() && hasCharactersCounter()) || !isCharactersCountValid()) {
+      textPaint.setColor(isCharactersCountValid() ? (baseColor & 0x00ffffff | 0x44000000) : errorColor);
+      String charactersCounterText = getCharactersCounterText();
+      canvas.drawText(charactersCounterText, isRTL() ? startX : endX - textPaint.measureText(charactersCounterText), lineStartY + bottomSpacing + relativeHeight, textPaint);
     }
 
     // draw the bottom text
     if (textLayout != null) {
       if (tempErrorText != null || ((helperTextAlwaysShown || hasFocus()) && !TextUtils.isEmpty(helperText))) { // error text or helper text
-        textPaint.setColor(tempErrorText != null ? errorColor : helperTextColor != -1 ? helperTextColor : getCurrentHintTextColor());
+        textPaint.setColor(tempErrorText != null ? errorColor : helperTextColor != -1 ? helperTextColor : (baseColor & 0x00ffffff | 0x44000000));
         canvas.save();
-        canvas.translate(startX + getBottomTextLeftOffset(), lineStartY + bottomSpacing - bottomTextPadding);
+        if (isRTL()) {
+          canvas.translate(endX - textLayout.getWidth(), lineStartY + bottomSpacing - bottomTextPadding);
+        } else {
+          canvas.translate(startX + getBottomTextLeftOffset(), lineStartY + bottomSpacing - bottomTextPadding);
+        }
         textLayout.draw(canvas);
         canvas.restore();
       }
@@ -1133,7 +1357,7 @@ public class MaterialEditText extends EditText {
     if (floatingLabelEnabled && !TextUtils.isEmpty(floatingLabelText)) {
       textPaint.setTextSize(floatingLabelTextSize);
       // calculate the text color
-      textPaint.setColor((Integer) focusEvaluator.evaluate(focusFraction, getCurrentHintTextColor(), primaryColor));
+      textPaint.setColor((Integer) focusEvaluator.evaluate(focusFraction, floatingLabelTextColor != -1 ? floatingLabelTextColor : (baseColor & 0x00ffffff | 0x44000000), primaryColor));
 
       // calculate the horizontal position
       float floatingLabelWidth = textPaint.measureText(floatingLabelText.toString());
@@ -1147,21 +1371,20 @@ public class MaterialEditText extends EditText {
       }
 
       // calculate the vertical position
-      int floatingLabelStartY = innerPaddingTop + floatingLabelTextSize + floatingLabelSpacing;
-      int distance = floatingLabelSpacing;
-      int position = (int) (floatingLabelStartY - distance * (floatingLabelAlwaysShown ? 1 : floatingLabelFraction));
+      int distance = floatingLabelPadding;
+      int floatingLabelStartY = (int) (innerPaddingTop + floatingLabelTextSize + floatingLabelPadding - distance * (floatingLabelAlwaysShown ? 1 : floatingLabelFraction) + getScrollY());
 
       // calculate the alpha
-      int alpha = (int) ((floatingLabelAlwaysShown ? 1 : floatingLabelFraction) * 0xff * (0.74f * focusFraction + 0.26f));
+      int alpha = ((int) ((floatingLabelAlwaysShown ? 1 : floatingLabelFraction) * 0xff * (0.74f * focusFraction + 0.26f) * (floatingLabelTextColor != -1 ? 1 : Color.alpha(floatingLabelTextColor) / 256f)));
       textPaint.setAlpha(alpha);
 
       // draw the floating label
-      canvas.drawText(floatingLabelText.toString(), floatingLabelStartX, position, textPaint);
+      canvas.drawText(floatingLabelText.toString(), floatingLabelStartX, floatingLabelStartY, textPaint);
     }
 
     // draw the bottom ellipsis
     if (hasFocus() && singleLineEllipsis && getScrollX() != 0) {
-      paint.setColor(primaryColor);
+      paint.setColor(isInternalValid() ? primaryColor : errorColor);
       float startY = lineStartY + bottomSpacing;
       int ellipsisStartX;
       if (isRTL()) {
@@ -1181,7 +1404,11 @@ public class MaterialEditText extends EditText {
 
   @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
   private boolean isRTL() {
-    return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) && getTextDirection() == TEXT_DIRECTION_RTL;
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
+      return false;
+    }
+    Configuration config = getResources().getConfiguration();
+    return config.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
   }
 
   private int getBottomTextLeftOffset() {
@@ -1193,23 +1420,41 @@ public class MaterialEditText extends EditText {
   }
 
   private int getCharactersCounterWidth() {
-    return hasCharatersCounter() ? (int) textPaint.measureText("00/000") : 0;
+    return hasCharactersCounter() ? (int) textPaint.measureText(getCharactersCounterText()) : 0;
   }
 
   private int getBottomEllipsisWidth() {
     return singleLineEllipsis ? (bottomEllipsisSize * 5 + getPixel(4)) : 0;
   }
 
-  public void checkCharactersCount() {
-    charactersCountValid = !hasCharatersCounter() || getText() == null || getText().length() == 0 || (getText().length() >= minCharacters && (maxCharacters <= 0 || getText().length() <= maxCharacters));
+  private void checkCharactersCount() {
+    if ((!firstShown && !checkCharactersCountAtBeginning) || !hasCharactersCounter()) {
+      charactersCountValid = true;
+    } else {
+      CharSequence text = getText();
+      int count = text == null ? 0 : checkLength(text);
+      charactersCountValid = (count >= minCharacters && (maxCharacters <= 0 || count <= maxCharacters));
+    }
   }
 
   public boolean isCharactersCountValid() {
     return charactersCountValid;
   }
 
-  private boolean hasCharatersCounter() {
+  private boolean hasCharactersCounter() {
     return minCharacters > 0 || maxCharacters > 0;
+  }
+
+  private String getCharactersCounterText() {
+    String text;
+    if (minCharacters <= 0) {
+      text = isRTL() ? maxCharacters + " / " + checkLength(getText()) : checkLength(getText()) + " / " + maxCharacters;
+    } else if (maxCharacters <= 0) {
+      text = isRTL() ? "+" + minCharacters + " / " + checkLength(getText()) : checkLength(getText()) + " / " + minCharacters + "+";
+    } else {
+      text = isRTL() ? maxCharacters + "-" + minCharacters + " / " + checkLength(getText()) : checkLength(getText()) + " / " + minCharacters + "-" + maxCharacters;
+    }
+    return text;
   }
 
   @Override
@@ -1218,6 +1463,61 @@ public class MaterialEditText extends EditText {
       setSelection(0);
       return false;
     }
+    if (hasFocus() && showClearButton) {
+      switch (event.getAction()) {
+        case MotionEvent.ACTION_DOWN:
+          if (insideClearButton(event)) {
+            clearButtonTouched = true;
+            clearButtonClicking = true;
+            return true;
+          }
+        case MotionEvent.ACTION_MOVE:
+          if (clearButtonClicking && !insideClearButton(event)) {
+            clearButtonClicking = false;
+          }
+          if (clearButtonTouched) {
+            return true;
+          }
+          break;
+        case MotionEvent.ACTION_UP:
+          if (clearButtonClicking) {
+            if (!TextUtils.isEmpty(getText())) {
+              setText(null);
+            }
+            clearButtonClicking = false;
+          }
+          if (clearButtonTouched) {
+            clearButtonTouched = false;
+            return true;
+          }
+          clearButtonTouched = false;
+          break;
+        case MotionEvent.ACTION_CANCEL:
+          clearButtonTouched = false;
+          clearButtonClicking = false;
+          break;
+      }
+    }
     return super.onTouchEvent(event);
+  }
+
+  private boolean insideClearButton(MotionEvent event) {
+    float x = event.getX();
+    float y = event.getY();
+    int startX = getScrollX() + (iconLeftBitmaps == null ? 0 : (iconOuterWidth + iconPadding));
+    int endX = getScrollX() + (iconRightBitmaps == null ? getWidth() : getWidth() - iconOuterWidth - iconPadding);
+    int buttonLeft;
+    if (isRTL()) {
+      buttonLeft = startX;
+    } else {
+      buttonLeft = endX - iconOuterWidth;
+    }
+    int buttonTop = getScrollY() + getHeight() - getPaddingBottom() + bottomSpacing - iconOuterHeight;
+    return (x >= buttonLeft && x < buttonLeft + iconOuterWidth && y >= buttonTop && y < buttonTop + iconOuterHeight);
+  }
+
+  private int checkLength(CharSequence text) {
+    if (lengthChecker==null) return text.length();
+    return lengthChecker.getLength(text);
   }
 }

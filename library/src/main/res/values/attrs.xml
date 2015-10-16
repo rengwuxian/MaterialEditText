@@ -2,54 +2,71 @@
 <resources>
   <declare-styleable name="MaterialEditText">
     <!-- The base color of the line and the texts. Default is black. -->
-    <attr name="baseColor" format="color" />
+    <attr name="met_baseColor" format="color" />
     <!-- The highlight color of the line, and the floating label if the highlightFloatingLabel is true. -->
-    <attr name="primaryColor" format="color" />
+    <attr name="met_primaryColor" format="color" />
     <!-- How the floating label should be shown. Default is none -->
-    <attr name="floatingLabel">
+    <attr name="met_floatingLabel">
       <enum name="none" value="0" />
       <enum name="normal" value="1" />
       <enum name="highlight" value="2" />
     </attr>
     <!-- The color for when something is wrong.(e.g. exceeding max characters) -->
-    <attr name="errorColor" format="color" />
+    <attr name="met_errorColor" format="color" />
     <!-- Min characters count limit. 0 means no limit. -->
-    <attr name="minCharacters" format="integer" />
+    <attr name="met_minCharacters" format="integer" />
     <!-- max Characters count limit. 0 means no limit. -->
-    <attr name="maxCharacters" format="integer" />
+    <attr name="met_maxCharacters" format="integer" />
     <!-- Whether to show the bottom ellipsis in singleLine mode -->
-    <attr name="singleLineEllipsis" format="boolean" />
+    <attr name="met_singleLineEllipsis" format="boolean" />
     <!-- Reserved bottom text lines count, no matter if there is some helper/error text. -->
-    <attr name="minBottomTextLines" format="integer" />
+    <attr name="met_minBottomTextLines" format="integer" />
     <!-- Helper text at the bottom -->
-    <attr name="helperText" format="string" />
+    <attr name="met_helperText" format="string" />
     <!-- Helper text color -->
-    <attr name="helperTextColor" format="color" />
+    <attr name="met_helperTextColor" format="color" />
     <!-- Font of the paint used to draw accent texts -->
-    <attr name="accentTypeface" format="string" />
+    <attr name="met_accentTypeface" format="string" />
     <!-- Font used on view -->
-    <attr name="typeface" format="string" />
+    <attr name="met_typeface" format="string" />
     <!-- Custom float label text -->
-    <attr name="floatingLabelText" format="string" />
+    <attr name="met_floatingLabelText" format="string" />
     <!-- spacing between the main text and the floating label -->
-    <attr name="floatingLabelSpacing" format="dimension" />
+    <attr name="met_floatingLabelPadding" format="dimension" />
     <!-- Hide underline -->
-    <attr name="hideUnderline" format="boolean" />
+    <attr name="met_hideUnderline" format="boolean" />
+    <!-- Underline's color -->
+    <attr name="met_underlineColor" format="color" />
     <!-- Auto validate -->
-    <attr name="autoValidate" format="boolean" />
+    <attr name="met_autoValidate" format="boolean" />
     <!-- Left icon -->
-    <attr name="iconLeft" format="reference" />
+    <attr name="met_iconLeft" format="reference" />
     <!-- Right icon -->
-    <attr name="iconRight" format="reference" />
+    <attr name="met_iconRight" format="reference" />
     <!-- Padding between icon(s) and the main area. 8dp by default. -->
-    <attr name="iconPadding" format="dimension" />
+    <attr name="met_iconPadding" format="dimension" />
+    <!-- Clear button -->
+    <attr name="met_clearButton" format="boolean" />
     <!-- The floating label's text size. 12sp by default. -->
-    <attr name="floatingLabelTextSize" format="dimension" />
+    <attr name="met_floatingLabelTextSize" format="dimension" />
+    <!-- The floating label's text color. -1 by default. -->
+    <attr name="met_floatingLabelTextColor" format="color" />
     <!-- The bottom texts' size. 12sp by default. -->
-    <attr name="bottomTextSize" format="dimension" />
-    <!-- Always show the floating label, instead of animating it in/out. -->
-    <attr name="floatingLabelAlwaysShown" format="boolean" />
-    <!-- Always show the helper text, no matter if the edit text is focused. -->
-    <attr name="helperTextAlwaysShown" format="boolean" />
+    <attr name="met_bottomTextSize" format="dimension" />
+    <!-- Always show the floating label, instead of animating it in/out. False by default. -->
+    <attr name="met_floatingLabelAlwaysShown" format="boolean" />
+    <!-- Always show the helper text, no matter if the edit text is focused. False by default. -->
+    <attr name="met_helperTextAlwaysShown" format="boolean" />
+    <!-- Whether use animation to show/hide the floating label. True by default. -->
+    <attr name="met_floatingLabelAnimating" format="boolean"/>
+    <!-- Text color -->
+    <attr name="met_textColor" format="color" />
+    <!-- Hint Text Color -->
+    <attr name="met_textColorHint" format="color" />
+    <!-- Auto validate on focus lost. False by default. -->
+    <attr name="met_validateOnFocusLost" format="boolean"/>
+    <!-- Whether check the characters count at the beginning it's shown. True by default. -->
+    <attr name="met_checkCharactersCountAtBeginning" format="boolean"/>
+
   </declare-styleable>
 </resources>

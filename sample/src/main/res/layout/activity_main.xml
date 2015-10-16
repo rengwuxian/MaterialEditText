@@ -28,11 +28,11 @@
         android:text="MaterialEditText"
         android:textCursorDrawable="@drawable/text_cursor_cyan"
         android:textSize="34sp"
-        app:baseColor="@android:color/white"
-        app:floatingLabel="highlight"
-        app:maxCharacters="20"
-        app:primaryColor="?colorAccent"
-        app:singleLineEllipsis="true" />
+        app:met_baseColor="@android:color/white"
+        app:met_floatingLabel="highlight"
+        app:met_maxCharacters="20"
+        app:met_primaryColor="?colorAccent"
+        app:met_singleLineEllipsis="true" />
 
       <com.rengwuxian.materialedittext.MaterialEditText
         android:layout_width="match_parent"
@@ -40,10 +40,10 @@
         android:hint="Description"
         android:text="EditText in Material Design"
         android:textCursorDrawable="@drawable/text_cursor_cyan"
-        app:baseColor="@android:color/white"
-        app:floatingLabel="highlight"
-        app:maxCharacters="20"
-        app:primaryColor="?colorAccent" />
+        app:met_baseColor="@android:color/white"
+        app:met_floatingLabel="highlight"
+        app:met_maxCharacters="20"
+        app:met_primaryColor="?colorAccent" />
 
     </LinearLayout>
 
@@ -73,7 +73,8 @@
           android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:layout_weight="1"
-          android:hint="Basic" />
+          android:hint="Basic"
+          android:textColor="@color/text_color"/>
 
         <Button
           android:id="@+id/enableBt"
@@ -95,7 +96,7 @@
       <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="app:floatingLabel=&quot;normal&quot;"
+        android:text="app:met_floatingLabel=&quot;normal&quot;"
         android:textColor="#888888"
         android:textSize="14sp" />
 
@@ -103,7 +104,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Floating Label"
-        app:floatingLabel="normal" />
+        app:met_floatingLabel="normal" />
 
       <TextView
         android:layout_width="match_parent"
@@ -116,7 +117,7 @@
       <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="app:floatingLabel=&quot;highlight&quot;"
+        android:text="app:met_floatingLabel=&quot;highlight&quot;"
         android:textColor="#888888"
         android:textSize="14sp" />
 
@@ -124,7 +125,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Highlight Floating Label"
-        app:floatingLabel="highlight" />
+        app:met_floatingLabel="highlight"/>
 
       <TextView
         android:layout_width="match_parent"
@@ -137,7 +138,7 @@
       <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="app:floatingLabel=&quot;normal&quot;\napp:floatingLabelText=&quot;Label&quot;"
+        android:text="app:met_floatingLabel=&quot;normal&quot;\napp:met_floatingLabelText=&quot;Label&quot;"
         android:textColor="#888888"
         android:textSize="14sp" />
 
@@ -145,8 +146,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Custom Floating Label Text"
-        app:floatingLabel="normal"
-        app:floatingLabelText="Label" />
+        app:met_floatingLabel="normal"
+        app:met_floatingLabelText="Label" />
 
       <TextView
         android:layout_width="match_parent"
@@ -159,7 +160,7 @@
       <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="app:singleLineEllipsis=&quot;true&quot;\n#singLineEllipsis will force android:singleLine to true#"
+        android:text="app:met_singleLineEllipsis=&quot;true&quot;\n#singLineEllipsis will force android:singleLine to true#"
         android:textColor="#888888"
         android:textSize="14sp" />
 
@@ -169,7 +170,7 @@
         android:layout_height="wrap_content"
         android:hint="Single Line Ellipsis"
         android:text="Touch The Ellipsis And See What Happens. Touch The Ellipsis And See What Happens."
-        app:singleLineEllipsis="true" />
+        app:met_singleLineEllipsis="true" />
 
       <TextView
         android:layout_width="match_parent"
@@ -182,7 +183,7 @@
       <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="app:maxCharacters=&quot;5&quot;"
+        android:text="app:met_maxCharacters=&quot;5&quot;"
         android:textColor="#888888"
         android:textSize="14sp" />
 
@@ -190,12 +191,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Max Characters"
-        app:maxCharacters="5" />
+        app:met_maxCharacters="5" />
 
       <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="app:minCharacters=&quot;3&quot;"
+        android:text="app:met_minCharacters=&quot;3&quot;"
         android:textColor="#888888"
         android:textSize="14sp" />
 
@@ -203,12 +204,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Min Characters"
-        app:minCharacters="3" />
+        app:met_minCharacters="3" />
 
       <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="app:minCharacters=&quot;3&quot;\napp:maxCharacters=&quot;5&quot;"
+        android:text="app:met_minCharacters=&quot;3&quot;\napp:met_maxCharacters=&quot;5&quot;"
         android:textColor="#888888"
         android:textSize="14sp" />
 
@@ -216,8 +217,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Min and Max"
-        app:maxCharacters="5"
-        app:minCharacters="3" />
+        app:met_maxCharacters="5"
+        app:met_minCharacters="3" />
 
       <TextView
         android:layout_width="match_parent"
@@ -230,7 +231,7 @@
       <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="app:helperText=&quot;helper is here&quot; (in xml)\nsetError(&quot;Error!&quot;) (in java)"
+        android:text="app:met_helperText=&quot;helper is here&quot; (in xml)\nsetError(&quot;Error!&quot;) (in java)"
         android:textColor="#888888"
         android:textSize="14sp" />
 
@@ -245,7 +246,7 @@
           android:layout_height="wrap_content"
           android:layout_weight="1"
           android:hint="Helper/Error Text"
-          app:helperText="helper is here" />
+          app:met_helperText="helper is here" />
 
         <Button
           android:id="@+id/setErrorBt"
@@ -274,153 +275,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Helper/Error Text with Min Lines Count:"
-        android:textColor="#333333"
-        android:textSize="14sp" />
-
-      <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="app:helperText=&quot;helper is here&quot;\napp:minBottomTextLines=&quot;2&quot; (in xml)\nsetError(&quot;Error!&quot;) (in java)"
-        android:textColor="#888888"
-        android:textSize="14sp" />
-
-      <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical">
-
-        <com.rengwuxian.materialedittext.MaterialEditText
-          android:id="@+id/bottomTextWithMinLinesEt"
-          android:layout_width="0dp"
-          android:layout_height="wrap_content"
-          android:layout_weight="1"
-          android:hint="Helper/Error Text"
-          app:helperText="helper is here"
-          app:minBottomTextLines="2" />
-
-        <Button
-          android:id="@+id/setErrorWithMinLinesBt"
-          android:layout_width="48dp"
-          android:layout_height="wrap_content"
-          android:layout_marginLeft="8dp"
-          android:text="1" />
-
-        <Button
-          android:id="@+id/setErrorWithMinLines2Bt"
-          android:layout_width="48dp"
-          android:layout_height="wrap_content"
-          android:layout_marginLeft="8dp"
-          android:text="2" />
-
-        <Button
-          android:id="@+id/setErrorWithMinLines3Bt"
-          android:layout_width="48dp"
-          android:layout_height="wrap_content"
-          android:layout_marginLeft="8dp"
-          android:text="3" />
-
-      </LinearLayout>
-
-      <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Custom Base/Primary/Error/HelperText Color:"
-        android:textColor="#333333"
-        android:textSize="14sp" />
-
-      <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="app:baseColor=&quot;#009688&quot;\napp:primaryColor=&quot;#2196F3&quot;\napp:errorColor=&quot;#ddaa00&quot;\napp:helperTextColor=&quot;#795548&quot;"
-        android:textColor="#888888"
-        android:textSize="14sp" />
-
-      <com.rengwuxian.materialedittext.MaterialEditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Custom Colors"
-        app:baseColor="#009688"
-        app:errorColor="#ddaa00"
-        app:floatingLabel="highlight"
-        app:helperText="Helper Text"
-        app:helperTextColor="#795548"
-        app:maxCharacters="5"
-        app:primaryColor="#2196F3" />
-
-      <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Custom Accent Typeface:"
-        android:textColor="#333333"
-        android:textSize="14sp" />
-
-      <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="app:floatingLabel=&quot;normal&quot;\napp:helperText=&quot;Helper Text&quot;\napp:maxCharacters=&quot;5&quot;\napp:accentTypeface=&quot;fonts/Roboto-LightItalic.ttf&quot;"
-        android:textColor="#888888"
-        android:textSize="14sp" />
-
-      <com.rengwuxian.materialedittext.MaterialEditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Custom Accent Typeface"
-        app:accentTypeface="fonts/Roboto-LightItalic.ttf"
-        app:floatingLabel="normal"
-        app:helperText="Helper Text"
-        app:maxCharacters="5" />
-
-      <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Hide underline"
-        android:textColor="#333333"
-        android:textSize="14sp" />
-
-      <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="app:hideUnderline=&quot;true&quot;"
-        android:textColor="#888888"
-        android:textSize="14sp" />
-
-      <com.rengwuxian.materialedittext.MaterialEditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Hidden underline"
-        app:hideUnderline="true" />
-
-      <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Material Design Icon"
-        android:textColor="#333333"
-        android:textSize="14sp" />
-
-      <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="app:iconLeft=&quot;@drawable/ic_phone&quot;\napp:iconPadding=&quot;0dp&quot; (Note: 8dp by default, not 0)"
-        android:textColor="#888888"
-        android:textSize="14sp" />
-
-      <com.rengwuxian.materialedittext.MaterialEditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Material Design Icon"
-        app:iconLeft="@drawable/ic_phone"
-        app:iconPadding="0dp"
-        app:maxCharacters="5" />
-
-      <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:text="Validation:"
         android:textColor="#333333"
         android:textSize="14sp" />
@@ -428,7 +282,7 @@
       <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="app:helperText=&quot;Integer&quot; (in xml)\naddValidator(new RegexValidator(&quot;Only Integer Valid!&quot;, &quot;\\\\d+&quot;)); (in java)"
+        android:text="addValidator(new RegexValidator(&quot;Only Integer Valid!&quot;, &quot;\\\\d+&quot;)); (in java)"
         android:textColor="#888888"
         android:textSize="14sp" />
 
@@ -443,16 +297,137 @@
           android:layout_height="wrap_content"
           android:layout_weight="1"
           android:hint="Validation"
-          app:helperText="Integer" />
+          app:met_helperText="Integer" />
 
         <Button
           android:id="@+id/validateBt"
-          android:layout_width="100dp"
+          android:layout_width="120dp"
           android:layout_height="wrap_content"
           android:layout_marginLeft="8dp"
           android:text="VALIDATE" />
 
       </LinearLayout>
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Custom Colors:"
+        android:textColor="#333333"
+        android:textSize="14sp" />
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="app:met_baseColor=&quot;#007688&quot;\napp:met_primaryColor=&quot;#2196F3&quot;\napp:met_textColor=&quot;@color/text_color&quot;\napp:met_textColorHint=&quot;#33ff0000&quot;\napp:met_errorColor=&quot;#ddaa00&quot;\napp:met_helperTextColor=&quot;#795548&quot;\napp:met_underlineColor=&quot;#003587&quot;\napp:met_floatingLabelTextColor=&quot;#8805ad&quot;"
+        android:textColor="#888888"
+        android:textSize="14sp" />
+
+      <com.rengwuxian.materialedittext.MaterialEditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Custom Colors"
+        app:met_floatingLabel="normal"
+        app:met_helperText="Helper Text"
+        app:met_maxCharacters="5"
+        app:met_baseColor="#007688"
+        app:met_primaryColor="#2196F3"
+        app:met_textColor="@color/text_color"
+        app:met_textColorHint="#33ff0000"
+        app:met_errorColor="#ddaa00"
+        app:met_helperTextColor="#795548"
+        app:met_underlineColor="#003587"
+        app:met_floatingLabelTextColor="#8805ad"/>
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Custom Typeface:"
+        android:textColor="#333333"
+        android:textSize="14sp" />
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="app:met_typeface=&quot;fonts/Roboto-LightItalic.ttf&quot;\napp:met_accentTypeface=&quot;fonts/Roboto-LightItalic.ttf&quot;"
+        android:textColor="#888888"
+        android:textSize="14sp" />
+
+      <com.rengwuxian.materialedittext.MaterialEditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Custom Accent Typeface"
+        app:met_typeface="fonts/Roboto-LightItalic.ttf"
+        app:met_accentTypeface="fonts/Roboto-LightItalic.ttf"
+        app:met_floatingLabel="normal"
+        app:met_helperText="Helper Text"
+        app:met_maxCharacters="5" />
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Hide underline"
+        android:textColor="#333333"
+        android:textSize="14sp" />
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="app:met_hideUnderline=&quot;true&quot;"
+        android:textColor="#888888"
+        android:textSize="14sp" />
+
+      <com.rengwuxian.materialedittext.MaterialEditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Hidden underline"
+        app:met_hideUnderline="true" />
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Clear Button"
+        android:textColor="#333333"
+        android:textSize="14sp" />
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="app:met_clearButton=&quot;true&quot;"
+        android:textColor="#888888"
+        android:textSize="14sp" />
+
+      <com.rengwuxian.materialedittext.MaterialEditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Clear Button"
+        app:met_clearButton="true" />
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Material Design Icon"
+        android:textColor="#333333"
+        android:textSize="14sp" />
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="app:met_iconLeft=&quot;@drawable/ic_phone&quot;\napp:met_iconPadding=&quot;0dp&quot; (Note: 16dp by default, not 0)"
+        android:textColor="#888888"
+        android:textSize="14sp" />
+
+      <com.rengwuxian.materialedittext.MaterialEditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Material Design Icon"
+        app:met_iconLeft="@drawable/ic_phone"
+        app:met_iconPadding="0dp"
+        app:met_maxCharacters="5" />
 
     </LinearLayout>
   </LinearLayout>

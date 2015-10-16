@@ -2,6 +2,8 @@ MaterialEditText
 ================
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-MaterialEditText-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/1085)
 
+> ## NOTE: 2.0 is NOT BACKWARDS COMPATIBLE! See more on [wiki](https://github.com/rengwuxian/MaterialEditText/wiki) or [中文看这里](http://www.rengwuxian.com/post/materialedittext)
+
 
 ![MaterialEditText](./images/material_edittext.png)
 
@@ -62,17 +64,17 @@ AppCompat v21 makes it easy to use Material Design EditText in our apps, but it'
 
 ## Sample
 
-[MaterialEditText-1.8.2-sample.apk](https://github.com/rengwuxian/MaterialEditText/releases/download/1.8.2/MaterialEditText-1.8.2-sample.apk)
+[MaterialEditText-2.1.4-sample.apk](https://github.com/rengwuxian/MaterialEditText/releases/download/2.1.4/MaterialEditText-2.1.4-sample.apk)
   
 ## Download
 
 Eclipse:
-[MaterialEditText-1.8.2.aar](https://github.com/rengwuxian/MaterialEditText/releases/download/1.8.2/MaterialEditText-1.8.2.aar)
+[MaterialEditText-2.1.4.aar](https://github.com/rengwuxian/MaterialEditText/releases/download/2.1.4/MaterialEditText-2.1.4.aar)
 
 gradle:
 
 ```groovy
-compile 'com.rengwuxian.materialedittext:library:1.8.2'
+compile 'com.rengwuxian.materialedittext:library:2.1.4'
 ```
 
 Maven:
@@ -80,14 +82,14 @@ Maven:
 <dependency>
   <groupId>com.rengwuxian.materialedittext</groupId>
   <artifactId>library</artifactId>
-  <version>1.8.2</version>
+  <version>2.1.4</version>
   <type>aar</type>
 </dependency>
 ```
 
 ## Usage
 
-See on [Wiki Page](https://github.com/rengwuxian/MaterialEditText/wiki) or [中文看这里](http://www.rengwuxian.com/post/MaterialEditText)
+See on [Wiki Page](https://github.com/rengwuxian/MaterialEditText/wiki) or [中文看这里](http://www.rengwuxian.com/post/materialedittext)
 
 ## Thanks to
 
