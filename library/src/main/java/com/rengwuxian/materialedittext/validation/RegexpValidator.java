@@ -16,6 +16,11 @@ public class RegexpValidator extends METValidator {
     pattern = Pattern.compile(regex);
   }
 
+  public RegexpValidator(@NonNull String errorMessage, @NonNull Pattern pattern) {
+    super(errorMessage);
+    this.pattern = pattern;
+  }
+
   @Override
   public boolean isValid(@NonNull CharSequence text, boolean isEmpty) {
     return pattern.matcher(text).matches();
