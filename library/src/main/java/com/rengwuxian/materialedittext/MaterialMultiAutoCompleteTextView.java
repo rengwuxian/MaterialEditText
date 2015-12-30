@@ -1288,7 +1288,7 @@ public class MaterialMultiAutoCompleteTextView extends AppCompatMultiAutoComplet
     }
 
     // draw the clear button
-    if (hasFocus() && showClearButton && !TextUtils.isEmpty(getText())) {
+    if (hasFocus() && showClearButton && !TextUtils.isEmpty(getText()) && isEnabled()) {
       paint.setAlpha(255);
       int buttonLeft;
       if (isRTL()) {
@@ -1460,7 +1460,7 @@ public class MaterialMultiAutoCompleteTextView extends AppCompatMultiAutoComplet
       setSelection(0);
       return false;
     }
-    if (hasFocus() && showClearButton) {
+    if (hasFocus() && showClearButton && isEnabled()) {
       switch (event.getAction()) {
         case MotionEvent.ACTION_DOWN:
           if (insideClearButton(event)) {
