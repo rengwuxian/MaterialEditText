@@ -332,6 +332,10 @@ public class MaterialEditText extends AppCompatEditText {
   }
 
   private void init(Context context, AttributeSet attrs) {
+    if (isInEditMode()) {
+        return;
+    }
+
     iconSize = getPixel(32);
     iconOuterWidth = getPixel(48);
     iconOuterHeight = getPixel(32);
