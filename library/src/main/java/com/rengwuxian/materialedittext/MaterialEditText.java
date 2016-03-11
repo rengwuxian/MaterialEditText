@@ -154,11 +154,6 @@ public class MaterialEditText extends AppCompatEditText {
   private int disabledUnderlineColor;
 
   /**
-   * The floating label's color fades. Defaults to true.  If false, then the full floating label color is used.
-   */
-  private boolean floatingLabelColorFades;
-
-  /**
    * min characters count limit. 0 means no limit. default is 0. NOTE: the character counter will increase the View's height.
    */
   private int minCharacters;
@@ -393,7 +388,6 @@ public class MaterialEditText extends AppCompatEditText {
     minCharacters = typedArray.getInt(R.styleable.MaterialEditText_met_minCharacters, 0);
     maxCharacters = typedArray.getInt(R.styleable.MaterialEditText_met_maxCharacters, 0);
     dottedBottomLinesForDisabledState = typedArray.getBoolean(R.styleable.MaterialEditText_met_disabledBottomLineDotted, true);
-    floatingLabelColorFades = typedArray.getBoolean(R.styleable.MaterialEditText_met_enabledFloatLabelColorShouldFade, true);
     singleLineEllipsis = typedArray.getBoolean(R.styleable.MaterialEditText_met_singleLineEllipsis, false);
     helperText = typedArray.getString(R.styleable.MaterialEditText_met_helperText);
     helperTextColor = typedArray.getColor(R.styleable.MaterialEditText_met_helperTextColor, -1);
@@ -1403,10 +1397,8 @@ public class MaterialEditText extends AppCompatEditText {
       int floatingLabelStartY = (int) (innerPaddingTop + floatingLabelTextSize + floatingLabelPadding - distance * (floatingLabelAlwaysShown ? 1 : floatingLabelFraction) + getScrollY());
 
       // calculate the alpha
-      if (floatingLabelColorFades){
-        int alpha = ((int) ((floatingLabelAlwaysShown ? 1 : floatingLabelFraction) * 0xff * (0.74f * focusFraction * (isEnabled() ? 1 : 0) + 0.26f) * (floatingLabelTextColor != -1 ? 1 : Color.alpha(floatingLabelTextColor) / 256f)));
-        textPaint.setAlpha(alpha);
-      }
+      int alpha = ((int) ((floatingLabelAlwaysShown ? 1 : floatingLabelFraction) * 0xff * (0.74f * focusFraction * (isEnabled() ? 1 : 0) + 0.26f) * (floatingLabelTextColor != -1 ? 1 : Color.alpha(floatingLabelTextColor) / 256f)));
+      textPaint.setAlpha(alpha);
 
       // draw the floating label
       canvas.drawText(floatingLabelText.toString(), floatingLabelStartX, floatingLabelStartY, textPaint);
