@@ -107,6 +107,20 @@
         app:met_floatingLabel="normal" />
 
       <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="app:met_floatingLabel=&quot;normal&quot; and app:met_floatingLabelOnFocus=&quot;true&quot;"
+          android:textColor="#888888"
+          android:textSize="14sp" />
+
+      <com.rengwuxian.materialedittext.MaterialEditText
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:hint="Floating Label"
+          app:met_floatingLabel="normal"
+          app:met_floatingLabelOnFocus="true"/>
+
+      <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -126,6 +140,20 @@
         android:layout_height="wrap_content"
         android:hint="Highlight Floating Label"
         app:met_floatingLabel="highlight"/>
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="app:met_floatingLabel=&quot;highlight&quot; and app:met_floatingLabelOnFocus=&quot;true&quot;"
+          android:textColor="#888888"
+          android:textSize="14sp" />
+
+      <com.rengwuxian.materialedittext.MaterialEditText
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:hint="Highlight Floating Label"
+          app:met_floatingLabel="highlight"
+          app:met_floatingLabelOnFocus="true"/>
 
       <TextView
         android:layout_width="match_parent"

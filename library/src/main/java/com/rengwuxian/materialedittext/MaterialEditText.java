@@ -293,6 +293,16 @@ public class MaterialEditText extends AppCompatEditText {
    */
   private boolean validateOnFocusLost;
 
+  /**
+   * Cached hint value
+   */
+  private CharSequence originalHint;
+
+  /**
+   * Show float hint on focus event
+   */
+  private boolean floatinLabelOnFocus;
+
   private boolean showClearButton;
   private boolean firstShown;
   private int iconSize;
@@ -375,6 +385,7 @@ public class MaterialEditText extends AppCompatEditText {
       }
     }
 
+    originalHint = getHint();
     primaryColor = typedArray.getColor(R.styleable.MaterialEditText_met_primaryColor, defaultPrimaryColor);
     setFloatingLabelInternal(typedArray.getInt(R.styleable.MaterialEditText_met_floatingLabel, 0));
     errorColor = typedArray.getColor(R.styleable.MaterialEditText_met_errorColor, Color.parseColor("#e7492E"));
@@ -415,6 +426,7 @@ public class MaterialEditText extends AppCompatEditText {
     helperTextAlwaysShown = typedArray.getBoolean(R.styleable.MaterialEditText_met_helperTextAlwaysShown, false);
     validateOnFocusLost = typedArray.getBoolean(R.styleable.MaterialEditText_met_validateOnFocusLost, false);
     checkCharactersCountAtBeginning = typedArray.getBoolean(R.styleable.MaterialEditText_met_checkCharactersCountAtBeginning, true);
+    floatinLabelOnFocus = typedArray.getBoolean(R.styleable.MaterialEditText_met_floatingLabelOnFocus, false);
     typedArray.recycle();
 
     int[] paddings = new int[]{
@@ -448,6 +460,9 @@ public class MaterialEditText extends AppCompatEditText {
     initFloatingLabel();
     initTextWatcher();
     checkCharactersCount();
+    if(floatinLabelOnFocus) {
+      initFocusListener();
+    }
   }
 
   private void initText() {
@@ -484,6 +499,27 @@ public class MaterialEditText extends AppCompatEditText {
           setError(null);
         }
         postInvalidate();
+      }
+    });
+  }
+
+  private void initFocusListener() {
+    setOnFocusChangeListener(new OnFocusChangeListener() {
+      @Override
+      public void onFocusChange(View view, boolean focused) {
+        if (floatingLabelEnabled && getText().length() == 0) {
+          if (!focused) {
+            if (floatingLabelShown) {
+              floatingLabelShown = false;
+              setHint(originalHint);
+              getLabelAnimator().reverse();
+            }
+          } else if (!floatingLabelShown) {
+            floatingLabelShown = true;
+            setHint(null);
+            getLabelAnimator().start();
+          }
+        }
       }
     });
   }
@@ -876,7 +912,7 @@ public class MaterialEditText extends AppCompatEditText {
       @Override
       public void afterTextChanged(Editable s) {
         if (floatingLabelEnabled) {
-          if (s.length() == 0) {
+          if ((s.length()) == 0 && !floatinLabelOnFocus) {
             if (floatingLabelShown) {
               floatingLabelShown = false;
               getLabelAnimator().reverse();
@@ -1359,7 +1395,7 @@ public class MaterialEditText extends AppCompatEditText {
     }
 
     // draw the floating label
-    if (floatingLabelEnabled && !TextUtils.isEmpty(floatingLabelText)) {
+    if (floatingLabelEnabled && (!TextUtils.isEmpty(floatingLabelText) || (floatinLabelOnFocus && hasFocus()))) {
       textPaint.setTextSize(floatingLabelTextSize);
       // calculate the text color
       textPaint.setColor((Integer) focusEvaluator.evaluate(focusFraction * (isEnabled() ? 1 : 0), floatingLabelTextColor != -1 ? floatingLabelTextColor : (baseColor & 0x00ffffff | 0x44000000), primaryColor));
