@@ -429,6 +429,15 @@
         app:met_iconPadding="0dp"
         app:met_maxCharacters="5" />
 
+      <com.rengwuxian.materialedittext.MaterialEditText
+          android:id="@+id/disabledSolidLine"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:hint="Solid line disabled color"
+          android:text="This is disabled and still shows a solid line."
+          app:met_disabledBottomLineColor="#33ff0000"
+          app:met_disabledBottomLineDotted="false"/>
+
     </LinearLayout>
   </LinearLayout>
 </ScrollView>

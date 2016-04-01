@@ -149,6 +149,11 @@ public class MaterialEditText extends AppCompatEditText {
   private int errorColor;
 
   /**
+   * the color for the disabled dotted underline.
+   */
+  private int disabledUnderlineColor;
+
+  /**
    * min characters count limit. 0 means no limit. default is 0. NOTE: the character counter will increase the View's height.
    */
   private int minCharacters;
@@ -304,6 +309,7 @@ public class MaterialEditText extends AppCompatEditText {
   private ColorStateList textColorStateList;
   private ColorStateList textColorHintStateList;
   private ArgbEvaluator focusEvaluator = new ArgbEvaluator();
+  private boolean dottedBottomLinesForDisabledState;
   Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
   TextPaint textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
   StaticLayout textLayout;
@@ -378,8 +384,10 @@ public class MaterialEditText extends AppCompatEditText {
     primaryColor = typedArray.getColor(R.styleable.MaterialEditText_met_primaryColor, defaultPrimaryColor);
     setFloatingLabelInternal(typedArray.getInt(R.styleable.MaterialEditText_met_floatingLabel, 0));
     errorColor = typedArray.getColor(R.styleable.MaterialEditText_met_errorColor, Color.parseColor("#e7492E"));
+    disabledUnderlineColor = typedArray.getColor(R.styleable.MaterialEditText_met_disabledBottomLineColor, -1);
     minCharacters = typedArray.getInt(R.styleable.MaterialEditText_met_minCharacters, 0);
     maxCharacters = typedArray.getInt(R.styleable.MaterialEditText_met_maxCharacters, 0);
+    dottedBottomLinesForDisabledState = typedArray.getBoolean(R.styleable.MaterialEditText_met_disabledBottomLineDotted, true);
     singleLineEllipsis = typedArray.getBoolean(R.styleable.MaterialEditText_met_singleLineEllipsis, false);
     helperText = typedArray.getString(R.styleable.MaterialEditText_met_helperText);
     helperTextColor = typedArray.getColor(R.styleable.MaterialEditText_met_helperTextColor, -1);
@@ -1317,11 +1325,21 @@ public class MaterialEditText extends AppCompatEditText {
         paint.setColor(errorColor);
         canvas.drawRect(startX, lineStartY, endX, lineStartY + getPixel(2), paint);
       } else if (!isEnabled()) { // disabled
-        paint.setColor(underlineColor != -1 ? underlineColor : baseColor & 0x00ffffff | 0x44000000);
-        float interval = getPixel(1);
-        for (float xOffset = 0; xOffset < getWidth(); xOffset += interval * 3) {
-          canvas.drawRect(startX + xOffset, lineStartY, startX + xOffset + interval, lineStartY + getPixel(1), paint);
+        int disabledLineColor = disabledUnderlineColor;
+        if (disabledUnderlineColor == -1){
+          disabledLineColor = underlineColor != -1 ? underlineColor : baseColor;
         }
+        paint.setColor(disabledLineColor & 0x00ffffff | 0x44000000);
+        if (dottedBottomLinesForDisabledState){
+          float interval = getPixel(1);
+          for (float xOffset = 0; xOffset < getWidth(); xOffset += interval * 3) {
+            canvas.drawRect(startX + xOffset, lineStartY, startX + xOffset + interval, lineStartY + getPixel(1), paint);
+          }
+        }
+        else{
+          canvas.drawRect(startX, lineStartY, endX, lineStartY + getPixel(1), paint);
+        }
+
       } else if (hasFocus()) { // focused
         paint.setColor(primaryColor);
         canvas.drawRect(startX, lineStartY, endX, lineStartY + getPixel(2), paint);
