@@ -1509,15 +1509,15 @@ public class MaterialEditText extends AppCompatEditText {
   private boolean insideClearButton(MotionEvent event) {
     float x = event.getX();
     float y = event.getY();
-    int startX = getScrollX() + (iconLeftBitmaps == null ? 0 : (iconOuterWidth + iconPadding));
-    int endX = getScrollX() + (iconRightBitmaps == null ? getWidth() : getWidth() - iconOuterWidth - iconPadding);
+    int startX =  (iconLeftBitmaps == null ? 0 : (iconOuterWidth + iconPadding));
+    int endX =  (iconRightBitmaps == null ? getWidth() : getWidth() - iconOuterWidth - iconPadding);
     int buttonLeft;
     if (isRTL()) {
       buttonLeft = startX;
     } else {
       buttonLeft = endX - iconOuterWidth;
     }
-    int buttonTop = getScrollY() + getHeight() - getPaddingBottom() + bottomSpacing - iconOuterHeight;
+    int buttonTop = getHeight() - getPaddingBottom() + bottomSpacing - iconOuterHeight;
     return (x >= buttonLeft && x < buttonLeft + iconOuterWidth && y >= buttonTop && y < buttonTop + iconOuterHeight);
   }
 
