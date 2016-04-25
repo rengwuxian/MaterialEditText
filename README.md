@@ -91,6 +91,11 @@ Maven:
 
 See on [Wiki Page](https://github.com/rengwuxian/MaterialEditText/wiki) or [中文看这里](http://www.rengwuxian.com/post/materialedittext)
 
+## Proguard
+```groovy
+-keep class com.rengwuxian.materialedittext.** { *; }
+```
+
 ## Thanks to
 
 [NineOldAndroids](https://github.com/JakeWharton/NineOldAndroids/)
