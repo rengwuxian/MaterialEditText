@@ -13,6 +13,7 @@ import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
@@ -86,7 +87,7 @@ public class MaterialAutoCompleteTextView extends AppCompatAutoCompleteTextView 
   /**
    * the floating label's text color.
    */
-  private int floatingLabelTextColor;
+  private @ColorInt int floatingLabelTextColor;
 
   /**
    * the bottom texts' size.
@@ -116,7 +117,7 @@ public class MaterialAutoCompleteTextView extends AppCompatAutoCompleteTextView 
   /**
    * the base color of the line and the texts. default is black.
    */
-  private int baseColor;
+  private @ColorInt int baseColor;
 
   /**
    * inner top padding
@@ -141,12 +142,12 @@ public class MaterialAutoCompleteTextView extends AppCompatAutoCompleteTextView 
   /**
    * the underline's highlight color, and the highlight color of the floating label if app:highlightFloatingLabel is set true in the xml. default is black(when app:darkTheme is false) or white(when app:darkTheme is true)
    */
-  private int primaryColor;
+  private @ColorInt int primaryColor;
 
   /**
    * the color for when something is wrong.(e.g. exceeding max characters)
    */
-  private int errorColor;
+  private @ColorInt int errorColor;
 
   /**
    * min characters count limit. 0 means no limit. default is 0. NOTE: the character counter will increase the View's height.
@@ -251,7 +252,7 @@ public class MaterialAutoCompleteTextView extends AppCompatAutoCompleteTextView 
   /**
    * Underline's color
    */
-  private int underlineColor;
+  private @ColorInt int underlineColor;
 
   /**
    * Whether to validate as soon as the text has changed. False by default
@@ -672,7 +673,7 @@ public class MaterialAutoCompleteTextView extends AppCompatAutoCompleteTextView 
   /**
    * get the color of the underline for normal state
    */
-  public int getUnderlineColor() {
+  public @ColorInt int getUnderlineColor() {
     return underlineColor;
   }
 
@@ -680,7 +681,7 @@ public class MaterialAutoCompleteTextView extends AppCompatAutoCompleteTextView 
    * Set the color of the underline for normal state
    * @param color
    */
-  public void setUnderlineColor(int color) {
+  public void setUnderlineColor(@ColorInt int color) {
     this.underlineColor = color;
     postInvalidate();
   }
@@ -710,11 +711,11 @@ public class MaterialAutoCompleteTextView extends AppCompatAutoCompleteTextView 
     initPadding();
   }
 
-  public int getFloatingLabelTextColor() {
+  public @ColorInt int getFloatingLabelTextColor() {
     return floatingLabelTextColor;
   }
 
-  public void setFloatingLabelTextColor(int color) {
+  public void setFloatingLabelTextColor(@ColorInt int color) {
     this.floatingLabelTextColor = color;
     postInvalidate();
   }
@@ -914,7 +915,7 @@ public class MaterialAutoCompleteTextView extends AppCompatAutoCompleteTextView 
     this.validateOnFocusLost = validate;
   }
 
-  public void setBaseColor(int color) {
+  public void setBaseColor(@ColorInt int color) {
     if (baseColor != color) {
       baseColor = color;
     }
@@ -924,7 +925,7 @@ public class MaterialAutoCompleteTextView extends AppCompatAutoCompleteTextView 
     postInvalidate();
   }
 
-  public void setPrimaryColor(int color) {
+  public void setPrimaryColor(@ColorInt int color) {
     primaryColor = color;
     postInvalidate();
   }
@@ -932,7 +933,7 @@ public class MaterialAutoCompleteTextView extends AppCompatAutoCompleteTextView 
   /**
    * Same function as {@link #setTextColor(int)}. (Directly overriding the built-in one could cause some error, so use this method instead.)
    */
-  public void setMetTextColor(int color) {
+  public void setMetTextColor(@ColorInt int color) {
     textColorStateList = ColorStateList.valueOf(color);
     resetTextColor();
   }
@@ -945,7 +946,7 @@ public class MaterialAutoCompleteTextView extends AppCompatAutoCompleteTextView 
     resetTextColor();
   }
 
-  private void resetTextColor() {
+  private @ColorInt void resetTextColor() {
     if (textColorStateList == null) {
       textColorStateList = new ColorStateList(new int[][]{new int[]{android.R.attr.state_enabled}, EMPTY_STATE_SET}, new int[]{baseColor & 0x00ffffff | 0xdf000000, baseColor & 0x00ffffff | 0x44000000});
       setTextColor(textColorStateList);
@@ -957,7 +958,7 @@ public class MaterialAutoCompleteTextView extends AppCompatAutoCompleteTextView 
   /**
    * Same function as {@link #setHintTextColor(int)}. (The built-in one is a final method that can't be overridden, so use this method instead.)
    */
-  public void setMetHintTextColor(int color) {
+  public void setMetHintTextColor(@ColorInt int color) {
     textColorHintStateList = ColorStateList.valueOf(color);
     resetHintTextColor();
   }
@@ -970,7 +971,7 @@ public class MaterialAutoCompleteTextView extends AppCompatAutoCompleteTextView 
     resetHintTextColor();
   }
 
-  private void resetHintTextColor() {
+  private @ColorInt void resetHintTextColor() {
     if (textColorHintStateList == null) {
       setHintTextColor(baseColor & 0x00ffffff | 0x44000000);
     } else {
@@ -1072,11 +1073,11 @@ public class MaterialAutoCompleteTextView extends AppCompatAutoCompleteTextView 
     }
   }
 
-  public int getErrorColor() {
+  public @ColorInt int getErrorColor() {
     return errorColor;
   }
 
-  public void setErrorColor(int color) {
+  public void setErrorColor(@ColorInt int color) {
     errorColor = color;
     postInvalidate();
   }
@@ -1092,11 +1093,11 @@ public class MaterialAutoCompleteTextView extends AppCompatAutoCompleteTextView 
     return helperText;
   }
 
-  public int getHelperTextColor() {
+  public @ColorInt int getHelperTextColor() {
     return helperTextColor;
   }
 
-  public void setHelperTextColor(int color) {
+  public void setHelperTextColor(@ColorInt int color) {
     helperTextColor = color;
     postInvalidate();
   }
