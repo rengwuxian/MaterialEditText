@@ -48,7 +48,7 @@ import java.util.regex.Pattern;
  * author:rengwuxian
  * <p/>
  */
-public class MaterialEditText extends AppCompatEditText {
+public class MaterialEditText extends MaterialBaseEditText {
 
   @IntDef({FLOATING_LABEL_NONE, FLOATING_LABEL_NORMAL, FLOATING_LABEL_HIGHLIGHT})
   public @interface FloatingLabelType {
