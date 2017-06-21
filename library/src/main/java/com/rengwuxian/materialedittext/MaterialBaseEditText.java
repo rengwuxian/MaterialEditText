@@ -13,8 +13,7 @@ import java.util.ArrayList;
 
 public class MaterialBaseEditText extends AppCompatEditText {
 
-    ArrayList<TextWatcher> activeListeners = null;
-    ArrayList<TextWatcher> pausedListeners = null;
+    ArrayList<TextWatcher> listeners = null;
 
     public MaterialBaseEditText(Context context) {
         super(context);
@@ -30,10 +29,10 @@ public class MaterialBaseEditText extends AppCompatEditText {
 
     @Override
     public void addTextChangedListener(TextWatcher watcher) {
-        if (activeListeners == null)
-            activeListeners = new ArrayList<>();
+        if (listeners == null)
+            listeners = new ArrayList<>();
 
-        activeListeners.add(watcher);
+        listeners.add(watcher);
 
         super.addTextChangedListener(watcher);
 
@@ -41,28 +40,21 @@ public class MaterialBaseEditText extends AppCompatEditText {
 
     @Override
     public void removeTextChangedListener(TextWatcher watcher) {
-        if (activeListeners != null)
-            activeListeners.remove(watcher);
-
+        if (listeners != null)
+            listeners.remove(watcher);
+        
         super.removeTextChangedListener(watcher);
     }
 
     public void pauseTextChangedListeners() {
-        pausedListeners = activeListeners;
-
-        for (TextWatcher listener: activeListeners) {
+        for (TextWatcher listener: listeners) {
             super.removeTextChangedListener(listener);
         }
-
-        activeListeners = null;
     }
 
     public void restartPausedTextChangedListeners() {
-        if (pausedListeners == null)
-            return;
-        for (TextWatcher watcher: pausedListeners) {
+        for (TextWatcher watcher: listeners) {
             super.addTextChangedListener(watcher);
         }
-        pausedListeners = null;
     }
 }
