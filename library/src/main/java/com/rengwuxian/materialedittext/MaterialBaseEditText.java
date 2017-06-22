@@ -35,14 +35,13 @@ public class MaterialBaseEditText extends AppCompatEditText {
         listeners.add(watcher);
 
         super.addTextChangedListener(watcher);
-
     }
 
     @Override
     public void removeTextChangedListener(TextWatcher watcher) {
         if (listeners != null)
             listeners.remove(watcher);
-        
+
         super.removeTextChangedListener(watcher);
     }
 

@@ -17,6 +17,10 @@
     <attr name="met_minCharacters" format="integer" />
     <!-- max Characters count limit. 0 means no limit. -->
     <attr name="met_maxCharacters" format="integer" />
+    <!-- If disabled, then the bottom line is dotted if true.  Defaults to true. -->
+    <attr name="met_disabledBottomLineDotted" format="boolean" />
+    <!-- The color for when something is wrong.(e.g. exceeding max characters) -->
+    <attr name="met_disabledBottomLineColor" format="color" />
     <!-- Whether to show the bottom ellipsis in singleLine mode -->
     <attr name="met_singleLineEllipsis" format="boolean" />
     <!-- Reserved bottom text lines count, no matter if there is some helper/error text. -->
