@@ -1522,7 +1522,7 @@ public class MaterialEditText extends MaterialBaseEditText {
     }
 
     private boolean insideClearButton(MotionEvent event) {
-        return (event.getRawX() >= (getRight() - getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width()));
+        return getCompoundDrawables()[DRAWABLE_RIGHT] != null && (event.getRawX() >= (getRight() - getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width()));
     }
 
     private int checkLength(CharSequence text) {
