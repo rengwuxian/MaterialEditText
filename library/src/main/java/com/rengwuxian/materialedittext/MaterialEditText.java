@@ -1329,19 +1329,17 @@ public class MaterialEditText extends MaterialBaseEditText {
             } else if (!isEnabled()) { // disabled
 
 
-
                 int disabledLineColor = disabledUnderlineColor;
-                if (disabledUnderlineColor == -1){
+                if (disabledUnderlineColor == -1) {
                     disabledLineColor = underlineColor != -1 ? underlineColor : baseColor;
                 }
                 paint.setColor(disabledLineColor & 0x00ffffff | 0x44000000);
-                if (dottedBottomLinesForDisabledState){
+                if (dottedBottomLinesForDisabledState) {
                     float interval = getPixel(1);
                     for (float xOffset = 0; xOffset < getWidth(); xOffset += interval * 3) {
                         canvas.drawRect(startX + xOffset, lineStartY, startX + xOffset + interval, lineStartY + getPixel(1), paint);
                     }
-                }
-                else{
+                } else {
                     canvas.drawRect(startX, lineStartY, endX, lineStartY + getPixel(1), paint);
                 }
             } else if (hasFocus()) { // focused
@@ -1531,15 +1529,15 @@ public class MaterialEditText extends MaterialBaseEditText {
     private boolean insideClearButton(MotionEvent event) {
         float x = event.getX();
         float y = event.getY();
-        int startX = getScrollX() + (iconLeftBitmaps == null ? 0 : (iconOuterWidth + iconPadding));
-        int endX = getScrollX() + (iconRightBitmaps == null ? getWidth() : getWidth() - iconOuterWidth - iconPadding);
+        int startX = (iconLeftBitmaps == null ? 0 : (iconOuterWidth + iconPadding));
+        int endX = (iconRightBitmaps == null ? getWidth() : getWidth() - iconOuterWidth - iconPadding);
         int buttonLeft;
         if (isRTL()) {
             buttonLeft = startX;
         } else {
-            buttonLeft = endX - iconOuterWidth;
+            buttonLeft = endX - 2 * iconOuterWidth;
         }
-        int buttonTop = getScrollY() + getHeight() - getPaddingBottom() + bottomSpacing - iconOuterHeight;
+        int buttonTop = getHeight() - getPaddingBottom() + bottomSpacing - iconOuterHeight;
         return (x >= buttonLeft && x < buttonLeft + iconOuterWidth && y >= buttonTop && y < buttonTop + iconOuterHeight);
     }
 
