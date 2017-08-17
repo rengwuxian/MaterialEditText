@@ -71,6 +71,8 @@
     <attr name="met_validateOnFocusLost" format="boolean"/>
     <!-- Whether check the characters count at the beginning it's shown. True by default. -->
     <attr name="met_checkCharactersCountAtBeginning" format="boolean"/>
+    <!-- Clear icon -->
+    <attr name="met_clearIconDrawable" format="reference" />
 
   </declare-styleable>
 </resources>
