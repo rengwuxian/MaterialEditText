@@ -58,6 +58,10 @@ public class MaterialEditText extends MaterialBaseEditText {
     public static final int FLOATING_LABEL_NORMAL = 1;
     public static final int FLOATING_LABEL_HIGHLIGHT = 2;
 
+    final int DRAWABLE_LEFT = 0;
+    final int DRAWABLE_TOP = 1;
+    final int DRAWABLE_RIGHT = 2;
+    final int DRAWABLE_BOTTOM = 3;
     /**
      * the color for the disabled dotted underline.
      */
@@ -788,14 +792,7 @@ public class MaterialEditText extends MaterialBaseEditText {
      * Set paddings to the correct values
      */
     private void correctPaddings() {
-        int buttonsWidthLeft = 0, buttonsWidthRight = 0;
-        int buttonsWidth = iconOuterWidth * getButtonsCount();
-        if (isRTL()) {
-            buttonsWidthLeft = buttonsWidth;
-        } else {
-            buttonsWidthRight = buttonsWidth;
-        }
-        super.setPadding(innerPaddingLeft + extraPaddingLeft + buttonsWidthLeft, innerPaddingTop + extraPaddingTop, innerPaddingRight + extraPaddingRight + buttonsWidthRight, innerPaddingBottom + extraPaddingBottom);
+        super.setPadding(innerPaddingLeft + extraPaddingLeft, innerPaddingTop + extraPaddingTop, innerPaddingRight + extraPaddingRight, innerPaddingBottom + extraPaddingBottom);
     }
 
     private int getButtonsCount() {
@@ -1307,17 +1304,7 @@ public class MaterialEditText extends MaterialBaseEditText {
 
         // draw the clear button
         if (hasFocus() && showClearButton && !TextUtils.isEmpty(getText()) && isEnabled()) {
-            paint.setAlpha(255);
-            int buttonLeft;
-            if (isRTL()) {
-                buttonLeft = startX;
-            } else {
-                buttonLeft = endX - iconOuterWidth;
-            }
-            Bitmap clearButtonBitmap = clearButtonBitmaps[0];
-            buttonLeft += (iconOuterWidth - clearButtonBitmap.getWidth()) / 2;
-            int iconTop = lineStartY + bottomSpacing - iconOuterHeight + (iconOuterHeight - clearButtonBitmap.getHeight()) / 2;
-            canvas.drawBitmap(clearButtonBitmap, buttonLeft, iconTop, paint);
+            setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.met_ic_clear, 0);
         }
 
         // draw the underline
@@ -1508,6 +1495,7 @@ public class MaterialEditText extends MaterialBaseEditText {
                     if (clearButtonClicking) {
                         if (!TextUtils.isEmpty(getText())) {
                             setText(null);
+                            setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
                         }
                         clearButtonClicking = false;
                     }
@@ -1527,18 +1515,7 @@ public class MaterialEditText extends MaterialBaseEditText {
     }
 
     private boolean insideClearButton(MotionEvent event) {
-        float x = event.getX();
-        float y = event.getY();
-        int startX = (iconLeftBitmaps == null ? 0 : (iconOuterWidth + iconPadding));
-        int endX = (iconRightBitmaps == null ? getWidth() : getWidth() - iconOuterWidth - iconPadding);
-        int buttonLeft;
-        if (isRTL()) {
-            buttonLeft = startX;
-        } else {
-            buttonLeft = endX - 2 * iconOuterWidth;
-        }
-        int buttonTop = getHeight() - getPaddingBottom() + bottomSpacing - iconOuterHeight;
-        return (x >= buttonLeft && x < buttonLeft + iconOuterWidth && y >= buttonTop && y < buttonTop + iconOuterHeight);
+        return (event.getRawX() >= (getRight() - getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width()));
     }
 
     private int checkLength(CharSequence text) {
