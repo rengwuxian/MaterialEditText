@@ -295,7 +295,7 @@ public class MaterialEditText extends MaterialBaseEditText {
     /**
      * Clear Button
      */
-    private Bitmap[] clearButtonBitmaps;
+    private int clearButtonDrawable;
 
     /**
      * Auto validate when focus lost.
@@ -422,7 +422,7 @@ public class MaterialEditText extends MaterialBaseEditText {
         iconLeftBitmaps = generateIconBitmaps(typedArray.getResourceId(R.styleable.MaterialEditText_met_iconLeft, -1));
         iconRightBitmaps = generateIconBitmaps(typedArray.getResourceId(R.styleable.MaterialEditText_met_iconRight, -1));
         showClearButton = typedArray.getBoolean(R.styleable.MaterialEditText_met_clearButton, false);
-        clearButtonBitmaps = generateIconBitmaps(R.drawable.met_ic_clear);
+        clearButtonDrawable = typedArray.getResourceId(R.styleable.MaterialEditText_met_clearIconDrawable, R.drawable.met_ic_clear);
         iconPadding = typedArray.getDimensionPixelSize(R.styleable.MaterialEditText_met_iconPadding, getPixel(16));
         floatingLabelAlwaysShown = typedArray.getBoolean(R.styleable.MaterialEditText_met_floatingLabelAlwaysShown, false);
         helperTextAlwaysShown = typedArray.getBoolean(R.styleable.MaterialEditText_met_helperTextAlwaysShown, false);
@@ -495,6 +495,9 @@ public class MaterialEditText extends MaterialBaseEditText {
                     validate();
                 } else {
                     setError(null);
+                }
+                if (s.length() == 0 && showClearButton) {
+                    hideClearButton();
                 }
                 postInvalidate();
             }
@@ -1304,7 +1307,7 @@ public class MaterialEditText extends MaterialBaseEditText {
 
         // draw the clear button
         if (hasFocus() && showClearButton && !TextUtils.isEmpty(getText()) && isEnabled()) {
-            setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.met_ic_clear, 0);
+            showClearButton();
         }
 
         // draw the underline
@@ -1414,6 +1417,10 @@ public class MaterialEditText extends MaterialBaseEditText {
         super.onDraw(canvas);
     }
 
+    private void showClearButton() {
+        setCompoundDrawablesWithIntrinsicBounds(0, 0, clearButtonDrawable, 0);
+    }
+
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     private boolean isRTL() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
@@ -1495,7 +1502,7 @@ public class MaterialEditText extends MaterialBaseEditText {
                     if (clearButtonClicking) {
                         if (!TextUtils.isEmpty(getText())) {
                             setText(null);
-                            setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                            hideClearButton();
                         }
                         clearButtonClicking = false;
                     }
@@ -1522,4 +1529,9 @@ public class MaterialEditText extends MaterialBaseEditText {
         if (lengthChecker == null) return text.length();
         return lengthChecker.getLength(text);
     }
+
+    private void hideClearButton() {
+        setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+    }
+
 }
