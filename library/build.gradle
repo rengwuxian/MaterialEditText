@@ -2,10 +2,10 @@ apply plugin: 'com.android.library'
 
 android {
   compileSdkVersion Integer.parseInt(project.ANDROID_BUILD_SDK_VERSION)
-  buildToolsVersion project.ANDROID_BUILD_TOOLS_VERSION
+  buildToolsVersion '28.0.3'
 
   defaultConfig {
-    minSdkVersion 7
+    minSdkVersion 14
     targetSdkVersion Integer.parseInt(project.ANDROID_BUILD_SDK_VERSION)
   }
   buildTypes {
@@ -17,9 +17,9 @@ android {
 }
 
 dependencies {
-  compile 'com.android.support:support-annotations:22.2.0'
-  compile 'com.nineoldandroids:library:2.4.0'
-  compile 'com.android.support:appcompat-v7:22.2.0'
+  implementation 'androidx.annotation:annotation:1.0.1'
+  implementation 'com.nineoldandroids:library:2.4.0'
+  implementation 'androidx.appcompat:appcompat:1.1.0-alpha01'
 }
 
 // Used to push in maven
