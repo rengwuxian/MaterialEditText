@@ -1,26 +1,27 @@
 apply plugin: 'com.android.library'
 
 android {
-  compileSdkVersion Integer.parseInt(project.ANDROID_BUILD_SDK_VERSION)
-  buildToolsVersion '28.0.3'
+    compileSdkVersion Integer.parseInt(project.ANDROID_BUILD_SDK_VERSION)
+    buildToolsVersion '28.0.3'
 
-  defaultConfig {
-    minSdkVersion 14
-    targetSdkVersion Integer.parseInt(project.ANDROID_BUILD_SDK_VERSION)
-  }
-  buildTypes {
-    release {
-      minifyEnabled false
-      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion Integer.parseInt(project.ANDROID_BUILD_SDK_VERSION)
     }
-  }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
 }
 
 dependencies {
-  implementation 'androidx.annotation:annotation:1.0.1'
-  implementation 'com.nineoldandroids:library:2.4.0'
-  implementation 'androidx.appcompat:appcompat:1.1.0-alpha01'
+    implementation 'com.nineoldandroids:library:2.4.0'
+    implementation 'androidx.annotation:annotation:1.0.1'
+    implementation 'androidx.appcompat:appcompat:1.1.0-alpha01'
 }
 
-// Used to push in maven
-apply from: '../maven_push.gradle'
+apply plugin: 'com.github.dcendents.android-maven'
+group = 'com.rengwuxian.materialedittext' // 모듈명. 패키지명을 쓰면 된다.
+version = '2.2.0' // 배포할 버전
