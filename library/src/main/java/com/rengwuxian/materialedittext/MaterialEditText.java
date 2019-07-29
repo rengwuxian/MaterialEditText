@@ -1384,7 +1384,18 @@ public class MaterialEditText extends AppCompatEditText {
       textPaint.setAlpha(alpha);
 
       // draw the floating label
-      canvas.drawText(floatingLabelText.toString(), floatingLabelStartX, floatingLabelStartY, textPaint);
+      int count = floatingLabelText.toString().length() - floatingLabelText.toString().replace("\n",
+              "").length();
+      if (count == 0) {
+        canvas.drawText(floatingLabelText.toString(), floatingLabelStartX, floatingLabelStartY, textPaint);
+      } else {
+        int i = 1;
+        for (String label: floatingLabelText.toString().split("\n")) {
+          floatingLabelStartY = (int) (innerPaddingTop + floatingLabelTextSize * i + floatingLabelPadding - distance * (floatingLabelAlwaysShown ? 1 : 2) + getScrollY());
+          canvas.drawText(label, floatingLabelStartX, floatingLabelStartY, textPaint);
+          i++;
+        }
+      }
     }
 
     // draw the bottom ellipsis
