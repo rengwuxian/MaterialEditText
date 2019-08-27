@@ -101,10 +101,21 @@
         android:textSize="14sp" />
 
       <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/edit_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Floating Label"
-        app:met_floatingLabel="normal" />
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="12dp"
+        android:layout_marginRight="12dp"
+        android:hint="Floating Label way tooooo\nlong text sample here\nthird line test here"
+        android:layout_toStartOf="@+id/material_edit_text_edit_button"
+        android:layout_toLeftOf="@+id/material_edit_text_edit_button"
+        android:textSize="20dp"
+        app:met_floatingLabel="normal"
+        app:met_floatingLabelTextSize="20dp"
+        app:met_primaryColor="?colorAccent"
+        app:met_textColorHint="#808080" />
+
 
       <TextView
         android:layout_width="match_parent"

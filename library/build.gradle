@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 
 android {
   compileSdkVersion Integer.parseInt(project.ANDROID_BUILD_SDK_VERSION)
-  buildToolsVersion project.ANDROID_BUILD_TOOLS_VERSION
+  buildToolsVersion '22.0.1'
 
   defaultConfig {
     minSdkVersion 7
@@ -23,4 +23,4 @@ dependencies {
 }
 
 // Used to push in maven
-apply from: '../maven_push.gradle'
+apply from: '../maven.gradle'
