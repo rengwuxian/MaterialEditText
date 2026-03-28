@@ -1,5 +1,14 @@
 MaterialEditText
 ================
+
+# ⚠️ No Longer Maintained
+
+⚠️ This repository is no longer maintained as I have moved on to Kotlin and Jetpack Compose for Android development.
+
+🙏🏻 Thank you for your interest and contributions!
+
+⛔ Issues and pull requests are no longer actively reviewed.
+
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-MaterialEditText-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/1085)
 
 > ## NOTE: 2.0 is NOT BACKWARDS COMPATIBLE! See more on [wiki](https://github.com/rengwuxian/MaterialEditText/wiki) or [中文看这里](http://www.rengwuxian.com/post/materialedittext)
