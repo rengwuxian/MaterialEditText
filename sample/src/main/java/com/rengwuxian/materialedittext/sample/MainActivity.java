@@ -24,7 +24,10 @@ public class MainActivity extends AppCompatActivity {
 		initSingleLineEllipsisEt();
 		initSetErrorEt();
 		initValidationEt();
-  }
+
+		findViewById(R.id.disabledSolidLine).setEnabled(false);
+
+	}
 
 	private void initEnableBt() {
 		final EditText basicEt = (EditText) findViewById(R.id.basicEt);
