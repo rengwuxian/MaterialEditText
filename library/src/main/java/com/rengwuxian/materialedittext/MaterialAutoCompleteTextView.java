@@ -518,6 +518,29 @@ public class MaterialAutoCompleteTextView extends AppCompatAutoCompleteTextView 
     initPadding();
   }
 
+  /**
+   * Sets the icon padding to a dimension resource.
+   * @param  @DimenRes  int  id  The dimension resource id containing the
+   *                    padding size.
+   */
+  public void setIconPadding(@DimenRes int id) {
+      iconPadding = getResources().getDimensionPixelSize(id);
+      initPadding();
+  }
+
+  /**
+   * Sets the padding for the icon and defaults to 16dp if a negative value is
+   * provided.
+   *
+   * The floating point number will be immediately truncated to an integer.
+   * @param  float  padding  A floating point number representing the number of
+   *                pixels to pad the icon with.
+   */
+  public void setIconPadding(float padding) {
+      iconPadding = padding >= 0 ? (int) padding : getPixel(16) ;
+      initPadding();
+  }
+
   public boolean isShowClearButton() {
     return showClearButton;
   }
